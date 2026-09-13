@@ -6,45 +6,25 @@ export default class menu extends Phaser.Scene {
     }
 
   preload() {
-    this.load.image("menu_fond", "/assets/menu_fond.png");
-    this.load.image("imageBoutonPlay", "/assets/button_play.png");
-    this.load.spritesheet("img_perso", "/assets/dude.png", {
-        frameWidth: 40,
-        frameHeight: 60
-      });
+this.load.image("menu_fond", "./assets/menu_fond.png");
+this.load.image("imageBoutonPlay", "./assets/button_play.png");
 
-      //gendarmerie
-      this.load.image("Phaser_tuilesdejeu1", "/assets/sprite_police.png");
-    this.load.tilemapTiledJSON("carte1", "/assets/map_police.json");
+this.load.spritesheet("img_perso", "./assets/dude.png", {
+    frameWidth: 40,
+    frameHeight: 60
+});
 
+this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_police.png");
+this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
 
-    this.load.image("img_plateforme", "/assets/platform.png");
-    this.load.spritesheet("img_perso", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 60
-    });
-    this.load.spritesheet("img_perso2", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 35
-    });
-    this.load.spritesheet("img_perso3", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 60
-    });
-    this.load.spritesheet("perso3", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 60
-    });
-    this.load.spritesheet("perso4", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 60
-    });
-    this.load.spritesheet("perso5", "/assets/dude.png", {
-      frameWidth: 40,
-      frameHeight: 60
-    });
+this.load.image("img_plateforme", "./assets/platform.png");
 
-    this.load.image("img_porte1", "/assets/door1.png");
+this.load.spritesheet("img_perso2", "./assets/dude.png", {
+    frameWidth: 40,
+    frameHeight: 35
+});
+
+this.load.image("img_porte1", "./assets/door1.png");
 
   }
 
