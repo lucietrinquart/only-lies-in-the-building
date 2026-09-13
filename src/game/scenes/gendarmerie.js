@@ -1,0 +1,261 @@
+import * as Phaser from "phaser";
+
+var player; // désigne le sprite du joueur
+var groupe_plateformes; // contient toutes les plateformes
+var clavier; // pour la gestion du clavier
+var cursors;
+var dude2;
+var exclamation;
+var dialogueText; // Déclaration de la variable de texte
+var interactionActive = false;
+var dialogueIndex = 0;
+var dialogues = [
+  "Gendarme : Bienvenue, Bianca. Nous avons besoin de vos compétences de détective pour résoudre un meurtre mystérieux à l opéra.",
+  "Bianca : Un meurtre à l opéra ? Quelle est la situation exacte ?",
+  "Gendarme : Un acteur de l opéra a été retrouvé assassiné, et les circonstances entourant sa mort sont encore inconnues. L incident a semé la panique parmi les artistes, et l opéra est plongé dans le chaos.",
+  "Bianca : Je vais me rendre à l opéra immédiatement. Je ferai tout ce qui est en mon pouvoir pour résoudre cette affaire.",
+  "Gendarme : Nous comptons sur vous, Bianca. Soyez prudente et bonne chance.",
+];
+
+export default class gendarmerie extends Phaser.Scene {
+  constructor() {
+    super({ key: "gendarmerie" }); // mettre le meme nom que le nom de la classe
+  }
+
+  preload() {}
+
+  create(data) {
+    const carteDuNiveau = this.add.tilemap("carte1");
+
+    // chargement du jeu de tuiles
+    const tileset = carteDuNiveau.addTilesetImage(
+      "sprite_police",
+      "Phaser_tuilesdejeu1"
+    );
+    const background = carteDuNiveau.createLayer("background", tileset);
+
+    const sol = carteDuNiveau.createLayer("sol", tileset);
+
+    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
+
+    const cloison = carteDuNiveau.createLayer("cloison", tileset);
+
+    const tapis = carteDuNiveau.createLayer("tapis", tileset);
+
+    const meuble = carteDuNiveau.createLayer("meuble", tileset);
+
+    const deco_meuble = carteDuNiveau.createLayer("deco_meuble", tileset);
+
+    const deco = carteDuNiveau.createLayer("deco", tileset);
+
+    /***************************
+     *  CREATION DES OBJETS *
+     ****************************/
+
+    groupe_plateformes = this.physics.add.staticGroup();
+    player = this.physics.add.sprite(350, 500, "img_perso");
+    exclamation = this.physics.add.sprite(398, 355, "exclamation");
+    exclamation.setScale(0.03);
+
+    this.porte_ville = this.physics.add.staticSprite(300, 570, "img_porte1");
+    this.porte_ville.setAlpha(0);
+    this.porte_ville1 = this.physics.add.staticSprite(350, 570, "img_porte1");
+    this.porte_ville1.setAlpha(0);
+    this.porte_ville2 = this.physics.add.staticSprite(400, 570, "img_porte1");
+    this.porte_ville2.setAlpha(0);
+    this.porte_ville3 = this.physics.add.staticSprite(450, 570, "img_porte1");
+    this.porte_ville3.setAlpha(0);
+
+    this.dude2 = this.physics.add.sprite(398, 387, "img_perso2");
+
+    /***************************
+     *  CREATION DES COLISIONS *
+     ****************************/
+    deco.setCollisionByProperty({ estSolide: true });
+    meuble.setCollisionByProperty({ estSolide: true });
+    murs_porteurs.setCollisionByProperty({ estSolide: true });
+    cloison.setCollisionByProperty({ estSolide: true });
+
+    this.physics.add.collider(player, deco);
+    this.physics.add.collider(player, meuble);
+    this.physics.add.collider(player, murs_porteurs);
+    this.physics.add.collider(player, cloison);
+    this.physics.add.collider(player, groupe_plateformes);
+
+    this.physics.world.enable(player);
+    this.dude2.refreshBody();
+    player.setCollideWorldBounds(true); // le player se cognera contre les bords du monde
+
+    /***************************
+     *  CREATION DES DIALOGUES *
+     ****************************/
+    // Créez un texte avec un fond de couleur
+    dialogueText = this.add.text(0, 450, "", {
+      font: "20px Arial",
+      fill: "#ffffff",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      align: "left",
+      padding: {
+        left: 50, // Espacement à gauche
+        right: 500, // Espacement à droite
+        top: 20, // Espacement en haut
+        bottom: 20,
+      },
+      shadow: {
+        offsetX: 2,
+        offsetY: 2,
+        blur: 4,
+        color: "#000000",
+      },
+      wordWrap: {
+        width: 200,
+      },
+    });
+
+    dialogueText.setScrollFactor(0);
+    dialogueText.setDepth(1);
+    dialogueText.setWordWrapWidth(700);
+    dialogueText.setVisible(false);
+
+    // PRENDRE LA DISTANCE ENTRE LES EPRSONNAGES POUR ENSUITE LES FAIRE APPARAITRENT AVEC E
+    this.input.keyboard.on("keydown-E", () => {
+      var distance = Phaser.Math.Distance.Between(
+        player.x,
+        player.y,
+        this.dude2.x,
+        this.dude2.y
+      );
+
+      if (distance < 125) {
+        if (dialogueIndex < dialogues.length) {
+          dialogueText.setText(dialogues[dialogueIndex]);
+          dialogueText.setVisible(true);
+          interactionActive = true;
+          dialogueIndex++;
+          this.physics.pause();
+        } else {
+          dialogueText.setVisible(false);
+          dialogueIndex = 0;
+          this.physics.resume();
+        }
+      }
+    });
+    //POUR GARDER LE DIALOGUE
+    this.input.keyboard.on("keyup-E", () => {});
+
+    /***************************
+     *  CREATION DES ANIMATIONS *
+     ****************************/
+
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("img_perso", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // animation lorsque le personnage n'avance pas
+    this.anims.create({
+      key: "turn",
+      frames: [{ key: "img_perso", frame: 4 }],
+      frameRate: 20,
+    });
+
+    // animation pour tourner à droite
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("img_perso", {
+        start: 5,
+        end: 8,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    // animation va en haut
+    this.anims.create({
+      key: "haut",
+      frames: this.anims.generateFrameNumbers("img_perso", {
+        start: 12,
+        end: 14,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    // animation va en bas
+    this.anims.create({
+      key: "bas",
+      frames: this.anims.generateFrameNumbers("img_perso", {
+        start: 9,
+        end: 11,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    /***********************
+     *  CREATION DU CLAVIER *
+     ************************/
+
+    clavier = this.input.keyboard.createCursorKeys();
+
+    cursors = this.input.keyboard.createCursorKeys();
+
+    this.physics.world.setBounds(0, 0, 800, 608);
+    //  ajout du champs de la caméra de taille identique à celle du monde
+    this.cameras.main.setBounds(0, 0, 800, 608);
+    // ancrage de la caméra sur le joueur
+    this.cameras.main.startFollow(player);
+
+    //  Collide the player and the groupe_etoiles with the groupe_plateformes
+  }
+
+  update() {
+    /***************************
+     *  CREATION DES ANIMATIONS *
+     ****************************/
+    if (cursors.up.isDown) {
+      player.setVelocityY(-160);
+      player.anims.play("bas", true);
+    } else if (cursors.down.isDown) {
+      player.setVelocityY(160);
+      player.anims.play("haut", true);
+    } else {
+      player.setVelocityY(0);
+    }
+
+    if (cursors.left.isDown) {
+      player.setVelocityX(-160);
+      player.anims.play("left", true);
+    } else if (cursors.right.isDown) {
+      player.setVelocityX(160);
+      player.anims.play("right", true);
+    } else {
+      // Si aucune touche de déplacement n'est enfoncée, arrête le personnage
+      player.setVelocityX(0);
+    }
+
+    if (
+      !cursors.up.isDown &&
+      !cursors.down.isDown &&
+      !cursors.left.isDown &&
+      !cursors.right.isDown
+    ) {
+      player.anims.play("turn");
+    }
+    /***************************
+     *  TELEPORTATION POUR LES PORTES *
+     ****************************/
+
+    if (this.physics.overlap(player, this.porte_ville))
+      this.scene.start("ville");
+    if (this.physics.overlap(player, this.porte_ville1))
+      this.scene.start("ville");
+    if (this.physics.overlap(player, this.porte_ville2))
+      this.scene.start("ville");
+    if (this.physics.overlap(player, this.porte_ville3))
+      this.scene.start("ville");
+  }
+}
