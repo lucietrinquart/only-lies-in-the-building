@@ -6,6 +6,7 @@ var clavier; // pour la gestion du clavier
 var cursors;
 var dude2;
 var exclamation;
+var telephone;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 var dialogueIndex = 0;
@@ -56,6 +57,9 @@ export default class gendarmerie extends Phaser.Scene {
     player = this.physics.add.sprite(350, 500, "img_perso");
     exclamation = this.physics.add.sprite(398, 355, "exclamation");
     exclamation.setScale(0.03);
+    telephone = this.physics.add.sprite(530, 400, "telephone");
+    telephone.setScale(0.03);
+
 
     this.porte_ville = this.physics.add.staticSprite(300, 570, "img_porte1");
     this.porte_ville.setAlpha(0);
@@ -67,6 +71,9 @@ export default class gendarmerie extends Phaser.Scene {
     this.porte_ville3.setAlpha(0);
 
     this.dude2 = this.physics.add.sprite(398, 387, "img_perso2");
+
+    // on garde une référence sur le sprite du téléphone pour l'utiliser dans update()
+    this.telephone = telephone;
 
     /***************************
      *  CREATION DES COLISIONS *
@@ -119,14 +126,32 @@ export default class gendarmerie extends Phaser.Scene {
 
     // PRENDRE LA DISTANCE ENTRE LES EPRSONNAGES POUR ENSUITE LES FAIRE APPARAITRENT AVEC E
     this.input.keyboard.on("keydown-E", () => {
-      var distance = Phaser.Math.Distance.Between(
+      // Si le téléphone est déjà ouvert (scène en pause), on ignore la touche E ici
+      if (this.scene.isPaused()) return;
+
+      var distanceDude2 = Phaser.Math.Distance.Between(
         player.x,
         player.y,
         this.dude2.x,
         this.dude2.y
       );
 
-      if (distance < 125) {
+      var distanceTelephone = Phaser.Math.Distance.Between(
+        player.x,
+        player.y,
+        this.telephone.x,
+        this.telephone.y
+      );
+
+      // NOUVEAU : interaction avec le téléphone (priorité si on est plus proche du tel que du gendarme)
+      var PERIMETRE_TELEPHONE = 60; // ajuste cette valeur selon la taille de ta map/sprite
+      if (distanceTelephone < PERIMETRE_TELEPHONE) {
+        this.scene.launch("Telephone"); // on lance la scène téléphone par-dessus
+        this.scene.pause(); // on met en pause gendarmerie (le joueur ne bouge plus)
+        return; // on n'exécute pas le dialogue du gendarme en même temps
+      }
+
+      if (distanceDude2 < 125) {
         if (dialogueIndex < dialogues.length) {
           dialogueText.setText(dialogues[dialogueIndex]);
           dialogueText.setVisible(true);
@@ -213,6 +238,9 @@ export default class gendarmerie extends Phaser.Scene {
   }
 
   update() {
+    // Si la scène est en pause (téléphone ouvert), on ne traite pas les déplacements
+    if (this.scene.isPaused()) return;
+
     /***************************
      *  CREATION DES ANIMATIONS *
      ****************************/

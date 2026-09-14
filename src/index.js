@@ -1,6 +1,8 @@
 import * as Phaser from "phaser";
 import menu from "./game/scenes/menu.js";
 import gendarmerie from "./game/scenes/gendarmerie.js";
+import telephone from "./game/scenes/telephone.js";
+
 
 
 var config = {
@@ -20,7 +22,8 @@ var config = {
 
     scene: [
         menu,
-        gendarmerie
+        gendarmerie,
+        telephone
     ],
 
     scale: {

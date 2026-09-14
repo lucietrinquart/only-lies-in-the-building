@@ -18,6 +18,12 @@ this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_police.png");
 this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
 
 this.load.image("img_plateforme", "./assets/platform.png");
+this.load.image("telephone", "./assets/telephone.png");
+this.load.image("telephone_fond", "./assets/telephone_fond.png");
+
+this.load.image("exclamation", "./assets/exclamation.png");
+
+
 
 this.load.spritesheet("img_perso2", "./assets/dude.png", {
     frameWidth: 40,
