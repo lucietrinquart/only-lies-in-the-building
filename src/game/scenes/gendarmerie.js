@@ -278,12 +278,12 @@ export default class gendarmerie extends Phaser.Scene {
      ****************************/
 
     if (this.physics.overlap(player, this.porte_ville))
-      this.scene.start("ville");
+      this.scene.start("cafet");
     if (this.physics.overlap(player, this.porte_ville1))
-      this.scene.start("ville");
+      this.scene.start("cafet");
     if (this.physics.overlap(player, this.porte_ville2))
-      this.scene.start("ville");
+      this.scene.start("cafet");
     if (this.physics.overlap(player, this.porte_ville3))
-      this.scene.start("ville");
+      this.scene.start("cafet");
   }
 }

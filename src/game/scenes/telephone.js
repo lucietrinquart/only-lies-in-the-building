@@ -63,6 +63,8 @@ export default class Telephone extends Phaser.Scene {
   preload() {
     this.load.image("fond_telephone", "./assets/telephone_fond.png");
     this.load.image("icone_message", "./assets/icone_message.png");
+    this.load.image("icone_message2", "./assets/icone_message.png");
+
   }
 
   create() {

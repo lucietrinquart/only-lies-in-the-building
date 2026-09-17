@@ -32,6 +32,20 @@ this.load.spritesheet("img_perso2", "./assets/dude.png", {
 
 this.load.image("img_porte1", "./assets/door1.png");
 
+//scene cafe
+ this.load.image("porte_balthazar", "assets/porte_balthazar.png");
+
+            this.load.spritesheet("chat", "assets/chat.png", {
+            frameWidth: 32,
+            frameHeight: 48,
+            });
+
+            // chargement tuiles de jeu
+            this.load.image("Phaser_tuilesdejeu3", "./assets/barthe.png");
+
+            // chargement de la carte
+            this.load.tilemapTiledJSON("carte3", "assets/cafethe.json");
+
   }
 
   create() {
