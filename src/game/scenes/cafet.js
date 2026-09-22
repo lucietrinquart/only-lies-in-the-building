@@ -1,4 +1,10 @@
 import * as Phaser from "phaser";
+// NOUVEAU : on importe le module d'inventaire
+import { InventaireUI, ObjetRamassable, possedeObjet, retirerObjet } from "./inventaire.js";
+// NOUVEAU : on importe le module carte
+import { CarteUI } from "./carte.js";
+// NOUVEAU : on importe le module tâches
+import { TachesUI, ajouterTaches } from "./taches.js";
 
 var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
@@ -7,6 +13,8 @@ var cursors;
 var dude2;
 var exclamation;
 var telephone;
+var livre;
+var bibliotheque;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 var dialogueIndex = 0;
@@ -28,6 +36,12 @@ export default class cafet extends Phaser.Scene {
   preload() {}
 
   create(data) {
+    // CORRECTION : ce compteur n'était jamais initialisé (il valait undefined)
+    this.developperCount1 = 0;
+    // CORRIGÉ : on lit l'état depuis le registry (survit au changement de scène)
+    // au lieu de toujours repartir à false.
+    this.bibliothequeOuverte = this.registry.get("cafet_bibliotheque_ouverte") || false;
+
      const carteDuNiveau = this.add.tilemap("carte3");
             // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
@@ -49,6 +63,8 @@ export default class cafet extends Phaser.Scene {
 
     this.dude2 = this.physics.add.sprite(398, 387, "img_perso2");
 
+    
+
 
 
     fond2.setCollisionByProperty({ estSolide: true });
@@ -60,7 +76,6 @@ export default class cafet extends Phaser.Scene {
 
 
     // création du personnage de jeu et positionnement
-    player = this.physics.add.sprite(350, 500, "img_perso");
 
 
             const chat = this.physics.add.staticSprite(552, 325, "chat");
@@ -81,6 +96,20 @@ export default class cafet extends Phaser.Scene {
             this.porte4.setScale(0.5);
             this.porte4.setAlpha(0);
 
+            this.porte5 = this.physics.add.staticSprite(1000, 100, "porte_balthazar");
+            this.porte5.setScale(0.5);
+
+
+
+
+
+            this.bibliotheque = this.physics.add.staticSprite(
+              this.bibliothequeOuverte ? 1120 : 1000, // CORRIGÉ : si déjà ouverte, on la recrée directement décalée
+              100,
+              "bibliotheque"
+            );
+            this.bibliotheque.setScale(0.2);
+                player = this.physics.add.sprite(350, 500, "img_perso");
 
 
             // ajout du modèle de collision entre le personnage et les plates-formes
@@ -117,6 +146,59 @@ export default class cafet extends Phaser.Scene {
             // ancrage de la caméra sur le joueur
             this.cameras.main.startFollow(player);
 
+    /* ============================================================
+     *  NOUVEAU : L'OBJET À RAMASSER (le ticket)
+     * ============================================================ */
+    // Place-le où tu veux sur la map (ici près de la table 4, à ajuster)
+    this.ticket = new ObjetRamassable(
+      this,
+      900,            // position x
+      480,            // position y
+      "ticket", // clé de la texture (voir preload global)
+      "Ticket",        // nom affiché dans l'inventaire
+      "Un ticket de caisse retrouvé sur la table 4. La date est celle du soir du meurtre.",
+      {
+        taille: 40,    // taille affichée au sol (en pixels)
+        message: "Ticket récupéré",
+        perimetre: 60, // distance à laquelle on peut le ramasser
+        idTache: "recuperer_ticket", // NOUVEAU : termine cette tâche au ramassage
+      }
+    );
+
+      // CORRIGÉ : si le livre a déjà été posé dans la bibliothèque, on ne le
+      // recrée pas au sol (sinon il "réapparaîtrait" à chaque retour dans cafet)
+      this.livre = this.bibliothequeOuverte
+        ? null
+        : new ObjetRamassable(
+            this,
+            900,            // position x
+            300,            // position y
+            "livre", // clé de la texture (voir preload global)
+            "Livre",        // nom affiché dans l'inventaire
+            "Un livre retrouvé sur la table 4. La date est celle du soir du meurtre.",
+            {
+              taille: 40,    // taille affichée au sol (en pixels)
+              message: "Livre récupéré",
+              perimetre: 60, // distance à laquelle on peut le ramasser
+              idTache: "recuperer_livre", // NOUVEAU : termine cette tâche au ramassage
+            }
+          );
+
+    /* ============================================================
+     *  NOUVEAU : L'INTERFACE D'INVENTAIRE (icône sac en bas à droite)
+     * ============================================================ */
+    this.inventaireUI = new InventaireUI(this);
+
+    /* ============================================================
+     *  NOUVEAU : L'INTERFACE CARTE (icône à gauche de l'inventaire)
+     * ============================================================ */
+    this.carteUI = new CarteUI(this);
+
+    /* ============================================================
+     *  NOUVEAU : L'INTERFACE DES TÂCHES (liste en haut à droite)
+     * ============================================================ */
+    this.tachesUI = new TachesUI(this);
+
                 // Créez un texte avec un fond de couleur
                dialogueText = this.add.text(0, 450, "", {
       font: "20px Arial",
@@ -149,7 +231,12 @@ export default class cafet extends Phaser.Scene {
                   this.input.keyboard.on("keydown-E", () => {
                     // Si le téléphone est déjà ouvert (scène en pause), on ignore la touche E ici
                     if (this.scene.isPaused()) return;
-              
+
+                    // NOUVEAU : on tente d'abord de ramasser le ticket.
+                    // Si ça marche, on s'arrête là (pas de dialogue en même temps).
+                    // CORRIGÉ : this.livre peut être null si le livre a déjà été posé
+                    if (this.ticket.tenterRamassage(player) || (this.livre && this.livre.tenterRamassage(player))) return;
+
                     var distanceDude2 = Phaser.Math.Distance.Between(
                       player.x,
                       player.y,
@@ -170,6 +257,14 @@ export default class cafet extends Phaser.Scene {
                         dialogueText.setVisible(false);
                         dialogueIndex = 0;
                         this.physics.resume();
+
+                        // NOUVEAU : le dialogue vient de se terminer -> on ajoute les 2 tâches
+                        ajouterTaches(this, [
+                          { id: "recuperer_ticket", texte: "Récupérer le ticket" },
+                          { id: "parler_gendarme", texte: "Aller parler au gendarme" },
+                          { id: "recuperer_livre", texte: "Récupérer le livre" },
+
+                        ]);
                       }
                     }
                   });
@@ -179,6 +274,11 @@ export default class cafet extends Phaser.Scene {
         }
 
             update() {
+                // NOUVEAU : affiche/cache l'indice "E" au-dessus du ticket
+                this.ticket.update(player);
+                // CORRIGÉ : this.livre peut être null si le livre a déjà été posé
+                if (this.livre) this.livre.update(player);
+
                 if (cursors.up.isDown) {
                 player.setVelocityY(-160);
                 player.anims.play("bas", true);
@@ -209,17 +309,10 @@ export default class cafet extends Phaser.Scene {
                 player.anims.play("turn");
                 }
                 if (Phaser.Input.Keyboard.JustDown(clavier.space) == true ) {
-                    if (this.physics.overlap(player, this.levier3) == true) {
-                        this.developperCount1++;
-                        console.log(this.developperCount1);
-                            this.scene.switch("textecvklaibi");
-                        }
-                    else if (this.physics.overlap(player, this.levier4) == true) {
-                        this.developperCount1++;
-                        console.log(this.developperCount1);
-                        this.scene.switch("texteproces");
-                    }                    
-                    else if (this.physics.overlap(player, this.porte) == true) {
+                    // CORRECTION : this.levier3 et this.levier4 n'existent pas dans cette scène.
+                    // Les tests ont été retirés pour éviter un plantage.
+                    // Si tu veux les remettre, il faut d'abord créer les sprites dans create().
+                    if (this.physics.overlap(player, this.porte) == true) {
                         this.scene.start("selectWorld");
                     } 
                     else if (this.physics.overlap(player, this.porte2) == true) {
@@ -231,10 +324,67 @@ export default class cafet extends Phaser.Scene {
                     else if (this.physics.overlap(player, this.porte4) == true) {
                         this.scene.start("selectWorld");
                     }
+                    // NOUVEAU : la porte derrière la bibliothèque n'est utilisable
+                    // que si la bibliothèque a déjà été déplacée (livre posé)
+                    else if (this.bibliothequeOuverte && this.physics.overlap(player, this.porte5) == true) {
+                        this.scene.start("gendarmerie");
+                    }
                 }
-                if (this.developperCount1 === 2) {
-            this.developperCount1 = 0;
-            this.showDevelopperImage();
+    }
+
+    /* ============================================================
+     *  NOUVEAU : ACTIONS CONTEXTUELLES DE L'INVENTAIRE
+     * ============================================================
+     *  Appelée automatiquement par InventaireUI quand le joueur ouvre
+     *  un objet en grand. On retourne un tableau d'actions possibles
+     *  POUR CET OBJET DANS LE CONTEXTE ACTUEL (ici : la proximité de
+     *  la bibliothèque). Si rien n'est possible, on retourne [].
+     */
+    obtenirActionsObjet(cle) {
+        const actions = [];
+
+        if (cle === "livre" && !this.bibliothequeOuverte && possedeObjet(this, "livre")) {
+            const PERIMETRE_BIBLIOTHEQUE = 120; // ajuste selon la distance souhaitée
+            const distance = Phaser.Math.Distance.Between(
+                player.x,
+                player.y,
+                this.bibliotheque.x,
+                this.bibliotheque.y
+            );
+
+            if (distance < PERIMETRE_BIBLIOTHEQUE) {
+                actions.push({
+                    texte: "Poser le livre dans la bibliothèque",
+                    executer: () => this.poserLivreDansBibliotheque(),
+                });
+            }
         }
+
+        return actions;
+    }
+
+    /* ============================================================
+     *  NOUVEAU : POSER LE LIVRE DANS LA BIBLIOTHÈQUE
+     * ============================================================
+     *  - Retire le livre de l'inventaire
+     *  - Fait glisser la bibliothèque vers la DROITE (tween)
+     *  - Autorise désormais l'interaction avec porte5 (espace)
+     *  Le retour à la scène de jeu (fermeture de l'inventaire) est
+     *  déjà géré par InventaireUI.fermerTout() avant l'appel ici.
+     */
+    poserLivreDansBibliotheque() {
+        retirerObjet(this, "livre");
+
+        this.bibliothequeOuverte = true;
+        // CORRIGÉ : on sauvegarde l'état dans le registry (survit au changement de scène),
+        // sinon revenir de gendarmerie remettait tout à zéro.
+        this.registry.set("cafet_bibliotheque_ouverte", true);
+
+        this.tweens.add({
+            targets: this.bibliotheque,
+            x: this.bibliotheque.x + 120, // vers la droite ; ajuste la distance si besoin
+            duration: 800,
+            ease: "Cubic.easeInOut",
+        });
     }
 }

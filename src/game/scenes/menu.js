@@ -33,9 +33,9 @@ this.load.spritesheet("img_perso2", "./assets/dude.png", {
 this.load.image("img_porte1", "./assets/door1.png");
 
 //scene cafe
- this.load.image("porte_balthazar", "assets/porte_balthazar.png");
+ this.load.image("porte_balthazar", "./assets/porte_balthazar.png");
 
-            this.load.spritesheet("chat", "assets/chat.png", {
+            this.load.spritesheet("chat", "./assets/chat.png", {
             frameWidth: 32,
             frameHeight: 48,
             });
@@ -46,7 +46,24 @@ this.load.image("img_porte1", "./assets/door1.png");
             // chargement de la carte
             this.load.tilemapTiledJSON("carte3", "assets/cafethe.json");
 
+
+            this.load.image("ticket", "./assets/ticket.png");
+            this.load.image("sac", "./assets/sac.png");
+
+            this.load.image("carte", "./assets/carte.png");   // l'icône
+            this.load.image("map", "./assets/map.jpg");       // la grande carte
+            this.load.image("perso", "./assets/perso.webp");   // la tête du personnage
+
+            this.load.image("livre", "./assets/livre.png");   
+            this.load.image("bibliotheque", "./assets/bibliotheque.png"); 
+
+
+
+
+
   }
+
+
 
   create() {
     // on place les éléments de fond

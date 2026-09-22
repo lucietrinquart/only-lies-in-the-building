@@ -1,4 +1,12 @@
 import * as Phaser from "phaser";
+// en haut du fichier
+import { InventaireUI } from "./inventaire.js";
+import { CarteUI } from "./carte.js";
+// NOUVEAU : on importe le module tâches
+import { TachesUI, terminerTache } from "./taches.js";
+
+
+// dans create(), n'importe où
 
 var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
@@ -26,7 +34,13 @@ export default class gendarmerie extends Phaser.Scene {
   preload() {}
 
   create(data) {
+    this.inventaireUI = new InventaireUI(this);
+
     const carteDuNiveau = this.add.tilemap("carte1");
+    this.carteUI = new CarteUI(this);
+
+    // NOUVEAU : l'interface des tâches (liste en haut à droite)
+    this.tachesUI = new TachesUI(this);
 
     // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
@@ -162,6 +176,11 @@ export default class gendarmerie extends Phaser.Scene {
           dialogueText.setVisible(false);
           dialogueIndex = 0;
           this.physics.resume();
+
+          // NOUVEAU : le dialogue avec le gendarme vient de se terminer
+          // -> on termine la tâche "parler_gendarme" (elle a été créée dans cafet.js,
+          // mais rien n'empêche de la terminer depuis une autre scène : le registry est partagé)
+          terminerTache(this, "parler_gendarme");
         }
       }
     });

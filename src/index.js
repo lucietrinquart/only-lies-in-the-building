@@ -7,6 +7,7 @@ import cafet from "./game/scenes/cafet.js";
 
 
 
+
 var config = {
     type: Phaser.AUTO,
     width: 800,
