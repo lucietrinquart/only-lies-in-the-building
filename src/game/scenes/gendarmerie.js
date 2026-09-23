@@ -4,6 +4,8 @@ import { InventaireUI } from "./inventaire.js";
 import { CarteUI } from "./carte.js";
 // NOUVEAU : on importe le module tâches
 import { TachesUI, terminerTache } from "./taches.js";
+// NOUVEAU : on importe le module énigme
+import { EnigmeUI } from "./enigme.js";
 
 
 // dans create(), n'importe où
@@ -18,12 +20,17 @@ var telephone;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 var dialogueIndex = 0;
+// NOUVEAU : la série de répliques affichée dans LA conversation en cours.
+// Elle change selon l'état (intro / à réessayer / résolu) -> voir obtenirDialogueActuel()
+var dialoguesActuels = [];
 var dialogues = [
   "Gendarme : Bienvenue, Bianca. Nous avons besoin de vos compétences de détective pour résoudre un meurtre mystérieux à l opéra.",
   "Bianca : Un meurtre à l opéra ? Quelle est la situation exacte ?",
   "Gendarme : Un acteur de l opéra a été retrouvé assassiné, et les circonstances entourant sa mort sont encore inconnues. L incident a semé la panique parmi les artistes, et l opéra est plongé dans le chaos.",
   "Bianca : Je vais me rendre à l opéra immédiatement. Je ferai tout ce qui est en mon pouvoir pour résoudre cette affaire.",
   "Gendarme : Nous comptons sur vous, Bianca. Soyez prudente et bonne chance.",
+  // NOUVEAU : dernière réplique -> propose l'énigme une fois le dialogue terminé
+  "Gendarme : Je veux bien te donner un indice si tu arrives à m'aider à résoudre cette enquête de meurtre.",
 ];
 
 export default class gendarmerie extends Phaser.Scene {
@@ -41,6 +48,30 @@ export default class gendarmerie extends Phaser.Scene {
 
     // NOUVEAU : l'interface des tâches (liste en haut à droite)
     this.tachesUI = new TachesUI(this);
+
+    // NOUVEAU : l'énigme du gendarme (question, bonne réponse, récompense)
+    this.enigmeGendarme = new EnigmeUI(this, {
+      id: "enigme_gendarme",
+      question:
+        "Trois suspects étaient présents le soir du meurtre, mais un seul n'a pas d'alibi vérifié. Combien de suspects reste-t-il vraiment à interroger ?",
+      reponseCorrecte: "3", // NOUVEAU : change cette valeur si tu changes l'énigme
+      recompense: {
+        cle: "papier", // clé de texture -> doit correspondre à papier.webp chargé dans le preload global
+        nom: "Indice",
+        description:
+          "Un bout de papier griffonné retrouvé par le gendarme. Un indice de plus pour ton enquête.",
+      },
+      // NOUVEAU : réaction automatique du gendarme selon la réponse donnée
+      onReponseCorrecte: () => {
+        this.afficherReponseGendarme(
+          "Gendarme : Wow, tu es vraiment forte ! Voici la preuve.",
+          4000
+        );
+      },
+      onReponseIncorrecte: () => {
+        this.afficherReponseGendarme("Gendarme : Non, ce n'est pas logique.", 3000);
+      },
+    });
 
     // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
@@ -142,6 +173,8 @@ export default class gendarmerie extends Phaser.Scene {
     this.input.keyboard.on("keydown-E", () => {
       // Si le téléphone est déjà ouvert (scène en pause), on ignore la touche E ici
       if (this.scene.isPaused()) return;
+      // NOUVEAU : on ignore aussi la touche E si le panneau d'énigme est ouvert
+      if (this.enigmeGendarme.panneau.visible) return;
 
       var distanceDude2 = Phaser.Math.Distance.Between(
         player.x,
@@ -166,8 +199,15 @@ export default class gendarmerie extends Phaser.Scene {
       }
 
       if (distanceDude2 < 125) {
-        if (dialogueIndex < dialogues.length) {
-          dialogueText.setText(dialogues[dialogueIndex]);
+        // NOUVEAU : au tout début d'une conversation (dialogueIndex === 0),
+        // on choisit QUELLE série de répliques utiliser selon l'état actuel
+        // (intro jamais faite / en attente de réessai / déjà résolu)
+        if (dialogueIndex === 0) {
+          dialoguesActuels = this.obtenirDialogueActuel();
+        }
+
+        if (dialogueIndex < dialoguesActuels.length) {
+          dialogueText.setText(dialoguesActuels[dialogueIndex]);
           dialogueText.setVisible(true);
           interactionActive = true;
           dialogueIndex++;
@@ -177,10 +217,9 @@ export default class gendarmerie extends Phaser.Scene {
           dialogueIndex = 0;
           this.physics.resume();
 
-          // NOUVEAU : le dialogue avec le gendarme vient de se terminer
-          // -> on termine la tâche "parler_gendarme" (elle a été créée dans cafet.js,
-          // mais rien n'empêche de la terminer depuis une autre scène : le registry est partagé)
-          terminerTache(this, "parler_gendarme");
+          // NOUVEAU : on réagit à la fin de CETTE conversation précise
+          // (peut déclencher l'énigme, la boucle de réessai, ou ne rien faire de plus)
+          this.apresDialogueGendarme();
         }
       }
     });
@@ -304,5 +343,66 @@ export default class gendarmerie extends Phaser.Scene {
       this.scene.start("cafet");
     if (this.physics.overlap(player, this.porte_ville3))
       this.scene.start("cafet");
+  }
+
+  /* ============================================================
+   *  NOUVEAU : MACHINE À ÉTATS DU DIALOGUE AVEC LE GENDARME
+   * ============================================================
+   *  États possibles (déduits, pas besoin de tout stocker) :
+   *  - "intro"          : l'introduction complète n'a jamais été jouée
+   *  - "attente_reessai": l'intro est terminée, l'énigme pas encore résolue
+   *  - "resolu"          : l'énigme a été résolue (this.enigmeGendarme.estResolue())
+   */
+
+  // Retourne la série de répliques à utiliser pour la conversation qui commence
+  obtenirDialogueActuel() {
+    if (this.enigmeGendarme.estResolue()) {
+      return ["Gendarme : Merci beaucoup."];
+    }
+
+    const introTerminee = this.registry.get("gendarme_intro_terminee") || false;
+
+    if (!introTerminee) {
+      return dialogues; // la grande introduction (se termine par l'offre d'indice)
+    }
+
+    // Intro déjà faite, énigme pas encore résolue -> réplique de relance avant de rouvrir l'énigme
+    return [
+      "Gendarme : Ah oui, tu veux vraiment cette preuve ? Vas-y, je te laisse une autre chance.",
+    ];
+  }
+
+  // Appelée juste après que la conversation en cours se soit fermée
+  apresDialogueGendarme() {
+    if (this.enigmeGendarme.estResolue()) {
+      // Énigme déjà résolue : "Merci beaucoup." vient de s'afficher, rien d'autre à faire
+      return;
+    }
+
+    const introTerminee = this.registry.get("gendarme_intro_terminee") || false;
+
+    if (!introTerminee) {
+      // On vient de finir l'introduction (qui se termine par l'offre d'indice)
+      this.registry.set("gendarme_intro_terminee", true);
+      terminerTache(this, "parler_gendarme");
+      this.enigmeGendarme.ouvrir();
+      return;
+    }
+
+    // Intro déjà faite : on vient de fermer la réplique de relance -> on rouvre l'énigme
+    this.enigmeGendarme.ouvrir();
+  }
+
+  // Affiche une réplique automatique du gendarme (réaction à une réponse), sans
+  // attendre d'appui sur E : elle se ferme toute seule après "duree" millisecondes.
+  afficherReponseGendarme(texte, duree = 3500) {
+    dialogueText.setText(texte);
+    dialogueText.setVisible(true);
+    this.physics.pause();
+
+    this.time.delayedCall(duree, () => {
+      dialogueText.setVisible(false);
+      this.physics.resume();
+    });
   }
 }

@@ -17,7 +17,6 @@ this.load.spritesheet("img_perso", "./assets/dude.png", {
 this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_police.png");
 this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
 
-this.load.image("img_plateforme", "./assets/platform.png");
 this.load.image("telephone", "./assets/telephone.png");
 this.load.image("telephone_fond", "./assets/telephone_fond.png");
 
@@ -31,6 +30,8 @@ this.load.spritesheet("img_perso2", "./assets/dude.png", {
 });
 
 this.load.image("img_porte1", "./assets/door1.png");
+this.load.image("papier", "./assets/papier.webp");
+
 
 //scene cafe
  this.load.image("porte_balthazar", "./assets/porte_balthazar.png");
