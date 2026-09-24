@@ -6,6 +6,9 @@ import { CarteUI } from "./carte.js";
 // NOUVEAU : on importe le module tâches
 import { TachesUI, ajouterTaches } from "./taches.js";
 
+import { DialogueUI } from "./dialogue.js";
+
+
 var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
 var clavier; // pour la gestion du clavier
@@ -18,14 +21,46 @@ var bibliotheque;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 var dialogueIndex = 0;
-var dialogues = [
-  "Biance : Coucou Hervet ! Comment ça va ?",
-  "Hervet : Désolé Bianca, je suis un peu occupé en ce moment. Je ne peux pas parler longtemps.",
-  "Bianca : Je sais que c'est à cause de l'affaire du meurtre. Je ne l'ai pas tué et je vais le prouver. Es tc eque tu peux me dire si Adrien est venu dans ce bar il y a âs lontgtemps ??",
-  "Hervet : Oui hier soir, il est venu avec un ami. Je ne sais pas ce qu'il faisait là-bas, mais il semblait nerveux. Il a laissé des affaires je les ai laissé sur le contoir",
-  "Bianca : Hier c'est bizarre il m'a dit qu'il avait du travail à finir et qu'il rentrai plus tard. Je peux voir les affaires",
-  "Hervet : Oui si tu veux c'est derrière le contoir mais c'est rien de spécial, juste des papiers et un stylo. Je ne sais pas si ça peut t'aider. Tu peux aussi regarder il était sur la table 4 en bas a droite de la pièce.",
+// NOUVEAU : la série de répliques affichée dans LA conversation en cours.
+// Elle change selon l'état (intro / à réessayer / résolu) -> voir obtenirDialogueActuel()
+var dialoguesActuels = [];
 
+var dialogues = [
+  {
+    texte:
+      "Gendarme : Bienvenue, Bianca. Nous avons besoin de vos compétences de détective pour résoudre un meurtre mystérieux à l opéra.",
+    moi: "moi_hereuse",
+    perso: "perso_triste",
+  },
+  {
+    texte: "Bianca : Un meurtre à l opéra ? Quelle est la situation exacte ?",
+    moi: "moi_triste",
+    perso: "perso_hereuse",
+  },
+  {
+    texte:
+      "Gendarme : Un acteur de l opéra a été retrouvé assassiné, et les circonstances entourant sa mort sont encore inconnues. L incident a semé la panique parmi les artistes, et l opéra est plongé dans le chaos.",
+    moi: "moi_colere",
+    perso: "perso_colere",
+  },
+  {
+    texte:
+      "Bianca : Je vais me rendre à l opéra immédiatement. Je ferai tout ce qui est en mon pouvoir pour résoudre cette affaire.",
+    moi: "moi_hereuse",
+    perso: "perso_colere",
+  },
+  {
+    texte: "Gendarme : Nous comptons sur vous, Bianca. Soyez prudente et bonne chance.",
+    moi: "moi_hereuse",
+    perso: "perso_hereuse",
+  },
+  // NOUVEAU : dernière réplique -> propose l'énigme une fois le dialogue terminé
+  {
+    texte:
+      "Gendarme : Je veux bien te donner un indice si tu arrives à m'aider à résoudre cette enquête de meurtre.",
+    moi: "moi_hereuse",
+    perso: "perso_hereuse",
+  },
 ];
 
 export default class cafet extends Phaser.Scene {
@@ -99,9 +134,10 @@ export default class cafet extends Phaser.Scene {
             this.porte5 = this.physics.add.staticSprite(1000, 100, "porte_balthazar");
             this.porte5.setScale(0.5);
 
-
-
-
+            this.dialogueUI = new DialogueUI(this, {
+              moiParDefaut: "moi_heureuse",
+              persoParDefaut: "perso_triste",
+            });
 
             this.bibliotheque = this.physics.add.staticSprite(
               this.bibliothequeOuverte ? 1120 : 1000, // CORRIGÉ : si déjà ouverte, on la recrée directement décalée
@@ -246,17 +282,24 @@ export default class cafet extends Phaser.Scene {
             
             
               
-                    if (distanceDude2 < 125) {
-                      if (dialogueIndex < dialogues.length) {
-                        dialogueText.setText(dialogues[dialogueIndex]);
-                        dialogueText.setVisible(true);
-                        interactionActive = true;
-                        dialogueIndex++;
-                        this.physics.pause();
+                      if (distanceDude2 < 125) {
+                        // NOUVEAU : au tout début d'une conversation (dialogueIndex === 0),
+                        // on choisit QUELLE série de répliques utiliser selon l'état actuel
+                        // (intro jamais faite / en attente de réessai / déjà résolu)
+                        if (dialogueIndex === 0) {
+                          dialoguesActuels = this.obtenirDialogueActuel();
+                        }
+
+                        if (dialogueIndex < dialoguesActuels.length) {
+                          // NOUVEAU : on affiche la réplique AVEC ses portraits (joueur à gauche, PNJ à droite)
+                          this.dialogueUI.afficherLigne(dialoguesActuels[dialogueIndex]);
+                          interactionActive = true;
+                          dialogueIndex++;
+                          this.physics.pause();
                       } else {
-                        dialogueText.setVisible(false);
-                        dialogueIndex = 0;
-                        this.physics.resume();
+                          this.dialogueUI.masquer();
+                          dialogueIndex = 0;
+                          this.physics.resume();
 
                         // NOUVEAU : le dialogue vient de se terminer -> on ajoute les 2 tâches
                         ajouterTaches(this, [
@@ -331,6 +374,10 @@ export default class cafet extends Phaser.Scene {
                     }
                 }
     }
+
+    obtenirDialogueActuel() {
+    return dialogues;
+}
 
     /* ============================================================
      *  NOUVEAU : ACTIONS CONTEXTUELLES DE L'INVENTAIRE

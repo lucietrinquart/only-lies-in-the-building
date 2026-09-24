@@ -20,6 +20,21 @@ this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
 this.load.image("telephone", "./assets/telephone.png");
 this.load.image("telephone_fond", "./assets/telephone_fond.png");
 
+this.load.image("moi_colere", "./assets/moi_colere.png");
+this.load.image("moi_hereuse", "./assets/moi_hereuse.png");
+this.load.image("moi_triste", "./assets/moi_triste.png");
+
+this.load.image("perso_colere", "./assets/perso_colere.webp");
+this.load.image("perso_hereuse", "./assets/perso_hereuse.webp");
+this.load.image("perso_triste", "./assets/perso_triste.webp");
+
+this.load.image("ordinateur", "./assets/ordinateur.webp");
+this.load.video("video_surveillance1", "assets/video_surveillance1.mp4");
+this.load.video("video_surveillance2", "assets/video_surveillance2.mp4");
+this.load.video("video_surveillance3", "assets/video_surveillance3.mp4");
+
+
+
 this.load.image("exclamation", "./assets/exclamation.png");
 
 
