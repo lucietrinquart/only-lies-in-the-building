@@ -1,12 +1,66 @@
 import * as Phaser from "phaser";
 
+/* ============================================================
+ *  MODULE CARTE
+ *  ------------------------------------------------------------
+ *  Icône carte disponible dans chaque scène. Au clic, affiche
+ *  map.png en grand avec un point par lieu. Le lieu courant est
+ *  marqué par la tête du personnage (perso.png) sous son point.
+ *  Cliquer sur un autre point y téléporte le joueur.
+ *
+ *  NOUVEAU : un point n'apparaît sur la carte QUE SI le joueur a déjà
+ *  visité ce lieu au moins une fois (voir "LIEUX DÉJÀ VISITÉS" plus bas).
+ * ============================================================ */
+
+/* ------------------------------------------------------------
+ *  LISTE DES LIEUX — C'EST ICI QUE TU AJOUTES TES SCÈNES
+ * ------------------------------------------------------------
+ *  - scene : la CLÉ de la scène (celle du super({ key: "..." }))
+ *  - nom   : le nom affiché à côté du point
+ *  - x, y  : position du point sur la carte, en POURCENTAGE (0 à 1)
+ *            x = 0 -> bord gauche de la carte, x = 1 -> bord droit
+ *            y = 0 -> haut de la carte,        y = 1 -> bas
+ *
+ *  Pour ajouter un lieu plus tard : une seule ligne à rajouter ici,
+ *  et le point apparaîtra automatiquement (une fois ce lieu visité).
+ * ------------------------------------------------------------ */
 export const lieux = [
   { scene: "gendarmerie", nom: "Gendarmerie", x: 0.30, y: 0.40 },
   { scene: "cafet", nom: "Café", x: 0.65, y: 0.60 },
+  { scene: "accueil", nom: "Accueil", x: 0.55, y: 0.30 },
+
   // { scene: "ville", nom: "Ville", x: 0.50, y: 0.25 },
   // { scene: "opera", nom: "Opéra", x: 0.80, y: 0.30 },
 ];
 
+/* ------------------------------------------------------------
+ *  LIEUX DÉJÀ VISITÉS
+ * ------------------------------------------------------------
+ *  Stockés dans le registry (comme l'inventaire), donc ça survit à
+ *  tous les changements de scène et c'est acquis pour toujours.
+ * ------------------------------------------------------------ */
+
+// Retourne la liste des clés de scène déjà visitées
+function obtenirLieuxVisites(scene) {
+  return scene.registry.get("lieux_visites") || [];
+}
+
+// Marque un lieu comme visité (ne fait rien s'il l'est déjà)
+function marquerLieuVisite(scene, cleScene) {
+  const visites = obtenirLieuxVisites(scene);
+  if (!visites.includes(cleScene)) {
+    visites.push(cleScene);
+    scene.registry.set("lieux_visites", visites);
+  }
+}
+
+/* ------------------------------------------------------------
+ *  MODE PLACEMENT
+ *  Mets-le à true : quand tu cliques sur la carte, les coordonnées
+ *  en pourcentage s'affichent à l'écran ET dans la console (F12).
+ *  Tu n'as plus qu'à les recopier dans le tableau "lieux" ci-dessus.
+ *  Remets false une fois tes points placés.
+ * ------------------------------------------------------------ */
 const MODE_PLACEMENT = true;
 
 export class CarteUI {
@@ -15,6 +69,10 @@ export class CarteUI {
     this.ouvert = false;
     // Clé de la scène courante, pour savoir où placer la tête du perso
     this.sceneActuelle = scene.scene.key;
+
+    // NOUVEAU : le simple fait d'arriver dans cette scène marque son lieu
+    // comme "visité" pour toujours -> il pourra apparaître sur la carte.
+    marquerLieuVisite(scene, this.sceneActuelle);
 
     const largeur = scene.cameras.main.width;
     const hauteur = scene.cameras.main.height;
@@ -34,10 +92,22 @@ export class CarteUI {
 
     this.icone.on("pointerdown", () => this.basculer());
 
+    // NOUVEAU : l'icône est cachée tant que la carte n'a pas été débloquée
+    // (ramassage de l'objet carte). Une fois débloquée, ça reste vrai pour
+    // toujours (registry -> survit à tous les changements de scène).
+    const debloquee = scene.registry.get("carte_debloquee") || false;
+    this.icone.setVisible(debloquee);
+
     // ---- CONTENEUR DE LA CARTE (caché au départ) ----
     this.panneau = scene.add.container(0, 0);
     this.panneau.setDepth(2500);
     this.panneau.setVisible(false);
+  }
+
+  // NOUVEAU : débloque la carte pour de bon (à appeler au ramassage de l'objet carte)
+  debloquer() {
+    this.scene.registry.set("carte_debloquee", true);
+    this.icone.setVisible(true);
   }
 
   basculer() {
@@ -61,6 +131,9 @@ export class CarteUI {
     const scene = this.scene;
     const largeurJeu = scene.cameras.main.width;
     const hauteurJeu = scene.cameras.main.height;
+
+    // NOUVEAU : la liste des lieux qu'on a le droit d'afficher sur cette carte
+    const visites = obtenirLieuxVisites(scene);
 
     // ---- Voile sombre derrière la carte (clic = fermer) ----
     const voile = scene.add
@@ -137,6 +210,10 @@ export class CarteUI {
 
     // ---- LES POINTS DES LIEUX ----
     lieux.forEach((lieu) => {
+      // NOUVEAU : on ne dessine RIEN pour un lieu pas encore visité -> il
+      // n'existe tout simplement pas sur la carte tant qu'on n'y est pas allé.
+      if (!visites.includes(lieu.scene)) return;
+
       // Conversion pourcentage -> pixels à l'écran
       const pointX = carteX + lieu.x * carteLargeur;
       const pointY = carteY + lieu.y * carteHauteur;

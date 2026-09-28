@@ -8,6 +8,13 @@ export default class menu extends Phaser.Scene {
   preload() {
 this.load.image("menu_fond", "./assets/menu_fond.png");
 this.load.image("imageBoutonPlay", "./assets/button_play.png");
+this.load.image("imageBoutonPlay2", "./assets/button_play.png");
+
+this.load.image("menu_instruction", "./assets/menu_instruction.png");
+
+this.load.image("imageBoutonContinuer", "./assets/button_continuer.png");
+
+
 
 this.load.spritesheet("img_perso", "./assets/dude.png", {
     frameWidth: 40,
@@ -16,6 +23,9 @@ this.load.spritesheet("img_perso", "./assets/dude.png", {
 
 this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_police.png");
 this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
+
+this.load.image("Phaser_tuilesdejeu4", "./assets/sprite_accueil.png");
+this.load.tilemapTiledJSON("carte4", "./assets/map_accueil.json");
 
 this.load.image("telephone", "./assets/telephone.png");
 this.load.image("telephone_fond", "./assets/telephone_fond.png");
@@ -33,6 +43,18 @@ this.load.video("video_surveillance1", "assets/video_surveillance1.mp4");
 this.load.video("video_surveillance2", "assets/video_surveillance2.mp4");
 this.load.video("video_surveillance3", "assets/video_surveillance3.mp4");
 
+this.load.image("bulle1", "./assets/bulle1.png");
+this.load.image("bulle2", "./assets/bulle2.png");
+this.load.image("bulle3", "./assets/bulle3.png");
+this.load.image("bulle4", "./assets/bulle4.png");
+this.load.image("bulle5", "./assets/bulle5.png");
+this.load.image("fleche", "./assets/fleche.png");
+
+
+
+this.load.audio("gaps", "assets/gaps.mp3");
+this.load.audio("orage", "assets/orage.mp3");
+
 
 
 this.load.image("exclamation", "./assets/exclamation.png");
@@ -47,6 +69,11 @@ this.load.spritesheet("img_perso2", "./assets/dude.png", {
 this.load.image("img_porte1", "./assets/door1.png");
 this.load.image("papier", "./assets/papier.webp");
 
+// dans preload()
+this.load.audio("musique_gendarmerie", "assets/musique.mp3");
+
+this.load.image("sac_a_main", "./assets/sac_a_main.webp");
+this.load.image("carte2", "./assets/carte2.png");
 
 //scene cafe
  this.load.image("porte_balthazar", "./assets/porte_balthazar.png");
@@ -67,7 +94,7 @@ this.load.image("papier", "./assets/papier.webp");
             this.load.image("sac", "./assets/sac.png");
 
             this.load.image("carte", "./assets/carte.png");   // l'icône
-            this.load.image("map", "./assets/map.jpg");       // la grande carte
+            this.load.image("map", "./assets/map.png");       // la grande carte
             this.load.image("perso", "./assets/perso.webp");   // la tête du personnage
 
             this.load.image("livre", "./assets/livre.png");   
@@ -87,6 +114,8 @@ this.load.image("papier", "./assets/papier.webp");
 
     //on ajoute un bouton de clic, nommé bouton_play
     var bouton_play = this.add.image(400, 450, "imageBoutonPlay").setDepth(1);
+    var bouton_play2 = this.add.image(200, 450, "imageBoutonPlay").setDepth(1);
+
 
     //=========================================================
     //on rend le bouton interratif
@@ -94,7 +123,17 @@ this.load.image("papier", "./assets/papier.webp");
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("gendarmerie");
+        this.scene.start("instruction");
+        
+      });
+
+          //on rend le bouton interratif
+    bouton_play2.setInteractive();
+    //Cas ou la sourris clique sur le bouton play :
+    // on lance le niveau 1
+    bouton_play2.on("pointerup", () => {
+        this.scene.start("credit");
+        
       });
   }
 }

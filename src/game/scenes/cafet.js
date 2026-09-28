@@ -356,16 +356,16 @@ export default class cafet extends Phaser.Scene {
                     // Les tests ont été retirés pour éviter un plantage.
                     // Si tu veux les remettre, il faut d'abord créer les sprites dans create().
                     if (this.physics.overlap(player, this.porte) == true) {
-                        this.scene.start("selectWorld");
+                        this.scene.start("accueil");
                     } 
                     else if (this.physics.overlap(player, this.porte2) == true) {
-                        this.scene.start("selectWorld");
+                        this.scene.start("accueil");
                     } 
                     else if (this.physics.overlap(player, this.porte3) == true) {
-                        this.scene.start("selectWorld");
+                        this.scene.start("accueil");
                     } 
                     else if (this.physics.overlap(player, this.porte4) == true) {
-                        this.scene.start("selectWorld");
+                        this.scene.start("accueil");
                     }
                     // NOUVEAU : la porte derrière la bibliothèque n'est utilisable
                     // que si la bibliothèque a déjà été déplacée (livre posé)

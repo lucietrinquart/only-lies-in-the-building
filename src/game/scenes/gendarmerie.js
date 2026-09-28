@@ -1,15 +1,17 @@
 import * as Phaser from "phaser";
 // en haut du fichier
-import { InventaireUI } from "./inventaire.js";
+import { InventaireUI, ObjetRamassable, afficherMessage } from "./inventaire.js";
 import { CarteUI } from "./carte.js";
 // NOUVEAU : on importe le module tâches
 import { TachesUI, terminerTache } from "./taches.js";
 // NOUVEAU : on importe le module énigme
 import { EnigmeUI } from "./enigme.js";
+
+import { OrdinateurUI } from "./ordinateur.js";
+
 // NOUVEAU : on importe le module dialogue avec portraits
 import { DialogueUI } from "./dialogue.js";
 
-import { OrdinateurUI } from "./ordinateur.js";
 
 var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
@@ -32,37 +34,53 @@ var dialogues = [
   {
     texte:
       "Gendarme : Bienvenue, Bianca. Nous avons besoin de vos compétences de détective pour résoudre un meurtre mystérieux à l opéra.",
-    moi: "moi_hereuse",
+    moi: "moi_heureuse",
     perso: "perso_triste",
   },
   {
     texte: "Bianca : Un meurtre à l opéra ? Quelle est la situation exacte ?",
     moi: "moi_triste",
-    perso: "perso_hereuse",
+    perso: "perso_heureuse",
   },
   {
     texte:
       "Gendarme : Un acteur de l opéra a été retrouvé assassiné, et les circonstances entourant sa mort sont encore inconnues. L incident a semé la panique parmi les artistes, et l opéra est plongé dans le chaos.",
-    moi: "moi_colere",
+    moi: "moi_triste",
     perso: "perso_colere",
   },
   {
     texte:
       "Bianca : Je vais me rendre à l opéra immédiatement. Je ferai tout ce qui est en mon pouvoir pour résoudre cette affaire.",
-    moi: "moi_hereuse",
+    moi: "moi_heureuse",
     perso: "perso_colere",
   },
   {
     texte: "Gendarme : Nous comptons sur vous, Bianca. Soyez prudente et bonne chance.",
-    moi: "moi_hereuse",
-    perso: "perso_hereuse",
+    moi: "moi_heureuse",
+    perso: "perso_heureuse",
   },
   // NOUVEAU : dernière réplique -> propose l'énigme une fois le dialogue terminé
   {
     texte:
       "Gendarme : Je veux bien te donner un indice si tu arrives à m'aider à résoudre cette enquête de meurtre.",
-    moi: "moi_hereuse",
-    perso: "perso_hereuse",
+    moi: "moi_heureuse",
+    perso: "perso_heureuse",
+  },
+];
+
+// NOUVEAU : monologue d'introduction. Bianca parle TOUTE SEULE en arrivant
+// dans la gendarmerie -> "perso: false" cache complètement le portrait de droite.
+var introMonologue = [
+  {
+    texte: "Bianca : Me voilà à la gendarmerie... Il faut que je comprenne ce qui s'est passé.",
+    moi: "moi_triste",
+    perso: false,
+  },
+  {
+    texte:
+      "Bianca : Je devrais chercher des indices, ça m'aidera sûrement à mieux comprendre ce meurtre.",
+    moi: "moi_colere",
+    perso: false,
   },
 ];
 
@@ -99,8 +117,8 @@ export default class gendarmerie extends Phaser.Scene {
         this.afficherReponseGendarme(
           {
             texte: "Gendarme : Wow, tu es vraiment forte ! Voici la preuve.",
-            moi: "moi_hereuse",
-            perso: "perso_hereuse",
+            moi: "moi_heureuse",
+            perso: "perso_heureuse",
           },
           4000
         );
@@ -116,6 +134,9 @@ export default class gendarmerie extends Phaser.Scene {
         );
       },
     });
+          if (!this.sound.get("musique_gendarmerie")) {
+  this.sound.play("musique_gendarmerie", { loop: true, volume: 0.5 });
+}
 
     // NOUVEAU : l'interface de dialogue avec portraits (joueur à gauche, PNJ à droite)
     this.dialogueUI = new DialogueUI(this, {
@@ -123,7 +144,58 @@ export default class gendarmerie extends Phaser.Scene {
       persoParDefaut: "perso_triste",
     });
 
-    this.ordinateurUI = new OrdinateurUI(this, {
+    /* ============================================================
+     *  NOUVEAU : LES 2 OBJETS QUI DÉBLOQUENT L'INVENTAIRE ET LA CARTE
+     * ============================================================
+     *  Exactement comme le ticket : un ObjetRamassable classique, avec
+     *  un "onRamasse" qui débloque l'icône correspondante pour toujours.
+     *  ADAPTE LES POSITIONS (x, y) à l'endroit où tu veux les poser sur ta map.
+     */
+    this.sacAMain = new ObjetRamassable(
+      this,
+      250, // NOUVEAU : position x -> à ajuster
+      450, // NOUVEAU : position y -> à ajuster
+      "sac_a_main",
+      "Sac à main",
+      "Un sac à main abandonné. Il pourrait servir à ranger des objets utiles à l'enquête.",
+      {
+        taille: 40,
+        message: "Sac à main récupéré",
+        perimetre: 60,
+        ajouterAInventaire: false, // NOUVEAU : ne va pas dans l'inventaire, sert juste à le débloquer
+        cleDejaRamasse: "inventaire_debloque", // NOUVEAU : réutilise le même flag que debloquer()
+        onRamasse: () => {
+          this.inventaireUI.debloquer();
+          afficherMessage(this, "Vous avez maintenant un inventaire !", 5000);
+        },
+      }
+    );
+
+    this.carteObjet = new ObjetRamassable(
+      this,
+      600, // NOUVEAU : position x -> à ajuster
+      450, // NOUVEAU : position y -> à ajuster
+      "carte2",
+      "Carte",
+      "Une carte de la ville et de ses environs.",
+      {
+        taille: 40,
+        message: "Carte récupérée",
+        perimetre: 60,
+        ajouterAInventaire: false, // NOUVEAU : ne va pas dans l'inventaire, sert juste à la débloquer
+        cleDejaRamasse: "carte_debloquee", // NOUVEAU : réutilise le même flag que debloquer()
+        onRamasse: () => {
+          this.carteUI.debloquer();
+          afficherMessage(
+            this,
+            "Vous pouvez maintenant utiliser la carte pour aller dans les endroits déjà explorés.",
+            5000
+          );
+        },
+      }
+    );
+
+        this.ordinateurUI = new OrdinateurUI(this, {
   videos: [
     { nomAffiche: "video-541-06-09-2026-10:20", cle: "video_surveillance1" },
     { nomAffiche: "video-233-06-09-2026-14:47", cle: "video_surveillance2" },
@@ -173,10 +245,8 @@ export default class gendarmerie extends Phaser.Scene {
     this.porte_ville3 = this.physics.add.staticSprite(450, 570, "img_porte1");
     this.porte_ville3.setAlpha(0);
 
-    this.ordinateur = this.physics.add.staticSprite(150, 350, "ordinateur");
+      this.ordinateur = this.physics.add.staticSprite(150, 350, "ordinateur");
     this.ordinateur.setScale(0.1);
-
-
 
     this.dude2 = this.physics.add.sprite(398, 387, "img_perso2");
 
@@ -209,6 +279,28 @@ export default class gendarmerie extends Phaser.Scene {
       if (this.enigmeGendarme.panneau.visible) return;
       if (this.ordinateurUI.visible) return;
 
+      // NOUVEAU : le monologue d'introduction est prioritaire sur TOUT le reste
+      // (téléphone, gendarme...) tant qu'il n'est pas terminé
+      if (this.introEnCours) {
+        if (this.introIndex < introMonologue.length) {
+          this.dialogueUI.afficherLigne(introMonologue[this.introIndex]);
+          this.introIndex++;
+        } else {
+          this.dialogueUI.masquer();
+          this.introEnCours = false;
+          this.registry.set("intro_monologue_gendarmerie_joue", true);
+          this.physics.resume();
+        }
+        return;
+      }
+
+      // NOUVEAU : on tente d'abord de ramasser le sac à main / la carte, s'ils sont à portée
+      if (this.sacAMain.tenterRamassage(player) || this.carteObjet.tenterRamassage(player)) {
+        return;
+      }
+
+
+
       var distanceDude2 = Phaser.Math.Distance.Between(
         player.x,
         player.y,
@@ -231,19 +323,18 @@ export default class gendarmerie extends Phaser.Scene {
         return; // on n'exécute pas le dialogue du gendarme en même temps
       }
 
-      var distanceOrdinateur = Phaser.Math.Distance.Between(
-  player.x,
-  player.y,
-  this.ordinateur.x, // adapte "this.ordinateur" au nom réel de ton sprite
-  this.ordinateur.y
-);
+        var distanceOrdinateur = Phaser.Math.Distance.Between(
+          player.x,
+          player.y,
+          this.ordinateur.x, // adapte "this.ordinateur" au nom réel de ton sprite
+          this.ordinateur.y
+        );
 
-var PERIMETRE_ORDINATEUR = 60; // ajuste selon la taille de ton sprite
-if (distanceOrdinateur < PERIMETRE_ORDINATEUR) {
-  this.ordinateurUI.ouvrir();
-  return;
+        var PERIMETRE_ORDINATEUR = 60; // ajuste selon la taille de ton sprite
+        if (distanceOrdinateur < PERIMETRE_ORDINATEUR) {
+          this.ordinateurUI.ouvrir();
+          return;
 }
-
       if (distanceDude2 < 125) {
         // NOUVEAU : au tout début d'une conversation (dialogueIndex === 0),
         // on choisit QUELLE série de répliques utiliser selon l'état actuel
@@ -339,11 +430,32 @@ if (distanceOrdinateur < PERIMETRE_ORDINATEUR) {
     this.cameras.main.startFollow(player);
 
     //  Collide the player and the groupe_etoiles with the groupe_plateformes
+
+    /* ============================================================
+     *  NOUVEAU : MONOLOGUE D'INTRODUCTION
+     * ============================================================
+     *  Se joue automatiquement à l'arrivée, UNE SEULE FOIS (grâce au
+     *  registry). Tant que this.introEnCours est vrai, le keydown-E
+     *  ignore tout le reste (téléphone, gendarme...) -> voir plus bas.
+     */
+    const introDejaJouee = this.registry.get("intro_monologue_gendarmerie_joue") || false;
+    this.introEnCours = !introDejaJouee;
+    this.introIndex = 0;
+
+    if (this.introEnCours) {
+      this.physics.pause();
+      this.dialogueUI.afficherLigne(introMonologue[0]);
+      this.introIndex = 1;
+    }
   }
 
   update() {
     // Si la scène est en pause (téléphone ouvert), on ne traite pas les déplacements
     if (this.scene.isPaused()) return;
+
+    // NOUVEAU : affiche/cache l'indice "E" au-dessus du sac à main / de la carte
+    this.sacAMain.update(player);
+    this.carteObjet.update(player);
 
     /***************************
      *  CREATION DES ANIMATIONS *
@@ -403,7 +515,7 @@ if (distanceOrdinateur < PERIMETRE_ORDINATEUR) {
   // Retourne la série de répliques à utiliser pour la conversation qui commence
   obtenirDialogueActuel() {
     if (this.enigmeGendarme.estResolue()) {
-      return [{ texte: "Gendarme : Merci beaucoup.", moi: "moi_hereuse", perso: "perso_hereuse" }];
+      return [{ texte: "Gendarme : Merci beaucoup.", moi: "moi_heureuse", perso: "perso_heureuse" }];
     }
 
     const introTerminee = this.registry.get("gendarme_intro_terminee") || false;

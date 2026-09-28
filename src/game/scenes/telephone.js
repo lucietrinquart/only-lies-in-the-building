@@ -152,13 +152,23 @@ export default class Telephone extends Phaser.Scene {
     this.ecranConversation.setMask(masque);
 
     // ---------------------------------
-    // BOUTON FERMER LE TÉLÉPHONE (en dehors de l'écran, sur la coque, donc PAS masqué)
+    // BOUTON FERMER LE TÉLÉPHONE
     // ---------------------------------
+    // CORRIGÉ : avant, la position utilisait "+ largeurTelephone" et
+    // "- hauteurTelephone" (la largeur/hauteur ENTIÈRE du téléphone, pas la
+    // moitié) -> le bouton se retrouvait très loin en dehors du canvas.
+    // Comme ton téléphone dépasse même de l'écran (hauteurTelephone = 120%
+    // de la hauteur du jeu), le plus fiable est de fixer la croix à une
+    // position ABSOLUE dans le coin de l'écran, indépendante de la taille
+    // de l'image du téléphone -> elle reste toujours visible et cliquable.
     const boutonFermer = this.add
-      .text(this.fond.x + largeurTelephone / 2 +50, this.fond.y - hauteurTelephone / 2, "✕", {
+      .text(largeurJeu - 20, 20, "✕", {
         font: "28px Arial",
         fill: "#ffffff",
       })
+      .setOrigin(1, 0) // ancré par son coin haut-droit -> reste bien dans l'écran
+      .setDepth(10000) // NOUVEAU : toujours au-dessus de tout le reste du téléphone
+      .setScrollFactor(0)
       .setInteractive({ useHandCursor: true });
 
     boutonFermer.on("pointerdown", () => this.fermerTelephone());

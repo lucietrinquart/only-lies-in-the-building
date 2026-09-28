@@ -98,10 +98,22 @@ export class InventaireUI {
 
     this.icone.on("pointerdown", () => this.basculer());
 
+    // NOUVEAU : l'icône est cachée tant que l'inventaire n'a pas été débloqué
+    // (ramassage du sac à main). Une fois débloqué, ça reste vrai pour toujours
+    // (stocké dans le registry -> survit à tous les changements de scène).
+    const debloque = scene.registry.get("inventaire_debloque") || false;
+    this.icone.setVisible(debloque);
+
     // ---- PANNEAU DE L'INVENTAIRE (caché au départ) ----
     this.panneau = scene.add.container(0, 0);
     this.panneau.setDepth(2001);
     this.panneau.setVisible(false);
+  }
+
+  // NOUVEAU : débloque l'inventaire pour de bon (à appeler au ramassage du sac à main)
+  debloquer() {
+    this.scene.registry.set("inventaire_debloque", true);
+    this.icone.setVisible(true);
   }
 
   // Ouvre / ferme le panneau
@@ -327,10 +339,25 @@ export class ObjetRamassable {
     this.messageRamassage = options.message || nom + " récupéré";
     // NOUVEAU : id de la tâche à terminer automatiquement au ramassage (optionnel)
     this.idTache = options.idTache || null;
+    // NOUVEAU : callback générique exécuté juste après le ramassage (optionnel),
+    // pour tout effet spécifique (débloquer l'inventaire, la carte, etc.)
+    this.onRamasse = typeof options.onRamasse === "function" ? options.onRamasse : null;
+    // NOUVEAU : passe "ajouterAInventaire: false" pour un objet qui ne doit PAS
+    // apparaître dans l'inventaire (ex: le sac à main ou la carte eux-mêmes,
+    // qui servent juste à débloquer une icône, pas à être consultés plus tard)
+    this.ajouterAInventaire = options.ajouterAInventaire !== false;
+    // NOUVEAU : pour un objet qui ne va PAS dans l'inventaire, possedeObjet() ne peut
+    // jamais dire s'il a déjà été ramassé (puisqu'il n'y est jamais ajouté). On utilise
+    // à la place une clé de registry dédiée (ex: "inventaire_debloque") pour le savoir.
+    this.cleDejaRamasse = options.cleDejaRamasse || null;
     this.sprite = null;
 
-    // Si l'objet est déjà dans l'inventaire, on ne l'affiche pas au sol
-    if (possedeObjet(scene, cle)) return;
+    const dejaRamasse = this.cleDejaRamasse
+      ? scene.registry.get(this.cleDejaRamasse) || false
+      : possedeObjet(scene, cle);
+
+    // Si l'objet a déjà été ramassé (d'une manière ou d'une autre), on ne l'affiche pas au sol
+    if (dejaRamasse) return;
 
     this.sprite = scene.physics.add.sprite(x, y, cle);
     if (options.echelle) this.sprite.setScale(options.echelle);
@@ -375,12 +402,21 @@ export class ObjetRamassable {
     );
     if (distance > this.perimetre) return false;
 
-    ajouterObjet(this.scene, this.cle, this.nom, this.description);
+    // NOUVEAU : on n'ajoute à l'inventaire que si ajouterAInventaire n'a pas été
+    // désactivé (par défaut, il l'est toujours -> comportement inchangé pour le ticket, le livre, etc.)
+    if (this.ajouterAInventaire) {
+      ajouterObjet(this.scene, this.cle, this.nom, this.description);
+    }
     afficherMessage(this.scene, this.messageRamassage, 5000);
 
     // NOUVEAU : si une tâche était liée à cet objet, on la termine automatiquement
     if (this.idTache) {
       terminerTache(this.scene, this.idTache);
+    }
+
+    // NOUVEAU : callback générique (ex: débloquer l'inventaire ou la carte)
+    if (this.onRamasse) {
+      this.onRamasse();
     }
 
     this.sprite.destroy();

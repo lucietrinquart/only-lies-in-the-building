@@ -3,6 +3,14 @@ import menu from "./game/scenes/menu.js";
 import gendarmerie from "./game/scenes/gendarmerie.js";
 import telephone from "./game/scenes/telephone.js";
 import cafet from "./game/scenes/cafet.js";
+import bd from "./game/scenes/bd.js";
+import bd2 from "./game/scenes/bd2.js";
+import accueil from "./game/scenes/accueil.js";
+import instruction from "./game/scenes/instruction.js";
+import credit from "./game/scenes/credit.js";
+
+
+
 
 
 
@@ -27,7 +35,12 @@ var config = {
         menu,
         gendarmerie,
         telephone,
-        cafet
+        cafet,
+        bd,
+        bd2,
+        accueil,
+        instruction,
+        credit
     ],
 
     scale: {

@@ -68,11 +68,23 @@ export class DialogueUI {
         font: "18px Arial",
         fill: "#ffffff",
         align: "center",
-        wordWrap: { width: largeur - 90 },
+        wordWrap: { width: largeur - 110 }, // un peu moins large pour laisser la place à l'indication ci-dessous
       })
       .setOrigin(0.5, 0)
       .setScrollFactor(0);
     this.conteneur.add(this.texte);
+
+    // ---- NOUVEAU : indication "Appuyer sur E pour continuer", en bas à droite ----
+    // Positionnée dans le coin de la boîte de texte, dans une police plus petite et
+    // grisée pour ne jamais se confondre avec le texte du dialogue lui-même.
+    this.texteIndication = scene.add
+      .text(largeur - 30, hauteur - 18, "Appuyer sur E pour continuer", {
+        font: "italic 12px Arial",
+        fill: "#9a9a9a",
+      })
+      .setOrigin(1, 1)
+      .setScrollFactor(0);
+    this.conteneur.add(this.texteIndication);
   }
 
   // Redimensionne un portrait pour qu'il tienne dans le cadre sans se déformer
@@ -88,16 +100,24 @@ export class DialogueUI {
    * Affiche une réplique.
    * @param {Object} ligne - { texte, moi, perso }
    *   "moi" et "perso" sont optionnels : si omis, le portrait précédent reste affiché.
+   *   NOUVEAU : passer "perso: false" (ou "moi: false") cache complètement ce portrait
+   *   -> utile pour un monologue où le personnage parle tout seul.
    */
   afficherLigne(ligne) {
     this.texte.setText(ligne.texte);
 
-    if (ligne.moi && this.scene.textures.exists(ligne.moi)) {
+    if (ligne.moi === false) {
+      this.portraitMoi.setVisible(false);
+    } else if (ligne.moi && this.scene.textures.exists(ligne.moi)) {
+      this.portraitMoi.setVisible(true);
       this.portraitMoi.setTexture(ligne.moi);
       this.redimensionnerPortrait(this.portraitMoi);
     }
 
-    if (ligne.perso && this.scene.textures.exists(ligne.perso)) {
+    if (ligne.perso === false) {
+      this.portraitPerso.setVisible(false);
+    } else if (ligne.perso && this.scene.textures.exists(ligne.perso)) {
+      this.portraitPerso.setVisible(true);
       this.portraitPerso.setTexture(ligne.perso);
       this.redimensionnerPortrait(this.portraitPerso);
     }
