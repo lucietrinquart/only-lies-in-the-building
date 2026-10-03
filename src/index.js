@@ -8,6 +8,9 @@ import bd2 from "./game/scenes/bd2.js";
 import accueil from "./game/scenes/accueil.js";
 import instruction from "./game/scenes/instruction.js";
 import credit from "./game/scenes/credit.js";
+import gendarmerie2 from "./game/scenes/gendarmerie2.js";
+import gendarmerie3 from "./game/scenes/gendarmerie3.js";
+
 
 
 
@@ -40,7 +43,9 @@ var config = {
         bd2,
         accueil,
         instruction,
-        credit
+        credit,
+        gendarmerie2,
+        gendarmerie3
     ],
 
     scale: {

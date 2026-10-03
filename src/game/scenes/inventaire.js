@@ -94,7 +94,7 @@ export class InventaireUI {
       .setDepth(2000)
       .setInteractive({ useHandCursor: true });
 
-    this.icone.setDisplaySize(55, 55); // ajuste ici la taille de l'icône
+    this.icone.setDisplaySize(70, 55); // ajuste ici la taille de l'icône
 
     this.icone.on("pointerdown", () => this.basculer());
 
@@ -350,6 +350,11 @@ export class ObjetRamassable {
     // jamais dire s'il a déjà été ramassé (puisqu'il n'y est jamais ajouté). On utilise
     // à la place une clé de registry dédiée (ex: "inventaire_debloque") pour le savoir.
     this.cleDejaRamasse = options.cleDejaRamasse || null;
+    // NOUVEAU : un objet verrouillé n'affiche pas son "E" et ne peut pas être
+    // ramassé, même à portée -> pratique pour bloquer un objet tant qu'une
+    // condition n'est pas remplie ailleurs (ex: avoir d'abord parlé à qqn).
+    // Se débloque en faisant "monObjet.verrouille = false;" depuis la scène.
+    this.verrouille = options.verrouille || false;
     this.sprite = null;
 
     const dejaRamasse = this.cleDejaRamasse
@@ -380,6 +385,11 @@ export class ObjetRamassable {
   // À appeler dans le update() de la scène : affiche/cache l'indice "E"
   update(player) {
     if (!this.sprite) return;
+    // NOUVEAU : un objet verrouillé ne montre jamais son "E"
+    if (this.verrouille) {
+      this.indice.setVisible(false);
+      return;
+    }
     const distance = Phaser.Math.Distance.Between(
       player.x,
       player.y,
@@ -392,7 +402,8 @@ export class ObjetRamassable {
   // À appeler quand le joueur appuie sur E
   // Retourne true si l'objet a bien été ramassé
   tenterRamassage(player) {
-    if (!this.sprite) return false;
+    // NOUVEAU : un objet verrouillé ne peut jamais être ramassé
+    if (!this.sprite || this.verrouille) return false;
 
     const distance = Phaser.Math.Distance.Between(
       player.x,

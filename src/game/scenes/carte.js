@@ -25,9 +25,11 @@ import * as Phaser from "phaser";
  *  et le point apparaîtra automatiquement (une fois ce lieu visité).
  * ------------------------------------------------------------ */
 export const lieux = [
-  { scene: "gendarmerie", nom: "Gendarmerie", x: 0.30, y: 0.40 },
+  { scene: "gendarmerie2", nom: "Gendarmerie", x: 0.30, y: 0.40 },
   { scene: "cafet", nom: "Café", x: 0.65, y: 0.60 },
   { scene: "accueil", nom: "Accueil", x: 0.55, y: 0.30 },
+  { scene: "gendarmerie3", nom: "Rue", x: 0.30, y: 0.70 },
+
 
   // { scene: "ville", nom: "Ville", x: 0.50, y: 0.25 },
   // { scene: "opera", nom: "Opéra", x: 0.80, y: 0.30 },
@@ -88,7 +90,7 @@ export class CarteUI {
       .setDepth(2000)
       .setInteractive({ useHandCursor: true });
 
-    this.icone.setDisplaySize(55, 55); // ajuste la taille de l'icône ici
+    this.icone.setDisplaySize(70, 55); // ajuste la taille de l'icône ici
 
     this.icone.on("pointerdown", () => this.basculer());
 

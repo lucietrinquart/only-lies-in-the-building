@@ -92,6 +92,10 @@ export default class gendarmerie extends Phaser.Scene {
   preload() {}
 
   create(data) {
+
+        if (!this.sound.get("musique_gendarmerie")) {
+      this.sound.play("musique_gendarmerie", { loop: true, volume: 0.5 });
+    }
     this.inventaireUI = new InventaireUI(this);
 
     const carteDuNiveau = this.add.tilemap("carte1");
@@ -134,9 +138,7 @@ export default class gendarmerie extends Phaser.Scene {
         );
       },
     });
-          if (!this.sound.get("musique_gendarmerie")) {
-  this.sound.play("musique_gendarmerie", { loop: true, volume: 0.5 });
-}
+
 
     // NOUVEAU : l'interface de dialogue avec portraits (joueur à gauche, PNJ à droite)
     this.dialogueUI = new DialogueUI(this, {

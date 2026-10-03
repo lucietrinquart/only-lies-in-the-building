@@ -68,6 +68,7 @@ export default class Telephone extends Phaser.Scene {
   }
 
   create() {
+    this.scene.bringToTop(); // NOUVEAU : s'assure d'être affichée par-dessus la scène parente
     const largeurJeu = this.cameras.main.width; // 800
     const hauteurJeu = this.cameras.main.height; // 608
 
@@ -347,6 +348,6 @@ export default class Telephone extends Phaser.Scene {
 
   fermerTelephone() {
     this.scene.stop();
-    this.scene.resume("gendarmerie");
+    this.scene.resume("gendarmerie2");
   }
 }

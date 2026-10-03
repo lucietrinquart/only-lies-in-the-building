@@ -50,10 +50,17 @@ this.load.image("bulle4", "./assets/bulle4.png");
 this.load.image("bulle5", "./assets/bulle5.png");
 this.load.image("fleche", "./assets/fleche.png");
 
+this.load.image("billet_de_train", "./assets/billet_de_train.png");
+
+
 
 
 this.load.audio("gaps", "assets/gaps.mp3");
 this.load.audio("orage", "assets/orage.mp3");
+this.load.audio("marteau_justice", "assets/marteau_justice.mp3");
+this.load.audio("brouha", "assets/brouha.mp3");
+
+
 
 
 
@@ -78,27 +85,38 @@ this.load.image("carte2", "./assets/carte2.png");
 //scene cafe
  this.load.image("porte_balthazar", "./assets/porte_balthazar.png");
 
-            this.load.spritesheet("chat", "./assets/chat.png", {
-            frameWidth: 32,
-            frameHeight: 48,
-            });
+    this.load.spritesheet("chat", "./assets/chat.png", {
+    frameWidth: 32,
+    frameHeight: 48,
+    });
 
-            // chargement tuiles de jeu
-            this.load.image("Phaser_tuilesdejeu3", "./assets/barthe.png");
+    // chargement tuiles de jeu
+    this.load.image("Phaser_tuilesdejeu3", "./assets/barthe.png");
 
-            // chargement de la carte
-            this.load.tilemapTiledJSON("carte3", "assets/cafethe.json");
+    // chargement de la carte
+    this.load.tilemapTiledJSON("carte3", "assets/cafethe.json");
 
 
-            this.load.image("ticket", "./assets/ticket.png");
-            this.load.image("sac", "./assets/sac.png");
+    this.load.image("ticket", "./assets/ticket.png");
+    this.load.image("shella", "./assets/perso.png");
+    this.load.image("poubelle", "./assets/poubelle.webp");
+    this.load.image("cle", "./assets/cle.png");
+    this.load.image("lettre", "./assets/lettre.jpg");
 
-            this.load.image("carte", "./assets/carte.png");   // l'icône
-            this.load.image("map", "./assets/map.png");       // la grande carte
-            this.load.image("perso", "./assets/perso.webp");   // la tête du personnage
+    this.load.image("martin", "./assets/perso.png");
 
-            this.load.image("livre", "./assets/livre.png");   
-            this.load.image("bibliotheque", "./assets/bibliotheque.png"); 
+    this.load.image("bureau", "./assets/bureau.png");
+
+
+
+    this.load.image("sac", "./assets/inventaire.png");
+
+    this.load.image("carte", "./assets/carte.png");   // l'icône
+    this.load.image("map", "./assets/map.png");       // la grande carte
+    this.load.image("perso", "./assets/perso.webp");   // la tête du personnage
+
+    this.load.image("livre", "./assets/livre.png");   
+    this.load.image("bibliotheque", "./assets/bibliotheque.png"); 
 
 
 
@@ -123,7 +141,7 @@ this.load.image("carte2", "./assets/carte2.png");
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("gendarmerie2");
         
       });
 

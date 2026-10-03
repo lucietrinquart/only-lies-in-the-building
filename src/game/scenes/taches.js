@@ -42,8 +42,34 @@ export function ajouterTaches(scene, listeTaches) {
   listeTaches.forEach((t) => ajouterTache(scene, t.id, t.texte));
 }
 
+/* ------------------------------------------------------------
+ *  NOUVEAU : HISTORIQUE PERMANENT DES TÂCHES TERMINÉES
+ * ------------------------------------------------------------
+ *  Une tâche disparaît de la liste affichée 2 secondes après avoir
+ *  été terminée (voir terminerTache ci-dessous) -> à ce moment-là,
+ *  plus AUCUNE trace qu'elle a un jour existé dans "taches". Pour
+ *  pouvoir vérifier plus tard "est-ce que telle tâche a déjà été
+ *  faite ?" (même longtemps après sa disparition de la liste), on
+ *  garde ses ids dans un second tableau, jamais nettoyé.
+ * ------------------------------------------------------------ */
+function getHistoriqueTaches(scene) {
+  return scene.registry.get("taches_historique") || [];
+}
+
+// NOUVEAU : LA fonction à utiliser pour savoir si une tâche a déjà été
+// accomplie, même si elle a disparu de la liste affichée depuis longtemps.
+export function estTacheTerminee(scene, id) {
+  return getHistoriqueTaches(scene).includes(id);
+}
+
+// NOUVEAU : pratique pour vérifier plusieurs tâches d'un coup
+// (ex: "est-ce que TOUTES les tâches confiées par Hervet sont finies ?")
+export function tachesToutesTerminees(scene, ids) {
+  return ids.every((id) => estTacheTerminee(scene, id));
+}
+
 // Marque une tâche comme terminée. Elle reste affichée (barrée) 2 secondes
-// puis disparaît toute seule de la liste.
+// puis disparaît toute seule de la liste (mais reste dans l'historique pour toujours).
 export function terminerTache(scene, id) {
   const taches = getTaches(scene);
   const tache = taches.find((t) => t.id === id);
@@ -51,6 +77,13 @@ export function terminerTache(scene, id) {
 
   tache.terminee = true;
   scene.registry.set("taches", taches);
+
+  // NOUVEAU : on l'ajoute à l'historique permanent AVANT qu'elle ne disparaisse
+  const historique = getHistoriqueTaches(scene);
+  if (!historique.includes(id)) {
+    historique.push(id);
+    scene.registry.set("taches_historique", historique);
+  }
 
   // On capture la référence au registry (objet global du jeu, pas de la scène)
   // pour pouvoir l'utiliser même si la scène a changé entre-temps.

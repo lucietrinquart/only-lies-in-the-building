@@ -35,7 +35,7 @@ export default class bd extends PlancheBD {
           y: 100,
           largeur: 300,
           hauteur: 150,
-          son: "orage", // NOUVEAU : bruitage joué à l'apparition de cette vignette
+          son: "marteau_justice", // NOUVEAU : bruitage joué à l'apparition de cette vignette
         },
         {
           cle: "bulle2",
@@ -51,7 +51,7 @@ export default class bd extends PlancheBD {
           y: 100,
           largeur: 300,
           hauteur: 150,
-          son: "gaps",
+          son: "brouha",
         },
         {
           cle: "bulle4",
