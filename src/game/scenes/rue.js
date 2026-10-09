@@ -43,9 +43,9 @@ var monologueApresMartin = [
 
 const CLE_INTRO = "intro_gendarmerie3_joue";
 
-export default class gendarmerie3 extends Phaser.Scene {
+export default class rue extends Phaser.Scene {
   constructor() {
-    super({ key: "gendarmerie3" });
+    super({ key: "rue" });
   }
 
   preload() {}
@@ -61,12 +61,12 @@ export default class gendarmerie3 extends Phaser.Scene {
 
     this.inventaireUI = new InventaireUI(this);
 
-    const carteDuNiveau = this.add.tilemap("carte1");
+    const carteDuNiveau = this.add.tilemap("carte7");
     this.carteUI = new CarteUI(this);
     this.tachesUI = new TachesUI(this);
 
     // tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_police", "Phaser_tuilesdejeu1");
+    const tileset = carteDuNiveau.addTilesetImage("sprite_police", "Phaser_tuilesdejeu7");
     carteDuNiveau.createLayer("background", tileset);
     carteDuNiveau.createLayer("sol", tileset);
     const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
@@ -81,10 +81,6 @@ export default class gendarmerie3 extends Phaser.Scene {
      ****************************/
     player = this.physics.add.sprite(350, 500, "img_perso");
 
-    this.porte_ville = this.physics.add.staticSprite(300, 570, "img_porte1").setAlpha(0);
-    this.porte_ville1 = this.physics.add.staticSprite(350, 570, "img_porte1").setAlpha(0);
-    this.porte_ville2 = this.physics.add.staticSprite(400, 570, "img_porte1").setAlpha(0);
-    this.porte_ville3 = this.physics.add.staticSprite(450, 570, "img_porte1").setAlpha(0);
 
     // NOUVEAU : Martin (remplace Shella). Si l'image "martin" n'est pas chargée,
     // on utilise provisoirement img_perso2 pour que la scène ne plante pas.
@@ -195,18 +191,6 @@ export default class gendarmerie3 extends Phaser.Scene {
 
     if (!cursors.up.isDown && !cursors.down.isDown && !cursors.left.isDown && !cursors.right.isDown) {
       player.anims.play("turn");
-    }
-
-    /***************************
-     *  PORTES *
-     ****************************/
-    if (
-      this.physics.overlap(player, this.porte_ville) ||
-      this.physics.overlap(player, this.porte_ville1) ||
-      this.physics.overlap(player, this.porte_ville2) ||
-      this.physics.overlap(player, this.porte_ville3)
-    ) {
-      this.scene.start("gendarmerie");
     }
   }
 

@@ -13,13 +13,11 @@ var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
 var clavier; // pour la gestion du clavier
 var cursors;
-var dude2;
 var shella;
 
 var exclamation;
 var telephone;
 var livre;
-var bibliotheque;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 
@@ -53,6 +51,49 @@ var dialoguesActuels2 = [];
 var dialoguesActuels3 = [];
 
 
+
+// NOUVEAU : les 3 tâches qu'Hervet attend, pour vérifier plus tard qu'elles sont TOUTES finies
+var idsTachesHervet = ["recuperer_ticket", "parler_gendarme", "recuperer_livre"];
+
+// CORRIGÉ : "moi_hereuse" / "perso_hereuse" -> "moi_heureuse" / "perso_heureuse"
+// (il manquait le "u" d'"heureuse" ; vérifie que ça correspond à l'orthographe EXACTE
+// de tes clés dans this.load.image(...) du preload global)
+var dialogues = [
+  {
+    texte:
+      "Gendarme : Bienvenue, Bianca. Nous avons besoin de vos compétences de détective pour résoudre un meurtre mystérieux à l opéra.",
+    moi: "moi_heureuse",
+    perso: "perso_triste",
+  },
+  {
+    texte: "Bianca : Un meurtre à l opéra ? Quelle est la situation exacte ?",
+    moi: "moi_triste",
+    perso: "perso_heureuse",
+  },
+  {
+    texte:
+      "Gendarme : Un acteur de l opéra a été retrouvé assassiné, et les circonstances entourant sa mort sont encore inconnues. L incident a semé la panique parmi les artistes, et l opéra est plongé dans le chaos.",
+    moi: "moi_colere",
+    perso: "perso_colere",
+  },
+  {
+    texte:
+      "Bianca : Je vais me rendre à l opéra immédiatement. Je ferai tout ce qui est en mon pouvoir pour résoudre cette affaire.",
+    moi: "moi_heureuse",
+    perso: "perso_colere",
+  },
+  {
+    texte: "Gendarme : Nous comptons sur vous, Bianca. Soyez prudente et bonne chance.",
+    moi: "moi_heureuse",
+    perso: "perso_heureuse",
+  },
+  {
+    texte:
+      "Gendarme : Je veux bien te donner un indice si tu arrives à m'aider à résoudre cette enquête de meurtre.",
+    moi: "moi_heureuse",
+    perso: "perso_heureuse",
+  },
+];
 
 // NOUVEAU : dialogue de Shella -- une SEULE réplique fixe, toujours la même, à
 // chaque fois qu'on lui parle (pas de machine à états, pas de tâches, rien à
@@ -173,9 +214,9 @@ var dialogueGregoire = [
   },
 ];
 
-export default class cafet extends Phaser.Scene {
+export default class bar extends Phaser.Scene {
   constructor() {
-    super({ key: "cafet" }); // mettre le meme nom que le nom de la classe
+    super({ key: "bar" }); // mettre le meme nom que le nom de la classe
   }
 
   preload() {}
@@ -185,29 +226,32 @@ export default class cafet extends Phaser.Scene {
     this.developperCount1 = 0;
     // CORRIGÉ : on lit l'état depuis le registry (survit au changement de scène)
     // au lieu de toujours repartir à false.
-    this.bibliothequeOuverte = this.registry.get("cafet_bibliotheque_ouverte") || false;
 
      const carteDuNiveau = this.add.tilemap("carte3");
             // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
-            "barthe",
+            "sprite_bar",
             "Phaser_tuilesdejeu3"
     );
 
             // chargement du second calque "calque_backgroung"
     const sol= carteDuNiveau.createLayer("sol", tileset);
-    const fond= carteDuNiveau.createLayer("fond", tileset);
-    const fond2 = carteDuNiveau.createLayer("fond2", tileset);
-    const bois = carteDuNiveau.createLayer("bois", tileset);
-    const objet4 = carteDuNiveau.createLayer("objet4", tileset);
-    const objet5 = carteDuNiveau.createLayer("objet5", tileset);
-    const arbre = carteDuNiveau.createLayer("arbre", tileset);
-    const interdiction = carteDuNiveau.createLayer("interdiction", tileset);
+    const dehors= carteDuNiveau.createLayer("dehors", tileset);
+    const murs_contour = carteDuNiveau.createLayer("murs_contour", tileset);
+    const mur_du_haut = carteDuNiveau.createLayer("mur_du_haut", tileset);
+    const decor_bas_de_mur = carteDuNiveau.createLayer("decor_bas_de_mur", tileset);
+    const enseignes_etagere_du_fond = carteDuNiveau.createLayer("enseignes_etagere_du_fond", tileset);
+    const comptoir = carteDuNiveau.createLayer("comptoir", tileset);
+    const reserve_vide = carteDuNiveau.createLayer("reserve_vide", tileset);
+    const etagere = carteDuNiveau.createLayer("etagere", tileset);
+    const banquettes_tabourets_tables_rondes = carteDuNiveau.createLayer("banquettes_tabourets_tables_rondes", tileset);
+    const grandes_tables_tabourets_tableau = carteDuNiveau.createLayer("grandes_tables_tabourets_tableau", tileset);
+    const verres_bouteilles = carteDuNiveau.createLayer("verres_bouteilles", tileset);
+    const lumiere = carteDuNiveau.createLayer("lumiere", tileset);
+    const personnages = carteDuNiveau.createLayer("personnages", tileset);
 
-    arbre.depth=100;
-
-    this.shella = this.physics.add.sprite(700, 500, "shella");
-    this.gregoire = this.physics.add.sprite(1000, 500, "gregoire");
+    this.shella = this.physics.add.sprite(580, 200, "shella");
+    this.gregoire = this.physics.add.sprite(200, 200, "gregoire");
 
 
     // NOUVEAU : état du monologue en cours (null = aucun) + garde-fou pour ne
@@ -222,10 +266,19 @@ export default class cafet extends Phaser.Scene {
 
 
 
-    fond2.setCollisionByProperty({ estSolide: true });
-    objet4.setCollisionByProperty({ estSolide: true });
-    objet5.setCollisionByProperty({ estSolide: true });
-    interdiction.setCollisionByProperty({ estSolide: true });
+    sol.setCollisionByProperty({ estSolide: true });
+    dehors.setCollisionByProperty({ estSolide: true });
+    murs_contour.setCollisionByProperty({ estSolide: true });
+    mur_du_haut.setCollisionByProperty({ estSolide: true });
+    decor_bas_de_mur.setCollisionByProperty({ estSolide: true });
+    enseignes_etagere_du_fond.setCollisionByProperty({ estSolide: true });
+    comptoir.setCollisionByProperty({ estSolide: true });
+    reserve_vide.setCollisionByProperty({ estSolide: true });
+    etagere.setCollisionByProperty({ estSolide: true });
+    banquettes_tabourets_tables_rondes.setCollisionByProperty({ estSolide: true });
+    grandes_tables_tabourets_tableau.setCollisionByProperty({ estSolide: true });
+    verres_bouteilles.setCollisionByProperty({ estSolide: true });
+    personnages.setCollisionByProperty({ estSolide: true });
 
 
 
@@ -239,7 +292,9 @@ export default class cafet extends Phaser.Scene {
               moiParDefaut: "moi_heureuse",
               persoParDefaut: "perso_triste",
             });
-            player = this.physics.add.sprite(350, 500, "img_perso");
+
+
+            player = this.physics.add.sprite(430, 550, "img_perso");
 
 
             // ajout du modèle de collision entre le personnage et les plates-formes
@@ -247,12 +302,19 @@ export default class cafet extends Phaser.Scene {
             // ajout du modèle de collision entre le personnage et le monde
             player.setCollideWorldBounds(true);
             // Collisions avec les calques de collision
-            this.physics.add.collider(player, fond2);
-            this.physics.add.collider(player, objet4);
-            this.physics.add.collider(player, objet5);
-            this.physics.add.collider(player, interdiction);
-            this.physics.add.collider(player, chat);
-
+            this.physics.add.collider(player, sol);
+            this.physics.add.collider(player, dehors);
+            this.physics.add.collider(player, murs_contour);
+            this.physics.add.collider(player, mur_du_haut);
+            this.physics.add.collider(player, decor_bas_de_mur);
+            this.physics.add.collider(player, enseignes_etagere_du_fond);
+            this.physics.add.collider(player, comptoir);
+            this.physics.add.collider(player, reserve_vide);
+            this.physics.add.collider(player, etagere);
+            this.physics.add.collider(player, banquettes_tabourets_tables_rondes);
+            this.physics.add.collider(player, grandes_tables_tabourets_tableau);
+            this.physics.add.collider(player, verres_bouteilles);
+            this.physics.add.collider(player, personnages);
 
 
 
@@ -280,9 +342,7 @@ export default class cafet extends Phaser.Scene {
             
 
 
-    /* ============================================================
-     *  NOUVEAU : L'INTERFACE D'INVENTAIRE (icône sac en bas à droite)
-     * ============================================================ */
+
     this.inventaireUI = new InventaireUI(this);
 
     /* ============================================================
@@ -312,6 +372,7 @@ export default class cafet extends Phaser.Scene {
                     // CORRIGÉ : this.livre peut être null si le livre a déjà été posé
 
 
+
                      var distanceShella = Phaser.Math.Distance.Between(
                       player.x,
                       player.y,
@@ -329,8 +390,8 @@ export default class cafet extends Phaser.Scene {
             
             
               
+                     
                      // CORRIGÉ : avant, appelait this.obtenirDialogueActuel() (celui d'HERVET),
-                     // ce qui affichait TOUJOURS le dialogue de Dude2/Hervet quand on parlait à
                      // Shella. Elle a maintenant sa propre méthode, séparée et beaucoup plus simple.
                      if (distanceShella < 125) {
 
@@ -402,8 +463,6 @@ export default class cafet extends Phaser.Scene {
                   return;
                 }
 
-                // NOUVEAU : affiche/cache l'indice "E" au-dessus du ticket
-                // CORRIGÉ : this.livre peut être null si le livre a déjà été posé
 
                 if (cursors.up.isDown) {
                 player.setVelocityY(-160);
@@ -434,6 +493,7 @@ export default class cafet extends Phaser.Scene {
                 ) {
                 player.anims.play("turn");
                 }
+                
     }
 
     /* ============================================================
@@ -566,64 +626,10 @@ export default class cafet extends Phaser.Scene {
         // petit délai pour laisser le dialogue se refermer proprement avant d'enchaîner
         this.time.delayedCall(800, () => {
             this.lancerMonologue(monologueVersAccueil, () => {
-                this.scene.start("entreprise_gregoire"); // on part vers la scène d'accueil
+                this.scene.start("entreprise_gregoire");
             });
         });
     }
 
-    /* ============================================================
-     *  NOUVEAU : ACTIONS CONTEXTUELLES DE L'INVENTAIRE
-     * ============================================================
-     *  Appelée automatiquement par InventaireUI quand le joueur ouvre
-     *  un objet en grand. On retourne un tableau d'actions possibles
-     *  POUR CET OBJET DANS LE CONTEXTE ACTUEL (ici : la proximité de
-     *  la bibliothèque). Si rien n'est possible, on retourne [].
-     */
-    obtenirActionsObjet(cle) {
-        const actions = [];
 
-        if (cle === "livre" && !this.bibliothequeOuverte && possedeObjet(this, "livre")) {
-            const PERIMETRE_BIBLIOTHEQUE = 120; // ajuste selon la distance souhaitée
-            const distance = Phaser.Math.Distance.Between(
-                player.x,
-                player.y,
-                this.bibliotheque.x,
-                this.bibliotheque.y
-            );
-
-            if (distance < PERIMETRE_BIBLIOTHEQUE) {
-                actions.push({
-                    texte: "Poser le livre dans la bibliothèque",
-                    executer: () => this.poserLivreDansBibliotheque(),
-                });
-            }
-        }
-
-        return actions;
-    }
-
-    /* ============================================================
-     *  NOUVEAU : POSER LE LIVRE DANS LA BIBLIOTHÈQUE
-     * ============================================================
-     *  - Retire le livre de l'inventaire
-     *  - Fait glisser la bibliothèque vers la DROITE (tween)
-     *  - Autorise désormais l'interaction avec porte5 (espace)
-     *  Le retour à la scène de jeu (fermeture de l'inventaire) est
-     *  déjà géré par InventaireUI.fermerTout() avant l'appel ici.
-     */
-    poserLivreDansBibliotheque() {
-        retirerObjet(this, "livre");
-
-        this.bibliothequeOuverte = true;
-        // CORRIGÉ : on sauvegarde l'état dans le registry (survit au changement de scène),
-        // sinon revenir de gendarmerie remettait tout à zéro.
-        this.registry.set("cafet_bibliotheque_ouverte", true);
-
-        this.tweens.add({
-            targets: this.bibliotheque,
-            x: this.bibliotheque.x + 120, // vers la droite ; ajuste la distance si besoin
-            duration: 800,
-            ease: "Cubic.easeInOut",
-        });
-    }
 }

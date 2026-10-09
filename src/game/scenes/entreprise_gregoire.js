@@ -4,8 +4,8 @@ import { InventaireUI, ObjetRamassable, possedeObjet, retirerObjet } from "./inv
 // NOUVEAU : on importe le module carte
 import { CarteUI } from "./carte.js";
 
-// NOUVEAU : on importe le module tâches
-import { TachesUI, ajouterTaches } from "./taches.js";
+// NOUVEAU : on importe le module tâches (+ terminerTache pour "decouvrir_secret")
+import { TachesUI, ajouterTaches, terminerTache } from "./taches.js";
 
 import { DialogueUI } from "./dialogue.js";
 // NOUVEAU : on importe le module énigme (pour la bibliothèque) et mail (pour l'ordinateur)
@@ -17,7 +17,6 @@ var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
 var clavier; // pour la gestion du clavier
 var calque_plateformes;
-var exclamation1;
 var dude2;
 var bureau;
 var ordinateur;
@@ -26,7 +25,6 @@ var bibliotheque;
 
 var poubelle;
 
-var secretaire;
 var dialogueText; // Déclaration de la variable de texte
 var interactionActive = false;
 var dialogueIndex = 0;
@@ -76,11 +74,21 @@ var monologueBureau = [
   },
 ];
 
-export default class accueil extends Phaser.Scene {
+// NOUVEAU : monologue joué si on essaie de passer la porte secrète sans avoir
+// tout fouillé (lettre pas encore prise et/ou tiroir pas encore ouvert)
+var monologueSecretIncomplet = [
+  {
+    texte: "Violette : J'ai l'impression de ne pas avoir tout regardé ici...",
+    moi: "moi_triste",
+    perso: false,
+  },
+];
+
+export default class entreprise_gregoire extends Phaser.Scene {
   // constructeur de la classe
   constructor() {
     super({
-      key: "accueil", //  ici on précise le nom de la classe en tant qu'identifiant
+      key: "entreprise_gregoire", //  ici on précise le nom de la classe en tant qu'identifiant
     });
   }
   preload() {}
@@ -145,29 +153,22 @@ export default class accueil extends Phaser.Scene {
 
     // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
-      "sprite_accueil",
+      "sprite_travail",
       "Phaser_tuilesdejeu4"
     );
 
     /***************************
      *  CREATION DES CALQUES *
      ****************************/
-    const background1 = carteDuNiveau.createLayer("background", tileset);
+    const sol_parquet = carteDuNiveau.createLayer("sol_parquet", tileset);
+    const dehors = carteDuNiveau.createLayer("dehors", tileset);
+    const murs_contour = carteDuNiveau.createLayer("murs_contour", tileset);
+    const mur_du_haut = carteDuNiveau.createLayer("mur_du_haut", tileset);
+    const plinth_boiserie = carteDuNiveau.createLayer("plinth_boiserie", tileset);
+    const fenetres = carteDuNiveau.createLayer("fenetres", tileset);
+    const kitchenette = carteDuNiveau.createLayer("kitchenette", tileset);
+    const bureaux_salon_d_attente = carteDuNiveau.createLayer("bureaux_salon_d_attente", tileset);
 
-    const sol = carteDuNiveau.createLayer("sol", tileset);
-
-    const tapis = carteDuNiveau.createLayer("tapis", tileset);
-
-    const mur = carteDuNiveau.createLayer("mur", tileset);
-
-    const deco_murale = carteDuNiveau.createLayer("deco_murale", tileset);
-    const meuble = carteDuNiveau.createLayer("meuble", tileset);
-
-    const deco_meuble = carteDuNiveau.createLayer("deco_meuble", tileset);
-
-    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
-
-    const escalier = carteDuNiveau.createLayer("escalier", tileset);
 
     /***************************
      *  CREATION DES OBJETS *
@@ -175,21 +176,11 @@ export default class accueil extends Phaser.Scene {
     clavier = this.input.keyboard.createCursorKeys();
     cursors = this.input.keyboard.createCursorKeys();
     player = this.physics.add.sprite(420, 650, "img_perso");
-    secretaire = this.physics.add.sprite(410, 450, "secretaire");
 
-    this.porte_ville = this.physics.add.staticSprite(380, 560, "img_porte1");
-    this.porte_ville.setAlpha(0);
-    this.porte_labyrinthe = this.physics.add.staticSprite(
-      720,
-      350,
-      "img_porte1"
-    );
-    this.porte_labyrinthe.setAlpha(0);
-    exclamation1 = this.physics.add.sprite(410, 418, "exclamation");
-    exclamation1.setScale(0.03);
+
 
     // NOUVEAU : la porte secrète derrière le bureau -> invisible, exactement
-    // comme porte_ville/porte_labyrinthe ci-dessus. Créée AVANT le bureau pour
+    // comme ci-dessus. Créée AVANT le bureau pour
     // qu'elle soit "en dessous" de lui tant qu'il ne s'est pas déplacé.
     this.porteSecrete = this.physics.add.staticSprite(100, 250, "img_porte1");
 
@@ -232,10 +223,16 @@ export default class accueil extends Phaser.Scene {
         taille: 28,
         message: "Lettre récupérée",
         perimetre: 60,
+        // NOUVEAU : à chaque ramassage réussi, on vérifie si le "secret" est
+        // maintenant entièrement découvert (lettre + tiroir)
+        onRamasse: () => this.verifierSecretDecouvert(),
       }
     );
     // NOUVEAU : verrouillé tant que dude2 n'est pas parti -> pas de "E", pas de ramassage possible
     this.lettre.verrouille = !this.objetsDebloques();
+    // NOUVEAU : l'image de la lettre elle-même reste invisible -> seul le "E"
+    // (et le ramassage) sont actifs près de la poubelle, rien ne se voit au sol.
+    if (this.lettre.sprite) this.lettre.sprite.setAlpha(0);
 
     // NOUVEAU : les indices "E" des 4 objets (cachés tant que verrouillés)
     this.indiceBureau = this.add
@@ -287,16 +284,20 @@ export default class accueil extends Phaser.Scene {
     /***************************
      *  CREATION DES COLISIONS *
      ****************************/
-    deco_meuble.setCollisionByProperty({ estSolide: true });
-    meuble.setCollisionByProperty({ estSolide: true });
-    murs_porteurs.setCollisionByProperty({ estSolide: true });
-    mur.setCollisionByProperty({ estSolide: true });
+    dehors.setCollisionByProperty({ estSolide: true });
+    murs_contour.setCollisionByProperty({ estSolide: true });
+    mur_du_haut.setCollisionByProperty({ estSolide: true });
+    fenetres.setCollisionByProperty({ estSolide: true });
+    kitchenette.setCollisionByProperty({ estSolide: true });
+    bureaux_salon_d_attente.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, deco_meuble);
-    this.physics.add.collider(player, murs_porteurs);
-    this.physics.add.collider(player, meuble);
-    this.physics.add.collider(player, deco_meuble);
-    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, dehors);
+    this.physics.add.collider(player, murs_contour);
+    this.physics.add.collider(player, mur_du_haut);
+    this.physics.add.collider(player, fenetres);
+    this.physics.add.collider(player, kitchenette);
+    this.physics.add.collider(player, bureaux_salon_d_attente);
+
 
     player.setCollideWorldBounds(true); // le player se cognera contre les bords du monde
     this.physics.world.enable(player);
@@ -393,13 +394,14 @@ export default class accueil extends Phaser.Scene {
         return;
       }
 
-      // Vérifiez si dude2 est à proximité pour l'interaction
-      var distance = Phaser.Math.Distance.Between(
-        player.x,
-        player.y,
-        secretaire.x,
-        secretaire.y
-      );
+      // CORRIGÉ (le bug !) : on tentait d'afficher le "E" au-dessus de la
+      // lettre (via this.lettre.update() dans update()), mais on n'appelait
+      // jamais this.lettre.tenterRamassage() ici -> rien ne se passait à
+      // l'appui sur E. tenterRamassage() gère déjà tout seul la distance et
+      // le verrouillage (verrouille === true -> renvoie false sans rien faire).
+      if (this.lettre && this.lettre.tenterRamassage(player)) return;
+
+      
 
       // CORRIGÉ : dude2 peut valoir null une fois parti -> on ne calcule la
       // distance et on ne traite le dialogue QUE s'il existe encore.
@@ -460,7 +462,12 @@ export default class accueil extends Phaser.Scene {
 
         // La porte secrète (seulement visible/utilisable une fois le tiroir ouvert)
         if (this.tiroirOuvert && distPorteSecrete < PERIMETRE_OBJETS) {
-          this.scene.start("gendarmerie3");
+          // NOUVEAU : on bloque le passage tant que la lettre n'a pas aussi été prise
+          if (this.secretEntierementDecouvert()) {
+            this.scene.start("rue");
+          } else {
+            this.lancerMonologue(monologueSecretIncomplet);
+          }
           return;
         }
 
@@ -594,6 +601,20 @@ export default class accueil extends Phaser.Scene {
     return this.registry.get("dude2_accueil_parti") || false;
   }
 
+  // NOUVEAU : vrai seulement quand la lettre a été prise ET le tiroir ouvert
+  secretEntierementDecouvert() {
+    return possedeObjet(this, "lettre") && this.tiroirOuvert;
+  }
+
+  // NOUVEAU : à appeler à chaque fois qu'une des 2 conditions change
+  // (ramassage de la lettre, ouverture du tiroir) -> termine la tâche
+  // "decouvrir_secret" dès que les DEUX sont réunies, pas avant.
+  verifierSecretDecouvert() {
+    if (this.secretEntierementDecouvert()) {
+      terminerTache(this, "decouvrir_secret");
+    }
+  }
+
   /* ============================================================
    *  NOUVEAU : SYSTÈME DE MONOLOGUE SOLO (identique à cafet.js/gendarmerie2.js)
    * ============================================================ */
@@ -649,6 +670,9 @@ export default class accueil extends Phaser.Scene {
 
     this.tiroirOuvert = true;
     this.registry.set("accueil_tiroir_ouvert", true);
+
+    // NOUVEAU : on vérifie si le secret est maintenant entièrement découvert
+    this.verifierSecretDecouvert();
 
     this.tweens.add({
       targets: bureau,
@@ -737,8 +761,6 @@ if (cursors.up.isDown) {
      *  TELEPORTATION AVEC LES PORTES *
      ****************************/
 
-    if (this.physics.overlap(player, this.porte_labyrinthe)) {
-      this.scene.start("labyrinthe");
-    }
+
   }
 }

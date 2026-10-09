@@ -1,15 +1,19 @@
 import * as Phaser from "phaser";
 import menu from "./game/scenes/menu.js";
-import gendarmerie from "./game/scenes/gendarmerie.js";
 import telephone from "./game/scenes/telephone.js";
-import cafet from "./game/scenes/cafet.js";
+import mon_telephone from "./game/scenes/mon_telephone.js";
+import bar from "./game/scenes/bar.js";
 import bd from "./game/scenes/bd.js";
 import bd2 from "./game/scenes/bd2.js";
-import accueil from "./game/scenes/accueil.js";
+import entreprise_gregoire from "./game/scenes/entreprise_gregoire.js";
+import entreprise_gregoire2 from "./game/scenes/entreprise_gregoire2.js";
 import instruction from "./game/scenes/instruction.js";
 import credit from "./game/scenes/credit.js";
-import gendarmerie2 from "./game/scenes/gendarmerie2.js";
-import gendarmerie3 from "./game/scenes/gendarmerie3.js";
+import maison from "./game/scenes/maison.js";
+import rue from "./game/scenes/rue.js";
+import couloir from "./game/scenes/couloir.js";
+import victor_maison from "./game/scenes/victor_maison.js";
+import victor_secret from "./game/scenes/victor_secret.js";
 
 
 
@@ -36,16 +40,20 @@ var config = {
 
     scene: [
         menu,
-        gendarmerie,
         telephone,
-        cafet,
+        bar,
         bd,
         bd2,
-        accueil,
+        entreprise_gregoire,
+        entreprise_gregoire2,
         instruction,
         credit,
-        gendarmerie2,
-        gendarmerie3
+        maison,
+        rue,
+        couloir,
+        victor_maison,
+        victor_secret,
+        mon_telephone
     ],
 
     scale: {

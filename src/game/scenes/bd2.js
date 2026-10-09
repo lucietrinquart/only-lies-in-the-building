@@ -19,7 +19,7 @@ export default class bd2 extends PlancheBD {
       delaiEntreVignettes: 1000,
 
       // Scène lancée quand on clique sur la flèche, une fois toutes les vignettes affichées
-      sceneSuivante: "gendarmerie2",
+      sceneSuivante: "maison",
 
       // ============================================================
       //  LES VIGNETTES -- une ligne par vignette, dans l'ordre d'apparition

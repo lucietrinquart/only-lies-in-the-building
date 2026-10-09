@@ -25,10 +25,13 @@ import * as Phaser from "phaser";
  *  et le point apparaîtra automatiquement (une fois ce lieu visité).
  * ------------------------------------------------------------ */
 export const lieux = [
-  { scene: "gendarmerie2", nom: "Gendarmerie", x: 0.30, y: 0.40 },
-  { scene: "cafet", nom: "Café", x: 0.65, y: 0.60 },
-  { scene: "accueil", nom: "Accueil", x: 0.55, y: 0.30 },
-  { scene: "gendarmerie3", nom: "Rue", x: 0.30, y: 0.70 },
+  { scene: "maison", nom: "Maison", x: 0.30, y: 0.40 },
+  { scene: "bar", nom: "Bar", x: 0.65, y: 0.60 },
+  { scene: "entreprise_gregoire", nom: "Entreprise", x: 0.55, y: 0.30 },
+  { scene: "rue", nom: "Rue", x: 0.30, y: 0.70 },
+  { scene: "couloir", nom: "Couloir", x: 0.30, y: 0.60 },
+  { scene: "victor_maison", nom: "Maison Victor", x: 0.30, y: 0.60 },
+
 
 
   // { scene: "ville", nom: "Ville", x: 0.50, y: 0.25 },

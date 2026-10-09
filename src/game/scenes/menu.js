@@ -20,12 +20,25 @@ this.load.spritesheet("img_perso", "./assets/dude.png", {
     frameWidth: 40,
     frameHeight: 60
 });
+this.load.image("Phaser_tuilesdejeu7", "./assets/sprite_police.png");
+this.load.tilemapTiledJSON("carte7", "./assets/map_police.json");
 
-this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_police.png");
-this.load.tilemapTiledJSON("carte1", "./assets/map_police.json");
 
-this.load.image("Phaser_tuilesdejeu4", "./assets/sprite_accueil.png");
-this.load.tilemapTiledJSON("carte4", "./assets/map_accueil.json");
+this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_maison.png");
+this.load.tilemapTiledJSON("carte1", "./assets/maison.json");
+
+
+this.load.image("Phaser_tuilesdejeu6", "./assets/sprite_couloir.png");
+this.load.tilemapTiledJSON("carte6", "./assets/couloir.json");
+
+this.load.image("Phaser_tuilesdejeu4", "./assets/sprite_travail.png");
+this.load.tilemapTiledJSON("carte4", "./assets/travail.json");
+
+this.load.image("Phaser_tuilesdejeu8", "./assets/sprite_accueil.png");
+this.load.tilemapTiledJSON("carte8", "./assets/map_accueil.json");
+
+this.load.image("Phaser_tuilesdejeu9", "./assets/barthe.png");
+this.load.tilemapTiledJSON("carte9", "./assets/cafethe.json");
 
 this.load.image("telephone", "./assets/telephone.png");
 this.load.image("telephone_fond", "./assets/telephone_fond.png");
@@ -91,14 +104,14 @@ this.load.image("carte2", "./assets/carte2.png");
     });
 
     // chargement tuiles de jeu
-    this.load.image("Phaser_tuilesdejeu3", "./assets/barthe.png");
-
-    // chargement de la carte
-    this.load.tilemapTiledJSON("carte3", "assets/cafethe.json");
+    this.load.image("Phaser_tuilesdejeu3", "./assets/sprite_bar.png");
+    this.load.tilemapTiledJSON("carte3", "assets/bar.json");
 
 
     this.load.image("ticket", "./assets/ticket.png");
     this.load.image("shella", "./assets/perso.png");
+      this.load.image("cunegonde", "./assets/perso.png");
+  this.load.image("gregoire", "./assets/perso.png");
     this.load.image("poubelle", "./assets/poubelle.webp");
     this.load.image("cle", "./assets/cle.png");
     this.load.image("lettre", "./assets/lettre.jpg");
@@ -141,7 +154,7 @@ this.load.image("carte2", "./assets/carte2.png");
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("gendarmerie2");
+        this.scene.start("instruction");
         
       });
 

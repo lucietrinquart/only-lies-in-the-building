@@ -11,6 +11,8 @@ var groupe_plateformes;
 var clavier;
 var cursors;
 var telephone;
+var telephone2;
+
 
 /* ============================================================
  *  TEXTES
@@ -41,13 +43,29 @@ var monologueDepart = [
   { texte: "Violette : Maintenant je suis prête, allons au bar !", moi: "moi_heureuse", perso: false },
 ];
 
+  var monologueTelephoneSonne = [
+    { texte: "Violette : Mon téléphone sonne... J'ai dû recevoir un message.", moi: "moi_triste", perso: false },
+    { texte: "Violette : C'est vrai j'ai oublié mon téléphone ici...", moi: "moi_triste", perso: false },
+  ];
+
+var monologueApresMessageVictor = [
+  { texte: "Violette : Oui, il a raison... Ça me ferait du bien d'aller le voir.", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Il a toujours les bons mots pour me faire aller mieux.", moi: "moi_heureuse", perso: false },
+];
+
 // NOUVEAU : clés du registry (mémoire du jeu, survit aux changements de scène)
 const CLE_INTRO = "intro_gendarmerie2_joue";
 const CLE_TEL = "telephone_consulte_gendarmerie2";
 
-export default class gendarmerie2 extends Phaser.Scene {
+const CLE_MONO_TEL2 = "monologue_telephone_sonne_gendarmerie2";
+
+const CLE_VICTOR_RECU = "victor_message_recu"; // Mon_Telephone affiche le message de Victor
+const CLE_VICTOR_LU = "victor_message_lu";     // posée par Mon_Telephone quand on ouvre la conversation
+
+
+export default class maison extends Phaser.Scene {
   constructor() {
-    super({ key: "gendarmerie2" });
+    super({ key: "maison" });
   }
 
   preload() {}
@@ -81,7 +99,7 @@ export default class gendarmerie2 extends Phaser.Scene {
      *  et le keydown-E.
      * ============================================================ */
     this.sacAMain = new ObjetRamassable(
-      this, 250, 450, "sac_a_main", "Sac à main",
+      this, 250, 240, "sac_a_main", "Sac à main",
       "Un sac à main abandonné. Il pourrait servir à ranger des objets utiles à l'enquête.",
       {
         taille: 40,
@@ -99,7 +117,7 @@ export default class gendarmerie2 extends Phaser.Scene {
     );
 
     this.carteObjet = new ObjetRamassable(
-      this, 600, 450, "carte2", "Carte",
+      this, 540, 190, "carte2", "Carte",
       "Une carte de la ville et de ses environs.",
       {
         taille: 40,
@@ -129,21 +147,27 @@ export default class gendarmerie2 extends Phaser.Scene {
 });
 
     // tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_police", "Phaser_tuilesdejeu1");
-    carteDuNiveau.createLayer("background", tileset);
+    const tileset = carteDuNiveau.addTilesetImage("sprite_maison", "Phaser_tuilesdejeu1");
     carteDuNiveau.createLayer("sol", tileset);
-    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
-    const cloison = carteDuNiveau.createLayer("cloison", tileset);
-    carteDuNiveau.createLayer("tapis", tileset);
+    const dehors = carteDuNiveau.createLayer("dehors", tileset);
+    const mur = carteDuNiveau.createLayer("mur", tileset);
+    carteDuNiveau.createLayer("mur_2d", tileset);
+    const Sol_et_objet_sur_le_mur = carteDuNiveau.createLayer("Sol_et_objet_sur_le_mur", tileset);
+    carteDuNiveau.createLayer("boiserie_mur_fond", tileset);
+    const mur_et_meuble = carteDuNiveau.createLayer("mur_et_meuble", tileset);
+    const meuble_cuisine = carteDuNiveau.createLayer("meuble_cuisine", tileset);
+    const meuble_salon_chambre_et_douche = carteDuNiveau.createLayer("meuble_salon_chambre_et_douche", tileset);
     const meuble = carteDuNiveau.createLayer("meuble", tileset);
-    carteDuNiveau.createLayer("deco_meuble", tileset);
-    const deco = carteDuNiveau.createLayer("deco", tileset);
+    const paillasson = carteDuNiveau.createLayer("paillasson", tileset);
+    const etalonnage_chaud = carteDuNiveau.createLayer("etalonnage_chaud", tileset);
+    const vignette = carteDuNiveau.createLayer("vignette", tileset);
+
 
     /***************************
      *  CREATION DES OBJETS *
      ****************************/
     groupe_plateformes = this.physics.add.staticGroup();
-    player = this.physics.add.sprite(350, 500, "img_perso");
+    player = this.physics.add.sprite(450, 530, "img_perso");
     telephone = this.physics.add.sprite(530, 400, "telephone");
     telephone.setScale(0.03);
     this.telephone = telephone;
@@ -160,7 +184,24 @@ export default class gendarmerie2 extends Phaser.Scene {
       .setDepth(50)
       .setVisible(false);
 
-            this.ordinateur = this.physics.add.staticSprite(150, 350, "ordinateur");
+
+          telephone2 = this.physics.add.sprite(250, 430, "telephone");
+    telephone2.setScale(0.03);
+    this.telephone2 = telephone2;
+
+    // NOUVEAU : la lettre "E" au-dessus du téléphone
+    this.indiceTelephone1 = this.add
+      .text(telephone2.x, telephone2.y - 22, "E", {
+        font: "bold 16px Arial",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 7, y: 3 },
+      })
+      .setOrigin(0.5)
+      .setDepth(50)
+      .setVisible(false);
+
+            this.ordinateur = this.physics.add.staticSprite(300, 350, "ordinateur");
     this.ordinateur.setScale(0.1);
 
     this.ordinateurEtaitOuvert = false;
@@ -177,24 +218,32 @@ this.indiceOrdinateur = this.add
   .setDepth(50)
   .setVisible(false);
 
-    this.porte_ville = this.physics.add.staticSprite(300, 570, "img_porte1").setAlpha(0);
-    this.porte_ville1 = this.physics.add.staticSprite(350, 570, "img_porte1").setAlpha(0);
-    this.porte_ville2 = this.physics.add.staticSprite(400, 570, "img_porte1").setAlpha(0);
-    this.porte_ville3 = this.physics.add.staticSprite(450, 570, "img_porte1").setAlpha(0);
 
     /***************************
      *  COLLISIONS *
      ****************************/
-    deco.setCollisionByProperty({ estSolide: true });
+    dehors.setCollisionByProperty({ estSolide: true });
     meuble.setCollisionByProperty({ estSolide: true });
-    murs_porteurs.setCollisionByProperty({ estSolide: true });
-    cloison.setCollisionByProperty({ estSolide: true });
+    mur.setCollisionByProperty({ estSolide: true });
+    Sol_et_objet_sur_le_mur.setCollisionByProperty({ estSolide: true });
+    mur_et_meuble.setCollisionByProperty({ estSolide: true });
+    meuble_cuisine.setCollisionByProperty({ estSolide: true });
+    meuble_salon_chambre_et_douche.setCollisionByProperty({ estSolide: true });
+    paillasson.setCollisionByProperty({ estSolide: true });
+    etalonnage_chaud.setCollisionByProperty({ estSolide: true });
+    vignette.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, deco);
+
+    this.physics.add.collider(player, dehors);
     this.physics.add.collider(player, meuble);
-    this.physics.add.collider(player, murs_porteurs);
-    this.physics.add.collider(player, cloison);
-    this.physics.add.collider(player, groupe_plateformes);
+    this.physics.add.collider(player, Sol_et_objet_sur_le_mur);
+    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, mur_et_meuble);
+    this.physics.add.collider(player, meuble_cuisine);
+    this.physics.add.collider(player, meuble_salon_chambre_et_douche);
+    this.physics.add.collider(player, paillasson);
+    this.physics.add.collider(player, etalonnage_chaud);
+    this.physics.add.collider(player, vignette);
 
     player.setCollideWorldBounds(true);
 
@@ -224,23 +273,21 @@ if (distOrd < 60) {
 }
 
       const telOk = this.telephoneConsulte();
-      const distTel = Phaser.Math.Distance.Between(player.x, player.y, this.telephone.x, this.telephone.y);
+const distTel = Phaser.Math.Distance.Between(player.x, player.y, this.telephone.x, this.telephone.y);
+const distTel2 = Phaser.Math.Distance.Between(player.x, player.y, this.telephone2.x, this.telephone2.y);
 
-      // NOUVEAU : on ne peut ramasser qu'APRÈS avoir consulté le téléphone
-      if (telOk && (this.sacAMain.tenterRamassage(player) || this.carteObjet.tenterRamassage(player))) {
-        return;
-      }
+// on ne peut ramasser qu'APRÈS avoir consulté le premier téléphone
+if (telOk && (this.sacAMain.tenterRamassage(player) || this.carteObjet.tenterRamassage(player))) {
+  return;
+}
 
 if (distTel < 60) {
-  this.scene.launch("Telephone", { sceneParente: "gendarmerie2" });
-  this.scene.bringToTop("Telephone");
+  this.ouvrirTelephone("Telephone");
+  return;
+}
 
-  // NOUVEAU : quand le téléphone s'arrête, on relance cette scène nous-mêmes
-  this.scene.get("Telephone").events.once("shutdown", () => {
-    this.scene.resume();
-  });
-
-  this.scene.pause();
+if (distTel2 < 60) {
+  this.ouvrirTelephone("mon_telephone");
   return;
 }
 
@@ -251,6 +298,12 @@ if (distTel < 60) {
           afficherMessage(this, "Mon téléphone vient de vibrer, je devrais d'abord regarder.", 3000);
         }
       }
+    });
+
+    // NOUVEAU : quand le téléphone se ferme, la scène est "resumed"
+    this.events.on("resume", this.auRetourDuTelephone, this);
+    this.events.once("shutdown", () => {
+      this.events.off("resume", this.auRetourDuTelephone, this);
     });
 
     // NOUVEAU : quand le téléphone se ferme, la scène est "resumed"
@@ -279,11 +332,18 @@ if (distTel < 60) {
     this.cameras.main.startFollow(player);
 
     // MONOLOGUE D'INTRODUCTION (une seule fois)
-    if (!this.registry.get(CLE_INTRO)) {
-      this.lancerMonologue(introMonologue, () => {
-        this.registry.set(CLE_INTRO, true);
-      });
-    }
+    // MONOLOGUE D'INTRODUCTION (une seule fois)
+if (!this.registry.get(CLE_INTRO)) {
+  this.lancerMonologue(introMonologue, () => {
+    this.registry.set(CLE_INTRO, true);
+  });
+} else if (estTacheTerminee(this, "parler_gregoire") && !this.registry.get(CLE_MONO_TEL2)) {
+  this.lancerMonologue(monologueTelephoneSonne, () => {
+    this.registry.set(CLE_MONO_TEL2, true);
+    this.registry.set(CLE_VICTOR_RECU, true); // NOUVEAU : le message de Victor arrive sur Mon_Telephone
+    ajouterTache(this, "regarder_telephone", "Regarder mon téléphone");
+  });
+}
   }
 
   update() {
@@ -302,6 +362,8 @@ this.ordinateurEtaitOuvert = ordinateurOuvert;
       player.setVelocity(0, 0);
       player.anims.play("turn");
       this.indiceTelephone.setVisible(false);
+      this.indiceTelephone1.setVisible(false);
+
       return;
     }
 
@@ -311,6 +373,9 @@ this.indiceOrdinateur.setVisible(this.ordinateurDebloque() && !ordinateurOuvert 
     // NOUVEAU : "E" du téléphone
     const distTel = Phaser.Math.Distance.Between(player.x, player.y, this.telephone.x, this.telephone.y);
     this.indiceTelephone.setVisible(distTel < 60);
+
+     const distTel2 = Phaser.Math.Distance.Between(player.x, player.y, this.telephone2.x, this.telephone2.y);
+    this.indiceTelephone1.setVisible(distTel2 < 60);
 
     // NOUVEAU : les "E" du sac/carte n'apparaissent qu'après le téléphone
     if (this.telephoneConsulte()) {
@@ -342,17 +407,7 @@ this.indiceOrdinateur.setVisible(this.ordinateurDebloque() && !ordinateurOuvert 
       player.anims.play("turn");
     }
 
-    /***************************
-     *  PORTES *
-     ****************************/
-    if (
-      this.physics.overlap(player, this.porte_ville) ||
-      this.physics.overlap(player, this.porte_ville1) ||
-      this.physics.overlap(player, this.porte_ville2) ||
-      this.physics.overlap(player, this.porte_ville3)
-    ) {
-      this.scene.start("gendarmerie");
-    }
+   
   }
 
   /* ============================================================
@@ -371,11 +426,15 @@ apresOrdinateur() {
   terminerTache(this, "voir_videos");
 
   this.lancerMonologue(monologueApresOrdinateur, () => {
-    this.scene.start("accueil");
+    this.scene.start("couloir");
   });
 }
   telephoneConsulte() {
     return this.registry.get(CLE_TEL) || false;
+  }
+
+  telephoneConsulte2() {
+    return this.registry.get(CLE_TEL2) || false;
   }
 
   // Lance un monologue : "lignes" = tableau de répliques, "onFin" = appelé après la dernière
@@ -397,18 +456,52 @@ apresOrdinateur() {
     }
   }
 
-  // Appelé quand le téléphone se ferme
-  auRetourDuTelephone() {
-    if (this.telephoneConsulte()) return; // déjà fait : on ne rejoue pas
-
-    this.registry.set(CLE_TEL, true);
-    this.lancerMonologue(monologueTelephone, () => {
-      ajouterTaches(this, [
-        { id: "recuperer_sac", texte: "Récupérer le sac" },
-        { id: "recuperer_carte", texte: "Récupérer la carte" },
-      ]);
-    });
+ouvrirTelephone(cle) {
+  const scenePhone = this.scene.get(cle);
+  if (!scenePhone) {
+    console.error(`La scène "${cle}" n'est pas enregistrée dans main.js`);
+    return;
   }
+
+  this.telephoneOuvert = cle;
+  this.scene.launch(cle, { sceneParente: "gendarmerie2" });
+  this.scene.bringToTop(cle);
+  scenePhone.events.once("shutdown", () => {
+    this.scene.resume();
+  });
+  this.scene.pause();
+}
+
+auRetourDuTelephone() {
+  const quel = this.telephoneOuvert;
+  this.telephoneOuvert = null;
+
+  // Téléphone n°1 : seulement l'intro du début
+  if (quel === "Telephone") {
+    if (!this.telephoneConsulte()) {
+      this.registry.set(CLE_TEL, true);
+      this.lancerMonologue(monologueTelephone, () => {
+        ajouterTaches(this, [
+          { id: "recuperer_sac", texte: "Récupérer le sac" },
+          { id: "recuperer_carte", texte: "Récupérer la carte" },
+        ]);
+      });
+    }
+    return;
+  }
+
+  // mon_telephone : validé seulement si le message de Victor a été ouvert
+  if (quel === "mon_telephone") {
+    const messageLu = this.registry.get(CLE_VICTOR_LU) || false;
+    if (messageLu && !estTacheTerminee(this, "regarder_telephone")) {
+      ajouterTache(this, "regarder_telephone", "Regarder mon téléphone"); // sécurité
+      terminerTache(this, "regarder_telephone");
+      this.lancerMonologue(monologueApresMessageVictor, () => {
+        this.scene.start("victor_maison");
+      });
+    }
+  }
+}
 
   // Appelé après chaque ramassage : si sac ET carte sont pris -> départ pour le bar
   verifierPreparatifs() {
@@ -419,7 +512,7 @@ apresOrdinateur() {
     // petit délai pour laisser le message "récupéré" s'afficher
     this.time.delayedCall(1200, () => {
       this.lancerMonologue(monologueDepart, () => {
-        this.scene.start("gendarmerie3");
+        this.scene.start("bar");
       });
     });
   }
