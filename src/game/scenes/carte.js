@@ -30,12 +30,8 @@ export const lieux = [
   { scene: "entreprise_gregoire", nom: "Entreprise", x: 0.55, y: 0.30 },
   { scene: "rue", nom: "Rue", x: 0.30, y: 0.70 },
   { scene: "couloir", nom: "Couloir", x: 0.30, y: 0.60 },
-  { scene: "victor_maison", nom: "Maison Victor", x: 0.30, y: 0.60 },
+  { scene: "hall", nom: "Hall", x: 0.60, y: 0.40 },
 
-
-
-  // { scene: "ville", nom: "Ville", x: 0.50, y: 0.25 },
-  // { scene: "opera", nom: "Opéra", x: 0.80, y: 0.30 },
 ];
 
 /* ------------------------------------------------------------

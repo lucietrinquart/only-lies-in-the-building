@@ -626,7 +626,7 @@ export default class bar extends Phaser.Scene {
         // petit délai pour laisser le dialogue se refermer proprement avant d'enchaîner
         this.time.delayedCall(800, () => {
             this.lancerMonologue(monologueVersAccueil, () => {
-                this.scene.start("entreprise_gregoire");
+                this.scene.start("hall");
             });
         });
     }

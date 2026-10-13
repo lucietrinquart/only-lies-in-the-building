@@ -4,7 +4,7 @@ import { InventaireUI, ObjetRamassable, possedeObjet, retirerObjet } from "./inv
 // NOUVEAU : on importe le module carte
 import { CarteUI } from "./carte.js";
 
-// NOUVEAU : on importe le module tâches (+ terminerTache pour "decouvrir_secret")
+// NOUVEAU : on importe le module tâches
 import { TachesUI, ajouterTaches, terminerTache } from "./taches.js";
 
 import { DialogueUI } from "./dialogue.js";
@@ -17,11 +17,9 @@ var player; // désigne le sprite du joueur
 var groupe_plateformes; // contient toutes les plateformes
 var clavier; // pour la gestion du clavier
 var calque_plateformes;
-var dude2;
 var bureau;
 var ordinateur;
 var bibliotheque;
-
 
 var poubelle;
 
@@ -31,13 +29,11 @@ var dialogueIndex = 0;
 var dialogueIndex2 = 0;
 var dialoguesActuels = [];
 
-// CORRIGÉ : il y avait DEUX "var dialogues" dans ce fichier -> le second
-// (répliques du gendarme, copiées-collées d'un autre fichier) écrasait le
-// premier (la secrétaire) à cause du "var" qui autorise la redéclaration.
-// Voici le VRAI dialogue de dude2 pour cette scène, propre et unique.
-var dialoguesDude2 = [
+// NOUVEAU : le dialogue de Grégoire (renommé, c'était "dude2" avant). Un
+// seul "var dialogues" propre ici -> plus de doublon qui en écrasait un autre.
+var dialogueGregoire = [
   {
-    texte: "Dude2 : Ah, Violette... je ne pensais pas te croiser ici.",
+    texte: "Grégoire : Ah, Violette... je ne pensais pas te croiser ici.",
     moi: "moi_heureuse",
     perso: "perso_triste",
   },
@@ -47,16 +43,16 @@ var dialoguesDude2 = [
     perso: "perso_triste",
   },
   {
-    texte: "Dude2 : Rien de spécial... Écoute, je dois vraiment y aller.",
+    texte: "Grégoire : Rien de spécial... Écoute, je dois vraiment y aller.",
     moi: "moi_triste",
     perso: "perso_colere",
   },
   {
-    texte: "Dude2 : Et ne va surtout pas fouiller par ici, c'est hors de question.",
+    texte: "Grégoire : Et ne va surtout pas fouiller par ici, c'est hors de question.",
     moi: "moi_triste",
     perso: "perso_colere",
   },
-  // NOUVEAU : dude2 a déjà tourné les talons à ce moment -> "perso: false"
+  // NOUVEAU : Grégoire a déjà tourné les talons à ce moment -> "perso: false"
   {
     texte: "Violette : ...Il a quelque chose à cacher, j'en suis sûre.",
     moi: "moi_colere",
@@ -64,8 +60,8 @@ var dialoguesDude2 = [
   },
 ];
 
-// NOUVEAU : monologue solo quand on interagit avec le bureau (tant que le
-// tiroir n'est pas ouvert)
+// NOUVEAU : monologue solo quand on interagit avec le bureau de Grégoire
+// (tant que le tiroir n'est pas ouvert)
 var monologueBureau = [
   {
     texte: "Violette : Le tiroir est fermé... il doit y avoir une clé quelque part.",
@@ -75,7 +71,8 @@ var monologueBureau = [
 ];
 
 // NOUVEAU : monologue joué si on essaie de passer la porte secrète sans avoir
-// tout fouillé (lettre pas encore prise et/ou tiroir pas encore ouvert)
+// tout fouillé (lettre pas encore prise, tiroir pas ouvert, et/ou note
+// d'Adrien pas encore vue)
 var monologueSecretIncomplet = [
   {
     texte: "Violette : J'ai l'impression de ne pas avoir tout regardé ici...",
@@ -83,6 +80,25 @@ var monologueSecretIncomplet = [
     perso: false,
   },
 ];
+
+// NOUVEAU : petit monologue d'intro pour faire comprendre à l'utilisateur
+// qu'on est dans un open space avec, d'un côté, le bureau de Grégoire, et de
+// l'autre, celui d'Adrien.
+var introOpenSpace = [
+  {
+    texte: "Violette : Un open space... Le bureau de Grégoire doit être par là, et celui d'Adrien de l'autre côté.",
+    moi: "moi_triste",
+    perso: false,
+  },
+];
+
+// NOUVEAU : monologue joué quand on ferme la note d'Adrien (vue en gros plan)
+var dialogueNoteAdrien = [
+  { texte: "Violette : « J. »… « Je peux attendre. »", moi: "moi_triste", perso: false },
+  { texte: "Violette : Attendre quoi ?", moi: "moi_colere", perso: false },
+];
+
+const CLE_INTRO_OPEN_SPACE = "intro_entreprise_gregoire_joue";
 
 export default class entreprise_gregoire extends Phaser.Scene {
   // constructeur de la classe
@@ -99,14 +115,17 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.inventaireUI = new InventaireUI(this);
 
     // CORRIGÉ : this.dialogueUI n'était jamais créé -> afficherLigne() aurait
-    // planté dès le premier appui sur E près de dude2.
+    // planté dès le premier appui sur E près de Grégoire.
     this.dialogueUI = new DialogueUI(this, {
       moiParDefaut: "moi_heureuse",
       persoParDefaut: "perso_triste",
     });
 
-    // NOUVEAU : état du monologue solo en cours (bureau, etc.)
+    // NOUVEAU : état du monologue solo en cours (bureau, note d'Adrien, etc.)
     this.monologue = null;
+
+    // NOUVEAU : état de la note d'Adrien affichée en gros plan
+    this.noteOuverte = false;
 
     // NOUVEAU : le tiroir du bureau -> on lit l'état depuis le registry pour
     // qu'il reste ouvert si on repasse par cette scène plus tard
@@ -121,8 +140,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
       recompense: {
         cle: "cle",
         nom: "Clé",
-        description:
-          "Une vieille clé trouvée dans un livre de la bibliothèque. Elle doit ouvrir quelque chose quelque part.",
+        description: "Une vieille clé trouvée dans un livre de la bibliothèque. Elle doit ouvrir quelque chose quelque part.",
       },
     });
 
@@ -144,18 +162,13 @@ export default class entreprise_gregoire extends Phaser.Scene {
         {
           expediteur: "Victor",
           objet: "RE: RE: Silence",
-          corps:
-            "Arrête de m'envoyer des messages, quelqu'un pourrait les voir. On en parle de vive voix, pas par écrit.",
+          corps: "Arrête de m'envoyer des messages, quelqu'un pourrait les voir. On en parle de vive voix, pas par écrit.",
         },
       ],
     });
 
-
     // chargement du jeu de tuiles
-    const tileset = carteDuNiveau.addTilesetImage(
-      "sprite_travail",
-      "Phaser_tuilesdejeu4"
-    );
+    const tileset = carteDuNiveau.addTilesetImage("sprite_travail", "Phaser_tuilesdejeu4");
 
     /***************************
      *  CREATION DES CALQUES *
@@ -169,7 +182,6 @@ export default class entreprise_gregoire extends Phaser.Scene {
     const kitchenette = carteDuNiveau.createLayer("kitchenette", tileset);
     const bureaux_salon_d_attente = carteDuNiveau.createLayer("bureaux_salon_d_attente", tileset);
 
-
     /***************************
      *  CREATION DES OBJETS *
      ****************************/
@@ -177,11 +189,9 @@ export default class entreprise_gregoire extends Phaser.Scene {
     cursors = this.input.keyboard.createCursorKeys();
     player = this.physics.add.sprite(420, 650, "img_perso");
 
-
-
-    // NOUVEAU : la porte secrète derrière le bureau -> invisible, exactement
-    // comme ci-dessus. Créée AVANT le bureau pour
-    // qu'elle soit "en dessous" de lui tant qu'il ne s'est pas déplacé.
+    // NOUVEAU : la porte secrète derrière le bureau de Grégoire -> invisible.
+    // Créée AVANT le bureau pour qu'elle soit "en dessous" de lui tant qu'il
+    // ne s'est pas déplacé.
     this.porteSecrete = this.physics.add.staticSprite(100, 250, "img_porte1");
 
     bureau = this.physics.add.sprite(
@@ -189,29 +199,57 @@ export default class entreprise_gregoire extends Phaser.Scene {
       250,
       "bureau"
     );
-     bureau.setScale(0.03);
+    bureau.setScale(0.03);
 
-      poubelle = this.physics.add.sprite(110, 400, "poubelle");
-     poubelle.setScale(0.03);
+    // NOUVEAU : petite étiquette au-dessus du bureau de Grégoire, pour que le
+    // joueur comprenne tout de suite à qui il appartient.
+    this.labelBureauGregoire = this.add
+      .text(bureau.x, bureau.y - 46, "Bureau de Grégoire", {
+        font: "12px Arial",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 5, y: 2 },
+      })
+      .setOrigin(0.5)
+      .setDepth(40);
 
-     ordinateur = this.physics.add.sprite(280, 550, "ordinateur");
-          ordinateur.setScale(0.1);
+    poubelle = this.physics.add.sprite(110, 400, "poubelle");
+    poubelle.setScale(0.03);
 
+    ordinateur = this.physics.add.sprite(280, 550, "ordinateur");
+    ordinateur.setScale(0.1);
 
-     bibliotheque = this.physics.add.sprite(500, 200, "bibliotheque");
-     bibliotheque.setScale(0.2);
+    bibliotheque = this.physics.add.sprite(500, 200, "bibliotheque");
+    bibliotheque.setScale(0.2);
 
-    // NOUVEAU : dude2 ne réapparaît pas une fois qu'il est "parti" (registry,
-    // comme le reste du jeu -> ça survit à un retour dans cette scène)
-    const dude2DejaParti = this.registry.get("dude2_accueil_parti") || false;
-    if (!dude2DejaParti) {
-      this.dude2 = this.physics.add.sprite(600, 387, "img_perso2");
+    // NOUVEAU : le bureau d'Adrien, de l'autre côté de l'open space.
+    // ⚠️ Coordonnées provisoires -> ajuste-les pour qu'elles correspondent
+    // au vrai plan de la pièce sur ton tileset.
+    this.bureauAdrien = this.physics.add.sprite(300, 400, "bureau");
+    this.bureauAdrien.setScale(0.03);
+
+    this.labelBureauAdrien = this.add
+      .text(this.bureauAdrien.x, this.bureauAdrien.y - 46, "Bureau d'Adrien", {
+        font: "12px Arial",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 5, y: 2 },
+      })
+      .setOrigin(0.5)
+      .setDepth(40);
+
+    // NOUVEAU : Grégoire (remplace dude2). Si l'image "gregoire" n'est pas
+    // chargée, on utilise provisoirement img_perso2 pour que la scène ne plante pas.
+    const gregoireDejaParti = this.registry.get("gregoire_entreprise_parti") || false;
+    if (!gregoireDejaParti) {
+      const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "img_perso2";
+      this.gregoire = this.physics.add.sprite(600, 387, textureGregoire);
     } else {
-      this.dude2 = null;
+      this.gregoire = null;
     }
 
     // NOUVEAU : la lettre dans la poubelle -> ObjetRamassable classique,
-    // verrouillé tant que dude2 n'est pas parti (voir "verrouille" plus bas)
+    // verrouillé tant que Grégoire n'est pas parti (voir "verrouille" plus bas)
     this.lettre = new ObjetRamassable(
       this,
       poubelle.x,
@@ -223,18 +261,36 @@ export default class entreprise_gregoire extends Phaser.Scene {
         taille: 28,
         message: "Lettre récupérée",
         perimetre: 60,
-        // NOUVEAU : à chaque ramassage réussi, on vérifie si le "secret" est
-        // maintenant entièrement découvert (lettre + tiroir)
-        onRamasse: () => this.verifierSecretDecouvert(),
       }
     );
-    // NOUVEAU : verrouillé tant que dude2 n'est pas parti -> pas de "E", pas de ramassage possible
+    // NOUVEAU : verrouillée tant que Grégoire n'est pas parti -> pas de "E", pas de ramassage possible
     this.lettre.verrouille = !this.objetsDebloques();
     // NOUVEAU : l'image de la lettre elle-même reste invisible -> seul le "E"
     // (et le ramassage) sont actifs près de la poubelle, rien ne se voit au sol.
     if (this.lettre.sprite) this.lettre.sprite.setAlpha(0);
 
-    // NOUVEAU : les indices "E" des 4 objets (cachés tant que verrouillés)
+    // NOUVEAU : la note d'Adrien, posée bien visible sur son bureau.
+    // Verrouillée tant qu'on n'a pas parlé à Grégoire. Une fois ramassée,
+    // elle part dans l'inventaire ET s'affiche directement en gros plan
+    // (voir afficherNoteAdrien()).
+    this.noteAdrien = new ObjetRamassable(
+      this,
+      this.bureauAdrien.x,
+      this.bureauAdrien.y - 18,
+      "note_adrien",
+      "Note d'Adrien",
+      "Une note griffonnée, posée sur le bureau d'Adrien.",
+      {
+        taille: 22,
+        message: "Note récupérée",
+        perimetre: 60,
+        ajouterAInventaire: true,
+        onRamasse: () => this.afficherNoteAdrien(),
+      }
+    );
+    this.noteAdrien.verrouille = !this.objetsDebloques();
+
+    // NOUVEAU : les indices "E" des objets (cachés tant que verrouillés)
     this.indiceBureau = this.add
       .text(bureau.x, bureau.y - 26, "E", {
         font: "bold 16px Arial",
@@ -280,7 +336,6 @@ export default class entreprise_gregoire extends Phaser.Scene {
       .setDepth(50)
       .setVisible(false);
 
-
     /***************************
      *  CREATION DES COLISIONS *
      ****************************/
@@ -298,7 +353,6 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.physics.add.collider(player, kitchenette);
     this.physics.add.collider(player, bureaux_salon_d_attente);
 
-
     player.setCollideWorldBounds(true); // le player se cognera contre les bords du monde
     this.physics.world.enable(player);
 
@@ -307,10 +361,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
      ****************************/
     this.anims.create({
       key: "left",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 0,
-        end: 3,
-      }),
+      frames: this.anims.generateFrameNumbers("img_perso", { start: 0, end: 3 }),
       frameRate: 10,
       repeat: -1,
     });
@@ -325,29 +376,20 @@ export default class entreprise_gregoire extends Phaser.Scene {
     // animation pour tourner à droite
     this.anims.create({
       key: "right",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 5,
-        end: 8,
-      }),
+      frames: this.anims.generateFrameNumbers("img_perso", { start: 5, end: 8 }),
       frameRate: 10,
       repeat: -1,
     });
     this.anims.create({
       key: "haut",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 12,
-        end: 14,
-      }),
+      frames: this.anims.generateFrameNumbers("img_perso", { start: 12, end: 14 }),
       frameRate: 10,
       repeat: -1,
     });
 
     this.anims.create({
       key: "bas",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 9,
-        end: 11,
-      }),
+      frames: this.anims.generateFrameNumbers("img_perso", { start: 9, end: 11 }),
       frameRate: 10,
       repeat: -1,
     });
@@ -361,9 +403,9 @@ export default class entreprise_gregoire extends Phaser.Scene {
       fill: "#ffffff",
       backgroundColor: "rgba(0, 0, 0, 0.7)",
       padding: {
-        left: 20, // Espacement à gauche
-        right: 400, // Espacement à droite
-        top: 20, // Espacement en haut
+        left: 20,
+        right: 400,
+        top: 20,
         bottom: 20,
       },
       shadow: {
@@ -373,7 +415,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
         color: "#000000",
       },
       wordWrap: {
-        width: 460, // Ajustez la largeur en conséquence
+        width: 460,
       },
     });
 
@@ -381,14 +423,17 @@ export default class entreprise_gregoire extends Phaser.Scene {
     dialogueText.setDepth(1);
     dialogueText.setWordWrapWidth(700);
     dialogueText.setVisible(false);
-        this.tachesUI = new TachesUI(this);
-
+    this.tachesUI = new TachesUI(this);
 
     this.input.keyboard.on("keydown-E", () => {
       // NOUVEAU : si l'énigme ou l'ordinateur sont ouverts, on ignore E ici
       if (this.enigmeBibliotheque.panneau.visible || this.mailUI.visible) return;
 
-      // NOUVEAU : un monologue solo (ex: le bureau) est prioritaire sur tout
+      // NOUVEAU : la note d'Adrien en gros plan se ferme uniquement via la
+      // croix -> on ignore E tant qu'elle est affichée
+      if (this.noteOuverte) return;
+
+      // NOUVEAU : un monologue solo (ex: le bureau, la note) est prioritaire sur tout
       if (this.monologue) {
         this.avancerMonologue();
         return;
@@ -401,23 +446,19 @@ export default class entreprise_gregoire extends Phaser.Scene {
       // le verrouillage (verrouille === true -> renvoie false sans rien faire).
       if (this.lettre && this.lettre.tenterRamassage(player)) return;
 
-      
+      // NOUVEAU : la note d'Adrien se ramasse de la même façon
+      if (this.noteAdrien && this.noteAdrien.tenterRamassage(player)) return;
 
-      // CORRIGÉ : dude2 peut valoir null une fois parti -> on ne calcule la
+      // CORRIGÉ : Grégoire peut valoir null une fois parti -> on ne calcule la
       // distance et on ne traite le dialogue QUE s'il existe encore.
-      if (this.dude2) {
-        var distanceDude2 = Phaser.Math.Distance.Between(
-          player.x,
-          player.y,
-          this.dude2.x,
-          this.dude2.y
-        );
+      if (this.gregoire) {
+        var distanceGregoire = Phaser.Math.Distance.Between(player.x, player.y, this.gregoire.x, this.gregoire.y);
 
-        if (distanceDude2 < 125) {
+        if (distanceGregoire < 125) {
           // NOUVEAU : au tout début d'une conversation (dialogueIndex === 0),
           // on choisit QUELLE série de répliques utiliser
           if (dialogueIndex === 0) {
-            dialoguesActuels = this.obtenirDialogueActuel();
+            dialoguesActuels = this.obtenirDialogueGregoire();
           }
 
           if (dialogueIndex < dialoguesActuels.length) {
@@ -431,47 +472,38 @@ export default class entreprise_gregoire extends Phaser.Scene {
             dialogueIndex = 0;
             this.physics.resume();
 
-            // NOUVEAU : dude2 s'en va, la tâche se lance -> voir apresDialogueDude2()
-            this.apresDialogueDude2();
+            // NOUVEAU : Grégoire s'en va, les tâches se lancent -> voir apresDialogueGregoire()
+            this.apresDialogueGregoire();
           }
           return; // NOUVEAU : on ne traite rien d'autre cette fois-ci
         }
       }
 
       // ============================================================
-      //  NOUVEAU : LES 4 OBJETS DE LA PIÈCE (verrouillés tant que
-      //  dude2 n'est pas parti -> this.objetsDebloques())
+      //  NOUVEAU : LES OBJETS DE LA PIÈCE (verrouillés tant que
+      //  Grégoire n'est pas parti -> this.objetsDebloques())
       // ============================================================
       if (this.objetsDebloques()) {
         const PERIMETRE_OBJETS = 70;
 
         const distBureau = Phaser.Math.Distance.Between(player.x, player.y, bureau.x, bureau.y);
-        const distPorteSecrete = Phaser.Math.Distance.Between(
-          player.x,
-          player.y,
-          this.porteSecrete.x,
-          this.porteSecrete.y
-        );
+        const distPorteSecrete = Phaser.Math.Distance.Between(player.x, player.y, this.porteSecrete.x, this.porteSecrete.y);
         const distOrdinateur = Phaser.Math.Distance.Between(player.x, player.y, ordinateur.x, ordinateur.y);
-        const distBibliotheque = Phaser.Math.Distance.Between(
-          player.x,
-          player.y,
-          bibliotheque.x,
-          bibliotheque.y
-        );
+        const distBibliotheque = Phaser.Math.Distance.Between(player.x, player.y, bibliotheque.x, bibliotheque.y);
 
         // La porte secrète (seulement visible/utilisable une fois le tiroir ouvert)
         if (this.tiroirOuvert && distPorteSecrete < PERIMETRE_OBJETS) {
-          // NOUVEAU : on bloque le passage tant que la lettre n'a pas aussi été prise
+          // NOUVEAU : on bloque le passage tant que la lettre ET la note
+          // d'Adrien n'ont pas aussi été trouvées
           if (this.secretEntierementDecouvert()) {
-            this.scene.start("rue");
+            this.scene.start("cafoutche");
           } else {
             this.lancerMonologue(monologueSecretIncomplet);
           }
           return;
         }
 
-        // Le bureau (tant que le tiroir n'est pas ouvert -> simple monologue)
+        // Le bureau de Grégoire (tant que le tiroir n'est pas ouvert -> simple monologue)
         if (!this.tiroirOuvert && distBureau < PERIMETRE_OBJETS) {
           this.lancerMonologue(monologueBureau);
           return;
@@ -491,60 +523,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
       }
     });
 
-       this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    // animation lorsque le personnage n'avance pas
-    this.anims.create({
-      key: "turn",
-      frames: [{ key: "img_perso", frame: 4 }],
-      frameRate: 20,
-    });
-
-    // animation pour tourner à droite
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 5,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    // animation va en haut
-    this.anims.create({
-      key: "haut",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 12,
-        end: 14,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    // animation va en bas
-    this.anims.create({
-      key: "bas",
-      frames: this.anims.generateFrameNumbers("img_perso", {
-        start: 9,
-        end: 11,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    /***********************
-     *  CREATION DU CLAVIER *
-     ************************/
-
     clavier = this.input.keyboard.createCursorKeys();
-
     cursors = this.input.keyboard.createCursorKeys();
 
     this.physics.world.setBounds(0, 0, 800, 608);
@@ -556,67 +535,121 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.input.keyboard.on("keyup-E", () => {
       // Laisser le texte affiché jusqu'à ce qu'E soit relâchée
     });
+
+    // NOUVEAU : petit monologue d'intro (une seule fois) pour faire
+    // comprendre à l'utilisateur la disposition de l'open space.
+    if (!this.registry.get(CLE_INTRO_OPEN_SPACE)) {
+      this.lancerMonologue(introOpenSpace, () => {
+        this.registry.set(CLE_INTRO_OPEN_SPACE, true);
+      });
+    }
   }
 
-  // Retourne la série de répliques pour dude2 (une seule série ici, pas de
+  // Retourne la série de répliques pour Grégoire (une seule série ici, pas de
   // machine à états : une fois le dialogue fait, il disparaît pour de bon)
-  obtenirDialogueActuel() {
-    return dialoguesDude2;
+  obtenirDialogueGregoire() {
+    return dialogueGregoire;
   }
 
-  // NOUVEAU : appelée juste après la fermeture du dialogue avec dude2
-  apresDialogueDude2() {
+  // NOUVEAU : appelée juste après la fermeture du dialogue avec Grégoire
+  apresDialogueGregoire() {
     // On marque "parti" pour toujours -> il ne réapparaîtra plus jamais,
     // même si on quitte la scène et qu'on y revient.
-    this.registry.set("dude2_accueil_parti", true);
+    this.registry.set("gregoire_entreprise_parti", true);
 
+    // NOUVEAU : les 2 objectifs annoncés par l'utilisateur
     ajouterTaches(this, [
-      { id: "decouvrir_secret", texte: "Découvrir ce qu'il cache" },
+      { id: "decouvrir_secret", texte: "Comprendre ce que cache Grégoire" },
+      { id: "regarder_bureau_adrien", texte: "Regarder le bureau d'Adrien" },
     ]);
 
-    // NOUVEAU : on débloque immédiatement la lettre (les 3 autres objets se
-    // débloquent tout seuls au prochain update(), via objetsDebloques())
+    // NOUVEAU : on débloque immédiatement la lettre et la note d'Adrien (les
+    // autres objets se débloquent tout seuls au prochain update(), via
+    // objetsDebloques())
     if (this.lettre) this.lettre.verrouille = false;
+    if (this.noteAdrien) this.noteAdrien.verrouille = false;
 
     // Disparition en fondu, puis destruction réelle du sprite
-    if (this.dude2) {
+    if (this.gregoire) {
       this.tweens.add({
-        targets: this.dude2,
+        targets: this.gregoire,
         alpha: 0,
         duration: 600,
         onComplete: () => {
-          if (this.dude2) {
-            this.dude2.destroy();
-            this.dude2 = null;
+          if (this.gregoire) {
+            this.gregoire.destroy();
+            this.gregoire = null;
           }
         },
       });
     }
   }
 
-  // NOUVEAU : vrai une fois que dude2 est parti -> débloque bureau/ordinateur/
-  // bibliothèque/lettre. Centralisé ici pour ne pas répéter le registry.get()
-  // partout.
+  // NOUVEAU : vrai une fois que Grégoire est parti -> débloque bureau/ordinateur/
+  // bibliothèque/lettre/note d'Adrien. Centralisé ici pour ne pas répéter le
+  // registry.get() partout.
   objetsDebloques() {
-    return this.registry.get("dude2_accueil_parti") || false;
+    return this.registry.get("gregoire_entreprise_parti") || false;
   }
 
-  // NOUVEAU : vrai seulement quand la lettre a été prise ET le tiroir ouvert
+  // NOUVEAU : vrai seulement quand la lettre a été prise, le tiroir ouvert ET
+  // la note d'Adrien vue en gros plan -> condition pour accéder à la porte secrète
   secretEntierementDecouvert() {
-    return possedeObjet(this, "lettre") && this.tiroirOuvert;
-  }
-
-  // NOUVEAU : à appeler à chaque fois qu'une des 2 conditions change
-  // (ramassage de la lettre, ouverture du tiroir) -> termine la tâche
-  // "decouvrir_secret" dès que les DEUX sont réunies, pas avant.
-  verifierSecretDecouvert() {
-    if (this.secretEntierementDecouvert()) {
-      terminerTache(this, "decouvrir_secret");
-    }
+    return possedeObjet(this, "lettre") && this.tiroirOuvert && (this.registry.get("note_adrien_vue") || false);
   }
 
   /* ============================================================
-   *  NOUVEAU : SYSTÈME DE MONOLOGUE SOLO (identique à cafet.js/gendarmerie2.js)
+   *  NOUVEAU : LA NOTE D'ADRIEN (gros plan, fermeture par la croix uniquement)
+   * ============================================================ */
+  afficherNoteAdrien() {
+    if (this.noteOuverte) return;
+    this.noteOuverte = true;
+    this.physics.pause();
+
+    const largeurJeu = this.cameras.main.width;
+    const hauteurJeu = this.cameras.main.height;
+
+    const voile = this.add.rectangle(largeurJeu / 2, hauteurJeu / 2, largeurJeu, hauteurJeu, 0x000000, 0.8).setScrollFactor(0);
+
+    const image = this.add.image(largeurJeu / 2, hauteurJeu / 2, "note_adrien").setScrollFactor(0);
+    // on adapte la taille pour qu'elle tienne bien à l'écran, sans la déformer
+    const echelle = Math.min((largeurJeu * 0.7) / image.width, (hauteurJeu * 0.7) / image.height);
+    image.setScale(echelle);
+
+    const boutonFermer = this.add
+      .text(largeurJeu / 2 + image.displayWidth / 2 + 10, hauteurJeu / 2 - image.displayHeight / 2 - 10, "✕", {
+        font: "bold 22px Arial",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 8, y: 4 },
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setInteractive({ useHandCursor: true });
+
+    boutonFermer.on("pointerdown", () => this.fermerNoteAdrien());
+
+    this.vueNoteAdrien = this.add.container(0, 0, [voile, image, boutonFermer]);
+    this.vueNoteAdrien.setDepth(3000);
+  }
+
+  fermerNoteAdrien() {
+    if (this.vueNoteAdrien) {
+      this.vueNoteAdrien.destroy(true);
+      this.vueNoteAdrien = null;
+    }
+    this.noteOuverte = false;
+
+    // NOUVEAU : enchaîne directement sur le petit monologue de Violette,
+    // puis valide la tâche "regarder_bureau_adrien"
+    this.lancerMonologue(dialogueNoteAdrien, () => {
+      terminerTache(this, "regarder_bureau_adrien");
+      this.registry.set("note_adrien_vue", true);
+    });
+  }
+
+  /* ============================================================
+   *  SYSTÈME DE MONOLOGUE SOLO (identique à cafet.js/maison.js)
    * ============================================================ */
   lancerMonologue(lignes, onFin) {
     this.monologue = { lignes, index: 1, onFin };
@@ -671,9 +704,6 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.tiroirOuvert = true;
     this.registry.set("accueil_tiroir_ouvert", true);
 
-    // NOUVEAU : on vérifie si le secret est maintenant entièrement découvert
-    this.verifierSecretDecouvert();
-
     this.tweens.add({
       targets: bureau,
       x: bureau.x + 120, // vers la droite ; ajuste la distance si besoin
@@ -690,25 +720,24 @@ export default class entreprise_gregoire extends Phaser.Scene {
       return;
     }
 
-    // NOUVEAU : indice "E" de la lettre (gère lui-même son verrouillage)
-    if (this.lettre) this.lettre.update(player);
+    // NOUVEAU : pendant que la note d'Adrien est affichée en gros plan, le
+    // joueur est figé lui aussi (fermeture uniquement via la croix)
+    if (this.noteOuverte) {
+      player.setVelocity(0, 0);
+      player.anims.play("turn");
+      return;
+    }
 
-    // NOUVEAU : indices "E" des 4 objets, uniquement une fois débloqués
+    // NOUVEAU : indice "E" de la lettre et de la note (gèrent eux-mêmes leur verrouillage)
+    if (this.lettre) this.lettre.update(player);
+    if (this.noteAdrien) this.noteAdrien.update(player);
+
+    // NOUVEAU : indices "E" des autres objets, uniquement une fois débloqués
     if (this.objetsDebloques()) {
       const distBureauMaj = Phaser.Math.Distance.Between(player.x, player.y, bureau.x, bureau.y);
       const distOrdinateurMaj = Phaser.Math.Distance.Between(player.x, player.y, ordinateur.x, ordinateur.y);
-      const distBibliothequeMaj = Phaser.Math.Distance.Between(
-        player.x,
-        player.y,
-        bibliotheque.x,
-        bibliotheque.y
-      );
-      const distPorteSecreteMaj = Phaser.Math.Distance.Between(
-        player.x,
-        player.y,
-        this.porteSecrete.x,
-        this.porteSecrete.y
-      );
+      const distBibliothequeMaj = Phaser.Math.Distance.Between(player.x, player.y, bibliotheque.x, bibliotheque.y);
+      const distPorteSecreteMaj = Phaser.Math.Distance.Between(player.x, player.y, this.porteSecrete.x, this.porteSecrete.y);
 
       this.indiceBureau.setVisible(!this.tiroirOuvert && distBureauMaj < 70);
       this.indiceOrdinateur.setVisible(distOrdinateurMaj < 70);
@@ -724,7 +753,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
     /***************************
      *  CREATION DES ANIMATIONS *
      ****************************/
-if (cursors.up.isDown) {
+    if (cursors.up.isDown) {
       player.setVelocityY(-160);
       player.anims.play("bas", true);
     } else if (cursors.down.isDown) {
@@ -745,22 +774,8 @@ if (cursors.up.isDown) {
       player.setVelocityX(0);
     }
 
-    if (
-      !cursors.up.isDown &&
-      !cursors.down.isDown &&
-      !cursors.left.isDown &&
-      !cursors.right.isDown
-    ) {
+    if (!cursors.up.isDown && !cursors.down.isDown && !cursors.left.isDown && !cursors.right.isDown) {
       player.anims.play("turn");
     }
-
-   
-    
-       
-    /***************************
-     *  TELEPORTATION AVEC LES PORTES *
-     ****************************/
-
-
   }
 }

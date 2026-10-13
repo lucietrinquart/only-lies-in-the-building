@@ -95,13 +95,16 @@ export default class victor_secret extends Phaser.Scene {
     player.anims.play("turn");
   }
 
-  // fondu au noir, puis scène bd
+  // fondu au noir, puis la scène finale chez les gendarmes (choix du coupable)
   finDeScene() {
     if (this.sceneTerminee) return;
     this.sceneTerminee = true;
 
     this.cameras.main.once("camerafadeoutcomplete", () => {
-      this.scene.start("bd");
+      // NOUVEAU : Victor vient de se confier -> on part directement vers le
+      // commissariat (gendarmerie2.js) et son choix du coupable, au lieu de
+      // l'ancienne scène "bd" générique.
+      this.scene.start("gendarmerie2");
     });
     this.cameras.main.fadeOut(1500, 0, 0, 0);
   }

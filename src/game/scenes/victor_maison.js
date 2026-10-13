@@ -21,10 +21,12 @@ const INDICE_CODE =
 /* ============================================================
  *  TEXTES
  * ============================================================ */
-var introMonologue = [
-  { texte: "Violette : Il n'est toujours pas là...", moi: "moi_triste", perso: false },
-  { texte: "Violette : Je pourrais en profiter pour découvrir un peu son appartement.", moi: "moi_heureuse", perso: false },
-  { texte: "Violette : C'est vrai que je ne l'ai jamais vraiment fait.", moi: "moi_heureuse", perso: false },
+// NOUVEAU : Victor est présent à l'arrivée -> il accueille Violette, puis
+// part chercher de quoi manger (laissant le champ libre pour l'exploration)
+var dialogueVictorArrivee = [
+  { texte: "Victor : Entre. Tu as l'air épuisée.", moi: "moi_triste", perso: "victor" },
+  { texte: "Violette : Merci de m'avoir proposé de venir.", moi: "moi_triste", perso: "victor" },
+  { texte: "Victor : Je descends chercher de quoi manger. Dix minutes. Fais comme chez toi.", moi: "moi_heureuse", perso: "victor" },
 ];
 
 var monologueBracelet = [
@@ -35,6 +37,27 @@ var monologueBracelet = [
 var monologueBrosse = [
   { texte: "Violette : C'est bizarre... C'est ma brosse aussi.", moi: "moi_triste", perso: false },
 ];
+
+// NOUVEAU : les 2 fins possibles de la scène, selon que la pièce secrète (la
+// bibliothèque déplacée) a été découverte ou non pendant que Victor était sorti.
+var finPieceTrouvee = [
+  { texte: "Victor : Je t'avais dit de faire comme chez toi.", moi: "moi_colere", perso: "victor" },
+  { texte: "Violette (voix off) : Il n'a rien ajouté.", moi: "moi_triste", perso: false },
+];
+
+var finPieceNonTrouvee = [
+  { texte: "Victor : Désolé, j'ai été long. Tu as trouvé ce que tu cherchais ?", moi: "moi_triste", perso: "victor" },
+  { texte: "Violette (voix off) : Je ne lui avais pas dit que je cherchais quelque chose.", moi: "moi_triste", perso: false },
+];
+
+// NOUVEAU : commune aux deux fins -> Violette sait qui est le coupable et
+// part voir les gendarmes
+var monologueDepartCommissariat = [
+  { texte: "Violette : Ça y est. Je sais qui a fait ça. Il faut que j'aille voir les gendarmes.", moi: "moi_colere", perso: false },
+];
+
+// NOUVEAU : durée (en ms) avant que Victor ne revienne -> ajuste si besoin
+const DUREE_ABSENCE_VICTOR = 40000;
 
 /* ============================================================
  *  PAVÉ DE CODE (petite interface cliquable)
@@ -178,6 +201,8 @@ export default class victor_maison extends Phaser.Scene {
   create() {
     this.monologue = null;
     this.porteOuverte = this.registry.get("victor_porte_ouverte") || false;
+    // NOUVEAU : empêche de relancer deux fois la fin de scène
+    this.finEnCours = false;
 
     const carteDuNiveau = this.add.tilemap("carte8");
     this.carteUI = new CarteUI(this);
@@ -353,11 +378,11 @@ export default class victor_maison extends Phaser.Scene {
       }
     });
 
-    // MONOLOGUE D'ARRIVÉE (une seule fois)
+    // NOUVEAU : Victor accueille Violette (une seule fois), puis part chercher
+    // à manger -> le champ est libre pour l'exploration jusqu'à son retour.
     if (!this.registry.get("victor_maison_intro_joue")) {
-      this.lancerMonologue(introMonologue, () => {
-        this.registry.set("victor_maison_intro_joue", true);
-      });
+      this.registry.set("victor_maison_intro_joue", true);
+      this.fairearriverVictor();
     }
   }
 
@@ -431,6 +456,81 @@ export default class victor_maison extends Phaser.Scene {
       duration: 800,
       ease: "Cubic.easeInOut",
     });
+  }
+
+  /* ============================================================
+   *  NOUVEAU : ARRIVÉE DE VICTOR -> IL PART -> IL REVIENT (2 FINS)
+   * ============================================================ */
+  fairearriverVictor() {
+    const textureVictor = this.textures.exists("victor") ? "victor" : "img_perso2";
+    // NOUVEAU : position d'accueil -> ajuste selon l'entrée de l'appartement de Victor
+    this.victor = this.physics.add.sprite(450, 600, textureVictor);
+
+    this.lancerMonologue(dialogueVictorArrivee, () => {
+      this.victorPart();
+    });
+  }
+
+  victorPart() {
+    if (!this.victor) {
+      this.demarrerAbsenceVictor();
+      return;
+    }
+
+    this.tweens.add({
+      targets: this.victor,
+      alpha: 0,
+      duration: 600,
+      onComplete: () => {
+        if (this.victor) {
+          this.victor.destroy();
+          this.victor = null;
+        }
+        this.demarrerAbsenceVictor();
+      },
+    });
+  }
+
+  // Lance le minuteur de retour de Victor. Si le joueur part explorer la
+  // pièce secrète entre-temps (scène "victor_secret"), ce minuteur est
+  // automatiquement annulé par Phaser puisque la scène s'arrête.
+  demarrerAbsenceVictor() {
+    this.time.delayedCall(DUREE_ABSENCE_VICTOR, () => {
+      this.victorRevient();
+    });
+  }
+
+  // Victor revient : une des 2 fins selon que la pièce secrète (bibliothèque
+  // déplacée) a été découverte ou non, puis Violette part voir les gendarmes.
+  victorRevient() {
+    if (this.finEnCours) return;
+    this.finEnCours = true;
+
+    const textureVictor = this.textures.exists("victor") ? "victor" : "img_perso2";
+    this.victor = this.physics.add.sprite(450, 600, textureVictor);
+    this.victor.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.victor,
+      alpha: 1,
+      duration: 500,
+      onComplete: () => {
+        const finChoisie = this.porteOuverte ? finPieceTrouvee : finPieceNonTrouvee;
+
+        this.lancerMonologue(finChoisie, () => {
+          this.lancerMonologue(monologueDepartCommissariat, () => {
+            this.partirAuCommissariat();
+          });
+        });
+      },
+    });
+  }
+
+  partirAuCommissariat() {
+    this.cameras.main.once("camerafadeoutcomplete", () => {
+      this.scene.start("gendarmerie2");
+    });
+    this.cameras.main.fadeOut(1500, 0, 0, 0);
   }
 
   lancerMonologue(lignes, onFin) {

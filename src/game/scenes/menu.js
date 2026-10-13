@@ -110,11 +110,24 @@ this.load.image("carte2", "./assets/carte2.png");
 
     this.load.image("ticket", "./assets/ticket.png");
     this.load.image("shella", "./assets/perso.png");
+        this.load.image("victor", "./assets/perso.png");
+
+        this.load.image("coloc", "./assets/perso.png");
+
       this.load.image("cunegonde", "./assets/perso.png");
   this.load.image("gregoire", "./assets/perso.png");
     this.load.image("poubelle", "./assets/poubelle.webp");
     this.load.image("cle", "./assets/cle.png");
     this.load.image("lettre", "./assets/lettre.jpg");
+    this.load.image("letrio", "./assets/lettre.jpg");
+    this.load.image("note_adrien", "./assets/lettre.jpg");
+        this.load.image("carnet_enigme_gregoire", "./assets/lettre.jpg");
+
+    this.load.image("suspicion_victor", "./assets/lettre.jpg");
+    this.load.image("suspicion_marguerite", "./assets/lettre.jpg");
+    this.load.image("suspicion_gregoire", "./assets/lettre.jpg");
+    this.load.image("suspicion_jessica", "./assets/lettre.jpg");
+
 
     this.load.image("martin", "./assets/perso.png");
 
@@ -154,7 +167,7 @@ this.load.image("carte2", "./assets/carte2.png");
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("maison");
         
       });
 
