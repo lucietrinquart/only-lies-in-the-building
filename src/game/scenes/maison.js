@@ -170,7 +170,9 @@ export default class maison extends Phaser.Scene {
 
     this.inventaireUI = new InventaireUI(this);
 
-    const carteDuNiveau = this.add.tilemap("carte1");
+const carteDuNiveau = this.add.tilemap("carte1");
+
+
     this.carteUI = new CarteUI(this);
     this.tachesUI = new TachesUI(this);
 
@@ -184,7 +186,7 @@ export default class maison extends Phaser.Scene {
      *  et le keydown-E.
      * ============================================================ */
     this.sacAMain = new ObjetRamassable(
-      this, 250, 240, "sac_a_main", "Sac à main",
+      this, 700, 420, "sac_a_main", "Sac à main",
       "Un sac à main abandonné. Il pourrait servir à ranger des objets utiles à l'enquête.",
       {
         taille: 40,
@@ -202,12 +204,12 @@ export default class maison extends Phaser.Scene {
     );
 
     this.carteObjet = new ObjetRamassable(
-      this, 540, 190, "carte2", "Carte",
+      this, 200, 150, "carte2", "Carte",
       "Une carte de la ville et de ses environs.",
       {
         taille: 40,
         message: "Carte récupérée",
-        perimetre: 60,
+        perimetre: 100,
         ajouterAInventaire: false,
         cleDejaRamasse: "carte_debloquee",
         onRamasse: () => {
@@ -232,28 +234,33 @@ export default class maison extends Phaser.Scene {
 });
 
     // tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_maison", "Phaser_tuilesdejeu1");
+// Plus loin :
+const tileset = carteDuNiveau.addTilesetImage(
+  "tileset_32",
+  "Phaser_tuilesdejeu1"
+);
     carteDuNiveau.createLayer("sol", tileset);
-    const dehors = carteDuNiveau.createLayer("dehors", tileset);
+    const careenoir = carteDuNiveau.createLayer("careenoir", tileset);
     const mur = carteDuNiveau.createLayer("mur", tileset);
-    carteDuNiveau.createLayer("mur_2d", tileset);
-    const Sol_et_objet_sur_le_mur = carteDuNiveau.createLayer("Sol_et_objet_sur_le_mur", tileset);
-    carteDuNiveau.createLayer("boiserie_mur_fond", tileset);
-    const mur_et_meuble = carteDuNiveau.createLayer("mur_et_meuble", tileset);
-    const meuble_cuisine = carteDuNiveau.createLayer("meuble_cuisine", tileset);
-    const meuble_salon_chambre_et_douche = carteDuNiveau.createLayer("meuble_salon_chambre_et_douche", tileset);
-    const meuble = carteDuNiveau.createLayer("meuble", tileset);
-    const paillasson = carteDuNiveau.createLayer("paillasson", tileset);
-    const etalonnage_chaud = carteDuNiveau.createLayer("etalonnage_chaud", tileset);
-    const vignette = carteDuNiveau.createLayer("vignette", tileset);
+    carteDuNiveau.createLayer("surlemur", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const chaises = carteDuNiveau.createLayer("chaises", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const porte = carteDuNiveau.createLayer("porte", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const chat = carteDuNiveau.createLayer("chat", tileset);
+        const dessous = carteDuNiveau.createLayer("dessous", tileset);
+    const dessus = carteDuNiveau.createLayer("dessus", tileset);
+
 
 
     /***************************
      *  CREATION DES OBJETS *
      ****************************/
     groupe_plateformes = this.physics.add.staticGroup();
-    player = this.physics.add.sprite(450, 530, "img_perso");
-    telephone = this.physics.add.sprite(530, 400, "telephone");
+    player = this.physics.add.sprite(800, 530, "img_perso");
+    telephone = this.physics.add.sprite(250, 800, "telephone");
     telephone.setScale(0.03);
     this.telephone = telephone;
 
@@ -270,7 +277,7 @@ export default class maison extends Phaser.Scene {
       .setVisible(false);
 
 
-          telephone2 = this.physics.add.sprite(250, 430, "telephone");
+          telephone2 = this.physics.add.sprite(300, 530, "telephone");
     telephone2.setScale(0.03);
     this.telephone2 = telephone2;
 
@@ -295,7 +302,7 @@ export default class maison extends Phaser.Scene {
       this.demarrerVibrationTelephone2();
     }
 
-            this.ordinateur = this.physics.add.staticSprite(300, 350, "ordinateur");
+            this.ordinateur = this.physics.add.staticSprite(130, 210, "ordinateur");
     this.ordinateur.setScale(0.1);
 
     this.ordinateurEtaitOuvert = false;
@@ -317,7 +324,7 @@ this.indiceOrdinateur = this.add
     //  Purement optionnel pour le joueur -> pas de tâche, pas d'inventaire,
     //  juste une image en grand à regarder, fermée par une croix.
     // ============================================================
-    this.cadrePhoto = this.physics.add.staticSprite(150, 300, "image_letrio"); // NOUVEAU : ajuste la position sur le mur
+    this.cadrePhoto = this.physics.add.staticSprite(445, 280, "image_letrio"); // NOUVEAU : ajuste la position sur le mur
     this.cadrePhoto.setDisplaySize(36, 26); // petit cadre, comme accroché au mur
 
     this.indiceCadrePhoto = this.add
@@ -359,30 +366,39 @@ this.indiceOrdinateur = this.add
     /***************************
      *  COLLISIONS *
      ****************************/
-    dehors.setCollisionByProperty({ estSolide: true });
-    meuble.setCollisionByProperty({ estSolide: true });
+
+
+    careenoir.setCollisionByProperty({ estSolide: true });
+    surlesol.setCollisionByProperty({ estSolide: true });
     mur.setCollisionByProperty({ estSolide: true });
-    Sol_et_objet_sur_le_mur.setCollisionByProperty({ estSolide: true });
-    mur_et_meuble.setCollisionByProperty({ estSolide: true });
-    meuble_cuisine.setCollisionByProperty({ estSolide: true });
-    meuble_salon_chambre_et_douche.setCollisionByProperty({ estSolide: true });
-    paillasson.setCollisionByProperty({ estSolide: true });
-    etalonnage_chaud.setCollisionByProperty({ estSolide: true });
-    vignette.setCollisionByProperty({ estSolide: true });
+    chaises.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    porte.setCollisionByProperty({ estSolide: true });
+    contourmur.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    chat.setCollisionByProperty({ estSolide: true });
 
 
-    this.physics.add.collider(player, dehors);
-    this.physics.add.collider(player, meuble);
-    this.physics.add.collider(player, Sol_et_objet_sur_le_mur);
-    this.physics.add.collider(player, mur);
-    this.physics.add.collider(player, mur_et_meuble);
-    this.physics.add.collider(player, meuble_cuisine);
-    this.physics.add.collider(player, meuble_salon_chambre_et_douche);
-    this.physics.add.collider(player, paillasson);
-    this.physics.add.collider(player, etalonnage_chaud);
-    this.physics.add.collider(player, vignette);
+
+    this.physics.add.collider(player, careenoir);
+        this.physics.add.collider(player, mur);
+        dessous.setDepth(30);
+
+     // ordre d'affichage : sol/murs (0) < personnages et objets (0-10) < "dessus" (40) < "E" (50) < interfaces (1000+)
+dessus.setDepth(40);
+
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, chaises);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, porte);
+    this.physics.add.collider(player, contourmur);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, chat);
 
     player.setCollideWorldBounds(true);
+
+
+
 
     /***************************
      *  TOUCHE E
@@ -437,7 +453,7 @@ if (telOk && (this.sacAMain.tenterRamassage(player) || this.carteObjet.tenterRam
   return;
 }
 
-if (distTel < 60) {
+if (distTel < 75) {
   this.ouvrirTelephone("Telephone");
   return;
 }
@@ -455,7 +471,7 @@ if (distTel2 < 60) {
 
       // NOUVEAU : petit rappel si le joueur essaie de ramasser trop tôt
       if (!telOk) {
-        const pres = (x, y) => Phaser.Math.Distance.Between(player.x, player.y, x, y) < 60;
+        const pres = (x, y) => Phaser.Math.Distance.Between(player.x, player.y, x, y) < 100;
         if (pres(250, 450) || pres(600, 450)) {
           afficherMessage(this, "Mon téléphone vient de vibrer, je devrais d'abord regarder.", 3000);
         }
@@ -483,9 +499,15 @@ if (distTel2 < 60) {
     clavier = this.input.keyboard.createCursorKeys();
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
-    this.cameras.main.setBounds(0, 0, 800, 608);
-    this.cameras.main.startFollow(player);
+// Taille réelle de la pièce : 25 x 31 tuiles de 32 px
+const LARGEUR_PIECE = 25 * 32; // 800
+const HAUTEUR_PIECE = 31 * 32; // 992
+
+this.physics.world.setBounds(0, 0, LARGEUR_PIECE, HAUTEUR_PIECE);
+this.cameras.main.setBounds(0, 0, LARGEUR_PIECE, HAUTEUR_PIECE);
+this.cameras.main.startFollow(player, true, 0.1, 0.1);
+this.cameras.main.roundPixels = true;
+
 
     // MONOLOGUE D'INTRODUCTION (une seule fois)
 if (!this.registry.get(CLE_INTRO)) {
@@ -493,7 +515,7 @@ if (!this.registry.get(CLE_INTRO)) {
     this.registry.set(CLE_INTRO, true);
   });
 } else if (
-  estTacheTerminee(this, "decouvrir_secret") &&
+  estTacheTerminee(this, "parler_gregoire") &&
   !this.registry.get(CLE_APPEL_VICTOR_SONNE) &&
   !this.registry.get(CLE_APPEL_VICTOR_FAIT)
 ) {
@@ -562,7 +584,7 @@ this.indiceOrdinateur.setVisible(this.ordinateurDebloque() && !ordinateurOuvert 
 
     // NOUVEAU : "E" du téléphone
     const distTel = Phaser.Math.Distance.Between(player.x, player.y, this.telephone.x, this.telephone.y);
-    this.indiceTelephone.setVisible(distTel < 60);
+    this.indiceTelephone.setVisible(distTel < 75);
 
      const distTel2 = Phaser.Math.Distance.Between(player.x, player.y, this.telephone2.x, this.telephone2.y);
     this.indiceTelephone1.setVisible(distTel2 < 60);

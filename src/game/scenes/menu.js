@@ -24,8 +24,13 @@ this.load.image("Phaser_tuilesdejeu7", "./assets/sprite_police.png");
 this.load.tilemapTiledJSON("carte7", "./assets/map_police.json");
 
 
-this.load.image("Phaser_tuilesdejeu1", "./assets/sprite_maison.png");
-this.load.tilemapTiledJSON("carte1", "./assets/maison.json");
+this.load.image("Phaser_tuilesdejeu_autre", "./assets/sprite_maison.png");
+this.load.tilemapTiledJSON("carte_autre", "./assets/maison.json");
+
+// Dans menu.js, dans preload()
+this.load.image("Phaser_tuilesdejeu1", "./assets/tileset_32.png");
+this.load.tilemapTiledJSON("carte1", "./assets/Chambre_V2.json");
+
 
 
 this.load.image("Phaser_tuilesdejeu6", "./assets/sprite_couloir.png");

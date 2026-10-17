@@ -15,14 +15,15 @@ var cursors;
 // NOUVEAU : les 7 phrases du carnet, DANS LE BON ORDRE. La classe
 // EnigmeCarnetUI les mélange elle-même pour l'affichage -> ne pas les
 // réordonner ici, c'est la solution attendue.
+
 var phrasesCarnet = [
-  "« Je commence à comprendre. »",
-  "« Il est plus proche que je ne le pensais. »",
-  "« Il sait toujours où elle est. »",
-  "« Je ne peux pas écrire son nom ici. »",
-  "« Tu sais qui. »",
-  "« Je pensais pouvoir lui faire confiance. »",
-  "« J'ai programmé un message pour C. »",
+  "« Alors, je commence à comprendre. »",
+  "« Bien plus proche que je ne le pensais. »",
+  "« Certainement, il sait toujours où elle est. »",
+  "« Décidément, je ne peux pas écrire son nom ici. »",
+  "« Évidemment, tu sais qui. »",
+  "« Franchement, je pensais pouvoir lui faire confiance. »",
+  "« Grâce à moi, un message est programmé pour C. »",
 ];
 
 var monologueCarnetReussi = [
