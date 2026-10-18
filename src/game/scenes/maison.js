@@ -14,6 +14,7 @@ var telephone;
 var telephone2;
 
 
+
 /* ============================================================
  *  TEXTES
  * ============================================================ */
@@ -78,53 +79,53 @@ var dialogueAppelVictor = [
 // cette étape de l'enquête (distincte du dialogue de départ pour le bar
 // ci-dessous, qui reste inchangé).
 var dialogueMargueriteRevelation = [
-  { texte: "Marguerite : Tu n'as pas dormi. Encore.", moi: "moi_triste", perso: "perso_triste" },
+  { texte: "Marguerite : Tu n'as pas dormi. Encore.", moi: "moi_triste", perso: "marguerite_triste" },
   {
     texte: "Violette : Grégoire mentait pour une autre raison. Jessica aimait Adrien. Et quelqu'un a touché à la voiture d'Adrien.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "marguerite_colere",
   },
-  { texte: "Marguerite : Et tu en es où ?", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Marguerite : Et tu en es où ?", moi: "moi_colere", perso: "marguerite_colere" },
   {
     texte: "Violette : Quelqu'un de proche. Quelqu'un qu'il laissait entrer. Quelqu'un qui savait où nous trouver.",
     moi: "moi_colere",
-    perso: "perso_colere",
+    perso: "marguerite_colere",
   },
   {
     texte: "Marguerite : Je ne dis pas que je sais. Je dis que moi, j'aurais regardé qui savait toujours où tu étais.",
     moi: "moi_triste",
-    perso: "perso_colere",
+    perso: "marguerite_triste",
   },
-  { texte: "Violette : Marguerite…", moi: "moi_triste", perso: "perso_colere" },
-  { texte: "Marguerite : Je ne te dis rien d'autre. Tu ne m'écouterais pas.", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : Marguerite…", moi: "moi_triste", perso: "marguerite_triste" },
+  { texte: "Marguerite : Je ne te dis rien d'autre. Tu ne m'écouterais pas.", moi: "moi_colere", perso: "marguerite_triste" },
 ];
 
 // NOUVEAU : le dialogue avec Marguerite, la coloc qui rentre des courses juste
 // avant que Violette ne parte. "moi" = portrait de Violette, "perso" = portrait
 // de Marguerite (perso_triste / perso_heureuse / perso_colere).
 var dialogueMarguerite = [
-  { texte: "Marguerite : Tu sors ? À cette heure-ci ?", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Violette : Je vais voir quelqu'un. Adrien avait laissé des notes. Je veux comprendre.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Marguerite : Tu en as parlé à quelqu'un ? À Victor, par exemple ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Violette : Pas encore. Pourquoi ?", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Marguerite : Parce que je ne l'aime pas, Violette. Je ne l'ai jamais aimé.", moi: "moi_triste", perso: "perso_colere" },
-  { texte: "Violette : (elle rit) Marguerite...", moi: "moi_heureuse", perso: "perso_colere" },
-  { texte: "Marguerite : Je suis sérieuse. Il y a quelque chose chez lui qui cloche.", moi: "moi_heureuse", perso: "perso_colere" },
-  { texte: "Violette : Tu dis ça parce qu'il t'a dit non.", moi: "moi_colere", perso: "perso_colere" },
-  { texte: "Marguerite : Ça n'a rien à voir avec ça.", moi: "moi_colere", perso: "perso_colere" },
+  { texte: "Marguerite : Tu sors ? À cette heure-ci ?", moi: "moi_triste", perso: "marguerite_triste" },
+  { texte: "Violette : Je vais voir quelqu'un. Adrien avait laissé des notes. Je veux comprendre.", moi: "moi_colere", perso: "marguerite_triste" },
+  { texte: "Marguerite : Tu en as parlé à quelqu'un ? À Victor, par exemple ?", moi: "moi_colere", perso: "marguerite_triste" },
+  { texte: "Violette : Pas encore. Pourquoi ?", moi: "moi_triste", perso: "marguerite_triste" },
+  { texte: "Marguerite : Parce que je ne l'aime pas, Violette. Je ne l'ai jamais aimé.", moi: "moi_triste", perso: "marguerite_colere" },
+  { texte: "Violette : (elle rit) Marguerite...", moi: "moi_heureuse", perso: "marguerite_colere" },
+  { texte: "Marguerite : Je suis sérieuse. Il y a quelque chose chez lui qui cloche.", moi: "moi_heureuse", perso: "marguerite_colere" },
+  { texte: "Violette : Tu dis ça parce qu'il t'a dit non.", moi: "moi_colere", perso: "marguerite_colere" },
+  { texte: "Marguerite : Ça n'a rien à voir avec ça.", moi: "moi_colere", perso: "marguerite_colere" },
   {
     texte: "Violette : Bien sûr que si. Tu lui as fait des avances, il t'a repoussée, et depuis tu lui trouves tous les défauts.",
     moi: "moi_colere",
-    perso: "perso_colere",
+    perso: "marguerite_colere",
   },
-  { texte: "Marguerite : Il te regarde comme s'il t'attendait. Tu ne l'as jamais remarqué ?", moi: "moi_triste", perso: "perso_triste" },
+  { texte: "Marguerite : Il te regarde comme s'il t'attendait. Tu ne l'as jamais remarqué ?", moi: "moi_triste", perso: "marguerite_triste" },
   {
     texte: "Violette : C'est le meilleur ami d'Adrien. Il m'a soutenue quand tout le monde me tournait le dos.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "marguerite_triste",
   },
-  { texte: "Marguerite : (un temps) D'accord. Laisse tomber. Fais attention à toi.", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Violette : Bon, je vais au bar. Je ferai attention à moi, promis. Bisous, on se voit plus tard !", moi: "moi_heureuse", perso: "perso_heureuse" },
+  { texte: "Marguerite : (un temps) D'accord. Laisse tomber. Fais attention à toi.", moi: "moi_triste", perso: "marguerite_triste" },
+  { texte: "Violette : Bon, je vais au bar. Je ferai attention à moi, promis. Bisous, on se voit plus tard !", moi: "moi_heureuse", perso: "marguerite_heureuse" },
 ];
 
 // NOUVEAU : clés du registry (mémoire du jeu, survit aux changements de scène)
@@ -144,6 +145,57 @@ const CLE_APPEL_VICTOR_FAIT = "appel_victor_decouvrir_secret_fait"; // l'appel a
 // identiques dans les deux fichiers.
 const CLE_JESSICA_OBJECTIF = "objectif_parler_jessica_actif";
 const CLE_MARGUERITE_OBJECTIF = "objectif_parler_marguerite_actif";
+
+/* ============================================================
+ *  MARGUERITE (sprite "pnj_fille") : TOUS LES RÉGLAGES ICI
+ *  ------------------------------------------------------------
+ *  Frames du spritesheet "pnj_fille" :
+ *    0 à 3   : immobile, elle respire (boucle)
+ *    4 à 6   : marche vers la droite
+ *    7 à 9   : marche vers la gauche
+ *    10 à 11 : marche vers le haut
+ *    12      : immobile (image fixe)
+ *    13 à 14 : marche vers le bas
+ * ============================================================ */
+const ECHELLE_MARGUERITE = 1; // taille du sprite (1 = taille d'origine)
+const VITESSE_MARGUERITE = 110; // pixels par seconde pendant la marche
+const DELAI_AVANT_DEPART = 2000; // ms : elle reste immobile après être apparue
+
+// Sens de marche utilisables dans un parcours ("attendre" = pause immobile)
+const DIRECTIONS_MARGUERITE = {
+  haut: { vx: 0, vy: -1, anim: "marguerite_haut" },
+  bas: { vx: 0, vy: 1, anim: "marguerite_bas" },
+  gauche: { vx: -1, vy: 0, anim: "marguerite_gauche" },
+  droite: { vx: 1, vy: 0, anim: "marguerite_droite" },
+  attendre: { vx: 0, vy: 0, anim: "marguerite_idle" },
+};
+
+// Parcours de Marguerite selon le DERNIER objet ramassé par le joueur.
+//  - depart : où elle apparaît
+//  - etapes : liste dans l'ordre, { direction, duree en ms }
+// Distance parcourue par étape = VITESSE_MARGUERITE x duree / 1000
+// (ex. 60 px/s pendant 3000 ms = 180 px). Parcours provisoires : à adapter.
+const PARCOURS_MARGUERITE = {
+  // dernier objet = le sac (le joueur est vers 700, 420)
+  sac: {
+    depart: { x: 800, y: 540 },
+    etapes: [
+      { direction: "gauche", duree: 400 },
+      { direction: "haut", duree: 1000 },
+    ],
+  },
+  // dernier objet = la carte (le joueur est vers 200, 150)
+  carte: {
+    depart: { x: 800, y: 540 },
+    etapes: [
+      { direction: "gauche", duree: 3000 },
+      { direction: "haut", duree: 1800 },
+      { direction: "gauche", duree: 2000 },
+      { direction: "haut", duree: 800 },
+
+    ],
+  },
+};
 
 
 export default class maison extends Phaser.Scene {
@@ -198,7 +250,7 @@ const carteDuNiveau = this.add.tilemap("carte1");
           this.inventaireUI.debloquer();
           afficherMessage(this, "Vous avez maintenant un inventaire !", 5000);
           terminerTache(this, "recuperer_sac"); // NOUVEAU
-          this.verifierPreparatifs(); // NOUVEAU
+          this.verifierPreparatifs("sac"); // NOUVEAU : on retient quel objet vient d'être pris
         },
       }
     );
@@ -220,7 +272,7 @@ const carteDuNiveau = this.add.tilemap("carte1");
             5000
           );
           terminerTache(this, "recuperer_carte"); // NOUVEAU
-          this.verifierPreparatifs(); // NOUVEAU
+          this.verifierPreparatifs("carte"); // NOUVEAU : on retient quel objet vient d'être pris
         },
       }
     );
@@ -232,6 +284,8 @@ const carteDuNiveau = this.add.tilemap("carte1");
     { nomAffiche: "video-089-06-09-2026-23:05", cle: "video_surveillance3" },
   ],
 });
+
+
 
     // tuiles
 // Plus loin :
@@ -263,6 +317,11 @@ const tileset = carteDuNiveau.addTilesetImage(
     telephone = this.physics.add.sprite(250, 800, "telephone");
     telephone.setScale(0.03);
     this.telephone = telephone;
+
+// NOUVEAU : animations de Marguerite (sprite "pnj_fille"), réglages en haut du fichier
+this.creerAnimationsMarguerite();
+this.cinematiqueEnCours = false;
+
 
     // NOUVEAU : la lettre "E" au-dessus du téléphone
     this.indiceTelephone = this.add
@@ -346,12 +405,12 @@ this.indiceOrdinateur = this.add
     // ============================================================
     this.margueriteDisponible = estTacheTerminee(this, "decouvrir_secret");
     if (this.margueriteDisponible) {
-      const textureMargueriteMaison = this.textures.exists("marguerite") ? "marguerite" : "img_perso2";
+      // NOUVEAU : Marguerite = sprite "pnj_fille" (animation immobile en boucle)
       // NOUVEAU : ajuste la position selon ton plan de l'appartement
-      this.margueriteMaison = this.physics.add.sprite(350, 300, textureMargueriteMaison);
+      this.margueriteMaison = this.creerSpriteMarguerite(700, 540);
 
       this.indiceMarguerite = this.add
-        .text(this.margueriteMaison.x, this.margueriteMaison.y - 26, "E", {
+        .text(this.margueriteMaison.x, this.margueriteMaison.y - this.margueriteMaison.displayHeight / 2 - 12, "E", {
           font: "bold 16px Arial",
           color: "#ffffff",
           backgroundColor: "#000000",
@@ -381,7 +440,7 @@ this.indiceOrdinateur = this.add
 
 
     this.physics.add.collider(player, careenoir);
-        this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, mur);
         dessous.setDepth(30);
 
      // ordre d'affichage : sol/murs (0) < personnages et objets (0-10) < "dessus" (40) < "E" (50) < interfaces (1000+)
@@ -417,6 +476,10 @@ dessus.setDepth(40);
         this.avancerMonologue();
         return;
       }
+
+      // NOUVEAU : pendant la petite cinématique de Marguerite, E ne fait rien
+      // (sauf pour faire avancer le dialogue, géré juste au-dessus)
+      if (this.cinematiqueEnCours) return;
 
       // NOUVEAU : le cadre photo -> complètement optionnel, juste une vue en grand
       const distPhoto = Phaser.Math.Distance.Between(player.x, player.y, this.cadrePhoto.x, this.cadrePhoto.y);
@@ -542,6 +605,7 @@ if (!this.registry.get(CLE_INTRO)) {
   update() {
     if (this.scene.isPaused()) return;
 
+
     // détecte la fermeture de l'UI de l'ordinateur
 const ordinateurOuvert = this.ordinateurUI.visible;
 if (this.ordinateurEtaitOuvert && !ordinateurOuvert) {
@@ -549,8 +613,8 @@ if (this.ordinateurEtaitOuvert && !ordinateurOuvert) {
 }
 this.ordinateurEtaitOuvert = ordinateurOuvert;
 
-    // NOUVEAU : pendant un monologue, le joueur est figé
-    if (this.monologue) {
+    // NOUVEAU : pendant un monologue (ou la cinématique de Marguerite), le joueur est figé
+    if (this.monologue || this.cinematiqueEnCours) {
       this.indiceOrdinateur.setVisible(false);
       this.indiceCadrePhoto.setVisible(false);
       if (this.indiceMarguerite) this.indiceMarguerite.setVisible(false);
@@ -872,14 +936,16 @@ auRetourDuTelephone() {
 
   // Appelé après chaque ramassage : si sac ET carte sont pris -> on fait
   // arriver Marguerite puis on enchaîne sur leur dialogue (voir plus bas)
-  verifierPreparatifs() {
+  // "dernierObjet" = "sac" ou "carte" : l'objet qui vient d'être ramassé. Si c'est
+  // le dernier des deux, c'est lui qui décide du parcours de Marguerite.
+  verifierPreparatifs(dernierObjet) {
     if (this.departProgramme) return;
     if (!tachesToutesTerminees(this, ["recuperer_sac", "recuperer_carte"])) return;
 
     this.departProgramme = true;
     // petit délai pour laisser le message "récupéré" s'afficher
     this.time.delayedCall(1200, () => {
-      this.fairearriverMarguerite();
+      this.fairearriverMarguerite(dernierObjet);
     });
   }
 
@@ -890,29 +956,90 @@ auRetourDuTelephone() {
    *  puis le dialogue à deux voix se lance tout seul. À la fin, elle
    *  disparaît et on part pour le bar.
    */
-  fairearriverMarguerite() {
-    // NOUVEAU : si l'image "marguerite" n'est pas encore chargée, on retombe
-    // provisoirement sur img_perso2 pour que la scène ne plante pas.
-    const textureMarguerite = this.textures.exists("marguerite") ? "marguerite" : "img_perso2";
+  fairearriverMarguerite(dernierObjet) {
+    // Parcours choisi selon le dernier objet ramassé (voir PARCOURS_MARGUERITE)
+    const parcours = PARCOURS_MARGUERITE[dernierObjet] || PARCOURS_MARGUERITE.sac;
 
-    // NOUVEAU : position d'arrivée -> ajuste selon l'entrée de ton appartement
-    this.marguerite = this.physics.add.sprite(420, 560, textureMarguerite);
+    // Le joueur est figé pendant toute la cinématique
+    this.cinematiqueEnCours = true;
+
+    this.marguerite = this.creerSpriteMarguerite(parcours.depart.x, parcours.depart.y);
     this.marguerite.setAlpha(0);
 
+    // 1) elle apparaît en fondu, 2) immobile (elle respire) pendant DELAI_AVANT_DEPART,
+    // 3) elle suit son parcours, 4) elle s'arrête et le dialogue se lance
     this.tweens.add({
       targets: this.marguerite,
       alpha: 1,
       duration: 600,
       onComplete: () => {
-        this.lancerMonologue(dialogueMarguerite, () => {
-          // Dialogue terminé -> Marguerite s'efface, on part au bar
-          if (this.marguerite) {
-            this.marguerite.destroy();
-            this.marguerite = null;
-          }
-          this.scene.start("bar");
+        this.time.delayedCall(DELAI_AVANT_DEPART, () => {
+          this.jouerParcoursMarguerite(parcours.etapes, 0, () => {
+            this.lancerMonologue(dialogueMarguerite, () => {
+              // Dialogue terminé -> Marguerite s'efface, on part au bar
+              if (this.marguerite) {
+                this.marguerite.destroy();
+                this.marguerite = null;
+              }
+              this.scene.start("bar");
+            });
+          });
         });
       },
     });
+  }
+
+  // Joue les étapes d'un parcours une par une, puis appelle onFin
+  jouerParcoursMarguerite(etapes, index, onFin) {
+    if (!this.marguerite) return;
+
+    if (index >= etapes.length) {
+      // fin du parcours : elle s'arrête et reprend son animation immobile
+      this.marguerite.setVelocity(0, 0);
+      this.marguerite.anims.play("marguerite_idle", true);
+      onFin();
+      return;
+    }
+
+    const etape = etapes[index];
+    const dir = DIRECTIONS_MARGUERITE[etape.direction] || DIRECTIONS_MARGUERITE.attendre;
+
+    this.marguerite.setVelocity(dir.vx * VITESSE_MARGUERITE, dir.vy * VITESSE_MARGUERITE);
+    this.marguerite.anims.play(dir.anim, true);
+
+    this.time.delayedCall(etape.duree, () => {
+      this.jouerParcoursMarguerite(etapes, index + 1, onFin);
+    });
+  }
+
+  // Crée un sprite de Marguerite (spritesheet "pnj_fille") avec l'animation immobile
+  creerSpriteMarguerite(x, y) {
+    const sprite = this.physics.add.sprite(x, y, "pnj_fille");
+    sprite.setScale(ECHELLE_MARGUERITE);
+    sprite.setDepth(5); // comme le joueur, sous le calque "dessus" (40)
+    sprite.setImmovable(true);
+    sprite.body.allowGravity = false;
+    sprite.anims.play("marguerite_idle", true);
+    return sprite;
+  }
+
+  // Animations du spritesheet "pnj_fille" (créées une seule fois pour tout le jeu)
+  creerAnimationsMarguerite() {
+    const creer = (key, start, end, frameRate) => {
+      if (this.anims.exists(key)) return;
+      this.anims.create({
+        key,
+        frames: this.anims.generateFrameNumbers("pnj_fille", { start, end }),
+        frameRate,
+        repeat: -1,
+      });
+    };
+
+    creer("marguerite_idle", 0, 3, 2); // respire
+    creer("marguerite_droite", 4, 6, 6);
+    creer("marguerite_gauche", 7, 9, 6);
+    creer("marguerite_haut", 10, 11, 4);
+    creer("marguerite_fixe", 12, 12, 1); // image fixe (disponible si besoin)
+    creer("marguerite_bas", 13, 14, 4);
   }
 }

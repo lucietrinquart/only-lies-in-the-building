@@ -52,6 +52,10 @@ this.load.image("moi_colere", "./assets/moi_colere.png");
 this.load.image("moi_hereuse", "./assets/moi_hereuse.png");
 this.load.image("moi_triste", "./assets/moi_triste.png");
 
+this.load.image("marguerite_colere", "./assets/marguerite_colere.png");
+this.load.image("marguerite_hereuse", "./assets/marguerite_hereuse.png");
+this.load.image("marguerite_triste", "./assets/marguerite_triste.png");
+
 this.load.image("perso_colere", "./assets/perso_colere.webp");
 this.load.image("perso_hereuse", "./assets/perso_hereuse.webp");
 this.load.image("perso_triste", "./assets/perso_triste.webp");
@@ -107,6 +111,11 @@ this.load.image("carte2", "./assets/carte2.png");
     frameWidth: 32,
     frameHeight: 48,
     });
+
+this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 70,
+});
 
     // chargement tuiles de jeu
     this.load.image("Phaser_tuilesdejeu3", "./assets/sprite_bar.png");
