@@ -7,6 +7,8 @@ export default class menu extends Phaser.Scene {
 
   preload() {
 this.load.image("menu_fond", "./assets/menu_fond.png");
+this.load.image("menu", "./assets/menu.png");
+
 this.load.image("imageBoutonPlay", "./assets/button_play.png");
 this.load.image("imageBoutonPlay2", "./assets/button_play.png");
 
@@ -117,6 +119,27 @@ this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
     frameHeight: 70,
 });
 
+this.load.spritesheet("shella2", "./assets/shella.png", {
+    frameWidth: 58,   // 640 / 4
+    frameHeight: 288,
+});
+
+this.load.spritesheet("gregoire", "./assets/gregoire.png", {
+    frameWidth: 61.7,   // 640 / 4
+    frameHeight: 288,
+});
+
+this.load.spritesheet("jessica", "./assets/jessica.png", {
+    frameWidth: 58.3,   // 640 / 4
+    frameHeight: 150,
+});
+
+this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
+    frameWidth: 57.2,   // 640 / 4
+    frameHeight: 288,
+});
+
+
     // chargement tuiles de jeu
     this.load.image("Phaser_tuilesdejeu3", "./assets/sprite_bar.png");
     this.load.tilemapTiledJSON("carte3", "assets/bar.json");
@@ -168,7 +191,7 @@ this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
 
   create() {
     // on place les éléments de fond
-    var img = this.add.image(0, 0, "menu_fond").setOrigin(0).setDepth(0);
+    var img = this.add.image(0, 0, "menu").setOrigin(0).setDepth(0);
 
     //on ajoute un bouton de clic, nommé bouton_play
     var bouton_play = this.add.image(400, 450, "imageBoutonPlay").setDepth(1);
@@ -181,7 +204,7 @@ this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("maison");
         
       });
 

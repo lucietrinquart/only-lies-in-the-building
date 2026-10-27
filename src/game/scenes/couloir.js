@@ -77,8 +77,10 @@ export default class couloir extends Phaser.Scene {
     this.porte_ville3 = this.physics.add.staticSprite(450, 570, "img_porte1").setAlpha(0);
 
     // Cunégonde (image "cunegonde" si elle est chargée, sinon img_perso2 en attendant)
-    const textureCunegonde = this.textures.exists("cunegonde") ? "cunegonde" : "img_perso2";
-    this.cunegonde = this.physics.add.staticSprite(300, 300, textureCunegonde);
+    const textureCunegonde = this.textures.exists("cunegonde") ? "cunegonde" : "cunegonde";
+    this.cunegonde = this.physics.add.staticSprite(300, 300, textureCunegonde, 12);
+    this.cunegonde.setScale(0.5); 
+
 
     // le "E" au-dessus de Cunégonde
     this.indiceCunegonde = this.add

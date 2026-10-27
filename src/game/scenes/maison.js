@@ -198,6 +198,59 @@ const PARCOURS_MARGUERITE = {
 };
 
 
+/* ============================================================
+ *  TUTORIELS (sac + carte) : TOUS LES RÉGLAGES ICI
+ *  ------------------------------------------------------------
+ *  Quand on ramasse le sac, on lance le tuto "sac". Quand on ramasse
+ *  la carte, on lance le tuto "carte". Chaque tuto se déroule ainsi :
+ *    1) monologue "avant"
+ *    2) un rond rouge pulse sur l'icône + une consigne en haut
+ *       (le joueur ne peut pas bouger, il doit CLIQUER sur l'icône)
+ *    3) le panneau s'ouvre, le joueur le referme
+ *    4) monologue "après"
+ *  Pour le DERNIER objet ramassé, la petite cinématique de pnj_fille
+ *  (Marguerite) ne démarre qu'une fois le tuto terminé.
+ * ============================================================ */
+const TUTO_COULEUR = 0xff0000; // couleur du rond
+const TUTO_RAYON = 40; // rayon du rond autour de l'icône (l'icône fait 55 px)
+const TUTO_Y_CONSIGNE = 130; // hauteur du texte de consigne (en haut de l'écran)
+const TUTO_DELAI_DEBUT = 900; // ms avant le début du tuto (le temps de lire "récupéré")
+
+const TUTOS = {
+  sac: {
+    ui: "inventaireUI",
+    consigne: "Clique avec ta souris pour ouvrir l'inventaire",
+    consigneFermer: "Clique à nouveau sur le sac pour refermer l'inventaire",
+    monologueAvant: [
+      { texte: "Violette : Maintenant, je peux récupérer des objets !", moi: "moi_heureuse", perso: false },
+    ],
+    monologueApres: [
+      { texte: "Violette : Pour l'instant mon sac est vide, mais il pourra se remplir.", moi: "moi_triste", perso: false },
+      {
+        texte: "Violette : En cliquant sur un objet dans mon inventaire, j'aurai des informations en plus sur lui. Il faudra que j'essaye quand j'en aurai un.",
+        moi: "moi_heureuse",
+        perso: false,
+      },
+    ],
+  },
+  carte: {
+    ui: "carteUI",
+    consigne: "Clique avec ta souris sur la carte",
+    consigneFermer: "Clique n'importe où pour refermer la carte",
+    monologueAvant: [
+      { texte: "Violette : Je peux maintenant me déplacer de lieu en lieu !", moi: "moi_heureuse", perso: false },
+    ],
+    monologueApres: [
+      { texte: "Violette : Pour l'instant je n'ai que le point de la maison.", moi: "moi_triste", perso: false },
+      {
+        texte: "Violette : Mais au fur et à mesure des lieux que je vais rencontrer, des points vont apparaître et je vais pouvoir aller de lieu en lieu.",
+        moi: "moi_heureuse",
+        perso: false,
+      },
+    ],
+  },
+};
+
 export default class maison extends Phaser.Scene {
   constructor() {
     super({ key: "maison" });
@@ -212,6 +265,7 @@ export default class maison extends Phaser.Scene {
     }
     // NOUVEAU : état du monologue en cours (null = aucun)
     this.monologue = null;
+    this.tutoEnCours = false; // NOUVEAU : vrai pendant un tuto (joueur figé, seule l'icône est cliquable)
     this.departProgramme = false;
     // NOUVEAU : état de la vue "photo en grand"
     this.photoOuverte = false;
@@ -250,7 +304,8 @@ const carteDuNiveau = this.add.tilemap("carte1");
           this.inventaireUI.debloquer();
           afficherMessage(this, "Vous avez maintenant un inventaire !", 5000);
           terminerTache(this, "recuperer_sac"); // NOUVEAU
-          this.verifierPreparatifs("sac"); // NOUVEAU : on retient quel objet vient d'être pris
+          // NOUVEAU : tuto du sac, PUIS (si c'est le dernier objet) la cinématique de Marguerite
+          this.lancerTuto("sac", () => this.verifierPreparatifs("sac"));
         },
       }
     );
@@ -272,7 +327,8 @@ const carteDuNiveau = this.add.tilemap("carte1");
             5000
           );
           terminerTache(this, "recuperer_carte"); // NOUVEAU
-          this.verifierPreparatifs("carte"); // NOUVEAU : on retient quel objet vient d'être pris
+          // NOUVEAU : tuto de la carte, PUIS (si c'est le dernier objet) la cinématique de Marguerite
+          this.lancerTuto("carte", () => this.verifierPreparatifs("carte"));
         },
       }
     );
@@ -481,6 +537,9 @@ dessus.setDepth(40);
       // (sauf pour faire avancer le dialogue, géré juste au-dessus)
       if (this.cinematiqueEnCours) return;
 
+      // NOUVEAU : pendant un tuto, E ne fait rien (on joue à la souris)
+      if (this.tutoEnCours) return;
+
       // NOUVEAU : le cadre photo -> complètement optionnel, juste une vue en grand
       const distPhoto = Phaser.Math.Distance.Between(player.x, player.y, this.cadrePhoto.x, this.cadrePhoto.y);
       if (distPhoto < 60) {
@@ -614,7 +673,7 @@ if (this.ordinateurEtaitOuvert && !ordinateurOuvert) {
 this.ordinateurEtaitOuvert = ordinateurOuvert;
 
     // NOUVEAU : pendant un monologue (ou la cinématique de Marguerite), le joueur est figé
-    if (this.monologue || this.cinematiqueEnCours) {
+    if (this.monologue || this.cinematiqueEnCours || this.tutoEnCours) {
       this.indiceOrdinateur.setVisible(false);
       this.indiceCadrePhoto.setVisible(false);
       if (this.indiceMarguerite) this.indiceMarguerite.setVisible(false);
@@ -934,6 +993,106 @@ auRetourDuTelephone() {
   }
 }
 
+  /* ============================================================
+   *  NOUVEAU : TUTORIELS (sac / carte)
+   * ============================================================ */
+
+  // type = "sac" ou "carte" (voir TUTOS en haut du fichier).
+  // "apres" est appelé tout à la fin (sert à enchaîner sur Marguerite).
+  lancerTuto(type, apres) {
+    const cfg = TUTOS[type];
+    if (!cfg) {
+      if (apres) apres();
+      return;
+    }
+
+    // le joueur est figé dès maintenant (flèches et E bloqués)
+    this.tutoEnCours = true;
+
+    this.time.delayedCall(TUTO_DELAI_DEBUT, () => {
+      this.lancerMonologue(cfg.monologueAvant, () => {
+        this.montrerIndicationIcone(cfg, () => {
+          this.lancerMonologue(cfg.monologueApres, () => {
+            this.tutoEnCours = false;
+            if (apres) apres();
+          });
+        });
+      });
+    });
+  }
+
+  // Rond rouge qui pulse sur l'icône + consigne en haut. Attend le clic sur
+  // l'icône, puis que le joueur referme le panneau, puis appelle onFin.
+  montrerIndicationIcone(cfg, onFin) {
+    const ui = this[cfg.ui];
+    const icone = ui.icone;
+    const largeur = this.cameras.main.width;
+
+    // on bloque l'AUTRE icône pour que le joueur ne clique que sur la bonne
+    const autre = cfg.ui === "inventaireUI" ? this.carteUI : this.inventaireUI;
+    if (autre && autre.icone && autre.icone.input) autre.icone.input.enabled = false;
+
+    // Le rond rouge (non cliquable : le clic passe à travers jusqu'à l'icône)
+    const rond = this.add
+      .circle(icone.x, icone.y, TUTO_RAYON, TUTO_COULEUR, 0.18)
+      .setStrokeStyle(5, TUTO_COULEUR, 1)
+      .setScrollFactor(0)
+      .setDepth(2100);
+    const tweenRond = this.tweens.add({
+      targets: rond,
+      scale: 1.3,
+      alpha: 0.55,
+      duration: 550,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+
+    // La consigne, en haut de l'écran (au-dessus de la carte et de l'inventaire)
+    const texte = this.add
+      .text(largeur / 2, TUTO_Y_CONSIGNE, cfg.consigne, {
+        font: "bold 20px Arial",
+        color: "#ffffff",
+        backgroundColor: "rgba(0, 0, 0, 0.85)",
+        padding: { left: 20, right: 20, top: 12, bottom: 12 },
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(3500);
+
+    let ouvertVu = false;
+    let attenteFermeture = null;
+
+    const terminer = () => {
+      if (attenteFermeture) attenteFermeture.remove();
+      if (autre && autre.icone && autre.icone.input) autre.icone.input.enabled = true;
+      texte.destroy();
+      onFin();
+    };
+
+    // Un clic sur l'icône : le panneau s'ouvre (géré par inventaire.js / carte.js)
+    const surClic = () => {
+      icone.off("pointerdown", surClic);
+      tweenRond.stop();
+      rond.destroy();
+      texte.setText(cfg.consigneFermer);
+
+      // on surveille la fermeture du panneau par le joueur
+      attenteFermeture = this.time.addEvent({
+        delay: 100,
+        loop: true,
+        callback: () => {
+          if (ui.ouvert) {
+            ouvertVu = true;
+          } else if (ouvertVu) {
+            terminer();
+          }
+        },
+      });
+    };
+    icone.on("pointerdown", surClic);
+  }
+
   // Appelé après chaque ramassage : si sac ET carte sont pris -> on fait
   // arriver Marguerite puis on enchaîne sur leur dialogue (voir plus bas)
   // "dernierObjet" = "sac" ou "carte" : l'objet qui vient d'être ramassé. Si c'est
@@ -981,7 +1140,7 @@ auRetourDuTelephone() {
                 this.marguerite.destroy();
                 this.marguerite = null;
               }
-              this.scene.start("bar");
+              this.scene.start("couloir");
             });
           });
         });

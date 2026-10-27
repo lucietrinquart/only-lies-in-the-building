@@ -243,7 +243,9 @@ export default class entreprise_gregoire extends Phaser.Scene {
     const gregoireDejaParti = this.registry.get("gregoire_entreprise_parti") || false;
     if (!gregoireDejaParti) {
       const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "img_perso2";
-      this.gregoire = this.physics.add.sprite(600, 387, textureGregoire);
+      this.gregoire = this.physics.add.sprite(600, 387, "gregoire", 12);
+          this.gregoire.setScale(0.7); 
+
     } else {
       this.gregoire = null;
     }

@@ -80,8 +80,11 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
     player = this.physics.add.sprite(420, 650, "img_perso");
 
     // Grégoire est revenu à son poste, légèrement décalé par rapport à la 1re visite
-    const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "img_perso2";
-    this.gregoire = this.physics.add.staticSprite(575, 400, textureGregoire);
+    const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "gregoire";
+    this.gregoire = this.physics.add.staticSprite(575, 400, textureGregoire, 12);
+    this.gregoire.setScale(0.7); 
+
+
 
     this.indiceGregoire = this.add
       .text(this.gregoire.x, this.gregoire.y - this.gregoire.displayHeight / 2 - 12, "E", {

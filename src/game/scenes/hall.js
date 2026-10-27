@@ -152,7 +152,11 @@ export default class hall extends Phaser.Scene {
      *  CREATION DES OBJETS *
      ****************************/
     player = this.physics.add.sprite(420, 650, "img_perso");
-    this.secretaire = this.physics.add.sprite(410, 450, "secretaire");
+    // NOUVEAU : Jessica = spritesheet "jessica", frame 12 (image fixe).
+    // Le nom this.secretaire est gardé pour que toute l'interaction (E, distance,
+    // dialogues) continue de fonctionner sans rien changer d'autre.
+    this.secretaire = this.physics.add.sprite(410, 440, "jessica", 12);
+    this.secretaire.setScale(0.7); // NOUVEAU : ajuste la taille de Jessica ici si besoin
 
     // NOUVEAU : la "porte" vers l'escalier qui mène à entreprise_gregoire.
     // Invisible, comme les autres portes du jeu -> seul un indice "E"
@@ -212,7 +216,7 @@ export default class hall extends Phaser.Scene {
 
       const distanceJessica = Phaser.Math.Distance.Between(player.x, player.y, this.secretaire.x, this.secretaire.y);
 
-      if (distanceJessica < 125) {
+      if (distanceJessica < 150) {
         // NOUVEAU : au tout début d'une conversation, on choisit quelle série
         // de répliques utiliser (grande révélation si l'objectif est actif,
         // sinon la grande la 1ère fois, une courte ensuite)
