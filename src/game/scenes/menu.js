@@ -213,7 +213,7 @@ this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("entreprise_gregoire");
+        this.scene.start("instruction");
         
       });
 
