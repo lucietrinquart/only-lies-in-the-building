@@ -55,15 +55,15 @@ export default class couloir extends Phaser.Scene {
     this.carteUI = new CarteUI(this);
     this.tachesUI = new TachesUI(this);
 
-    const tileset = carteDuNiveau.addTilesetImage("sprite_couloir", "Phaser_tuilesdejeu6");
+    const tileset = carteDuNiveau.addTilesetImage("tileset_couloir", "Phaser_tuilesdejeu6");
     carteDuNiveau.createLayer("sol", tileset);
-    const cote_paillasson = carteDuNiveau.createLayer("cote_paillasson", tileset);
-    const partie_noir = carteDuNiveau.createLayer("partie_noir", tileset);
-    const escalier = carteDuNiveau.createLayer("escalier", tileset);
-    const mur_vert = carteDuNiveau.createLayer("mur_vert", tileset);
-    const porte = carteDuNiveau.createLayer("porte", tileset);
-    const lambris = carteDuNiveau.createLayer("lambris", tileset);
-    const porte_deco = carteDuNiveau.createLayer("porte_deco", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const mur = carteDuNiveau.createLayer("mur", tileset);
+    const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const fond = carteDuNiveau.createLayer("fond", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
 
     /***************************
      *  OBJETS *
@@ -79,7 +79,7 @@ export default class couloir extends Phaser.Scene {
     // Cunégonde (image "cunegonde" si elle est chargée, sinon img_perso2 en attendant)
     const textureCunegonde = this.textures.exists("cunegonde") ? "cunegonde" : "cunegonde";
     this.cunegonde = this.physics.add.staticSprite(300, 300, textureCunegonde, 12);
-    this.cunegonde.setScale(0.5); 
+    this.cunegonde.setScale(0.6); 
 
 
     // le "E" au-dessus de Cunégonde
@@ -98,20 +98,19 @@ export default class couloir extends Phaser.Scene {
      *  COLLISIONS *
      ****************************/
 
-    partie_noir.setCollisionByProperty({ estSolide: true });
-    mur_vert.setCollisionByProperty({ estSolide: true });
-    escalier.setCollisionByProperty({ estSolide: true });
-    porte.setCollisionByProperty({ estSolide: true });
-    lambris.setCollisionByProperty({ estSolide: true });
-    porte_deco.setCollisionByProperty({ estSolide: true });
+    mur.setCollisionByProperty({ estSolide: true });
+    surlemur.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    fond.setCollisionByProperty({ estSolide: true });
+    contourmur.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, cote_paillasson);
-    this.physics.add.collider(player, partie_noir);
-    this.physics.add.collider(player, mur_vert);
-    this.physics.add.collider(player, escalier);
-    this.physics.add.collider(player, porte);
-    this.physics.add.collider(player, lambris);
-    this.physics.add.collider(player, porte_deco);
+    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, fond);
+    this.physics.add.collider(player, contourmur);
 
     player.setCollideWorldBounds(true);
 
@@ -208,14 +207,6 @@ export default class couloir extends Phaser.Scene {
       player.anims.play("turn");
     }
 
-    if (
-      this.physics.overlap(player, this.porte_ville) ||
-      this.physics.overlap(player, this.porte_ville1) ||
-      this.physics.overlap(player, this.porte_ville2) ||
-      this.physics.overlap(player, this.porte_ville3)
-    ) {
-      this.scene.start("gendarmerie2");
-    }
   }
 
   /* ============================================================

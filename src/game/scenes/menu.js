@@ -35,11 +35,18 @@ this.load.tilemapTiledJSON("carte1", "./assets/Chambre_V2.json");
 
 
 
-this.load.image("Phaser_tuilesdejeu6", "./assets/sprite_couloir.png");
+this.load.image("Phaser_tuilesdejeu13", "./assets/sprite_couloir.png");
+this.load.tilemapTiledJSON("carte13", "./assets/couloir2.json");
+
+this.load.image("Phaser_tuilesdejeu6", "./assets/tileset_couloir.png");
 this.load.tilemapTiledJSON("carte6", "./assets/couloir.json");
 
-this.load.image("Phaser_tuilesdejeu4", "./assets/sprite_travail.png");
-this.load.tilemapTiledJSON("carte4", "./assets/travail.json");
+
+this.load.image("Phaser_tuilesdejeu14", "./assets/sprite_travail.png");
+this.load.tilemapTiledJSON("carte14", "./assets/travail.json");
+
+this.load.image("Phaser_tuilesdejeu4", "./assets/tileset_bureau.png");
+this.load.tilemapTiledJSON("carte4", "./assets/bureau.json");
 
 this.load.image("Phaser_tuilesdejeu8", "./assets/sprite_accueil.png");
 this.load.tilemapTiledJSON("carte8", "./assets/map_accueil.json");
@@ -141,9 +148,11 @@ this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
 
 
     // chargement tuiles de jeu
-    this.load.image("Phaser_tuilesdejeu3", "./assets/sprite_bar.png");
-    this.load.tilemapTiledJSON("carte3", "assets/bar.json");
+    this.load.image("Phaser_tuilesdejeu12", "./assets/sprite_bar.png");
+    this.load.tilemapTiledJSON("carte12", "assets/bar.json");
 
+    this.load.image("Phaser_tuilesdejeu3", "./assets/tileset_bar.png");
+    this.load.tilemapTiledJSON("carte3", "assets/bar.json");
 
     this.load.image("ticket", "./assets/ticket.png");
     this.load.image("shella", "./assets/perso.png");
@@ -204,7 +213,7 @@ this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("maison");
+        this.scene.start("entreprise_gregoire");
         
       });
 

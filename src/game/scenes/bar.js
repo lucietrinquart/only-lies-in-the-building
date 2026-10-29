@@ -230,25 +230,23 @@ export default class bar extends Phaser.Scene {
      const carteDuNiveau = this.add.tilemap("carte3");
             // chargement du jeu de tuiles
     const tileset = carteDuNiveau.addTilesetImage(
-            "sprite_bar",
+            "tileset_bar",
             "Phaser_tuilesdejeu3"
     );
 
             // chargement du second calque "calque_backgroung"
+    const fond= carteDuNiveau.createLayer("fond", tileset);
     const sol= carteDuNiveau.createLayer("sol", tileset);
-    const dehors= carteDuNiveau.createLayer("dehors", tileset);
-    const murs_contour = carteDuNiveau.createLayer("murs_contour", tileset);
-    const mur_du_haut = carteDuNiveau.createLayer("mur_du_haut", tileset);
-    const decor_bas_de_mur = carteDuNiveau.createLayer("decor_bas_de_mur", tileset);
-    const enseignes_etagere_du_fond = carteDuNiveau.createLayer("enseignes_etagere_du_fond", tileset);
-    const comptoir = carteDuNiveau.createLayer("comptoir", tileset);
-    const reserve_vide = carteDuNiveau.createLayer("reserve_vide", tileset);
-    const etagere = carteDuNiveau.createLayer("etagere", tileset);
-    const banquettes_tabourets_tables_rondes = carteDuNiveau.createLayer("banquettes_tabourets_tables_rondes", tileset);
-    const grandes_tables_tabourets_tableau = carteDuNiveau.createLayer("grandes_tables_tabourets_tableau", tileset);
-    const verres_bouteilles = carteDuNiveau.createLayer("verres_bouteilles", tileset);
-    const lumiere = carteDuNiveau.createLayer("lumiere", tileset);
-    const personnages = carteDuNiveau.createLayer("personnages", tileset);
+    const sursol = carteDuNiveau.createLayer("sursol", tileset);
+    const murs = carteDuNiveau.createLayer("murs", tileset);
+    const surmurs = carteDuNiveau.createLayer("surmurs", tileset);
+    const chaise = carteDuNiveau.createLayer("chaise", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const bouteille = carteDuNiveau.createLayer("bouteille", tileset);
+    const bouteildroite = carteDuNiveau.createLayer("bouteildroite", tileset);
+    const decoration = carteDuNiveau.createLayer("decoration", tileset);
+    const contoursmurs = carteDuNiveau.createLayer("contoursmurs", tileset);
 
     this.shella = this.physics.add.sprite(580, 200, "shella");
     this.gregoire = this.physics.add.sprite(200, 200, "gregoire");
@@ -266,19 +264,16 @@ export default class bar extends Phaser.Scene {
 
 
 
-    sol.setCollisionByProperty({ estSolide: true });
-    dehors.setCollisionByProperty({ estSolide: true });
-    murs_contour.setCollisionByProperty({ estSolide: true });
-    mur_du_haut.setCollisionByProperty({ estSolide: true });
-    decor_bas_de_mur.setCollisionByProperty({ estSolide: true });
-    enseignes_etagere_du_fond.setCollisionByProperty({ estSolide: true });
-    comptoir.setCollisionByProperty({ estSolide: true });
-    reserve_vide.setCollisionByProperty({ estSolide: true });
-    etagere.setCollisionByProperty({ estSolide: true });
-    banquettes_tabourets_tables_rondes.setCollisionByProperty({ estSolide: true });
-    grandes_tables_tabourets_tableau.setCollisionByProperty({ estSolide: true });
-    verres_bouteilles.setCollisionByProperty({ estSolide: true });
-    personnages.setCollisionByProperty({ estSolide: true });
+sol.setCollisionByProperty({ estsolide: true });
+murs.setCollisionByProperty({ estsolide: true });
+surmurs.setCollisionByProperty({ estsolide: true });
+chaise.setCollisionByProperty({ estsolide: true });
+objet.setCollisionByProperty({ estsolide: true });
+surobjet.setCollisionByProperty({ estsolide: true });
+bouteille.setCollisionByProperty({ estsolide: true });
+bouteildroite.setCollisionByProperty({ estsolide: true });
+decoration.setCollisionByProperty({ estsolide: true });
+contoursmurs.setCollisionByProperty({ estsolide: true });
 
 
 
@@ -303,18 +298,17 @@ export default class bar extends Phaser.Scene {
             player.setCollideWorldBounds(true);
             // Collisions avec les calques de collision
             this.physics.add.collider(player, sol);
-            this.physics.add.collider(player, dehors);
-            this.physics.add.collider(player, murs_contour);
-            this.physics.add.collider(player, mur_du_haut);
-            this.physics.add.collider(player, decor_bas_de_mur);
-            this.physics.add.collider(player, enseignes_etagere_du_fond);
-            this.physics.add.collider(player, comptoir);
-            this.physics.add.collider(player, reserve_vide);
-            this.physics.add.collider(player, etagere);
-            this.physics.add.collider(player, banquettes_tabourets_tables_rondes);
-            this.physics.add.collider(player, grandes_tables_tabourets_tableau);
-            this.physics.add.collider(player, verres_bouteilles);
-            this.physics.add.collider(player, personnages);
+            this.physics.add.collider(player, murs);
+            this.physics.add.collider(player, surmurs);
+            this.physics.add.collider(player, chaise);
+            this.physics.add.collider(player, objet);
+            this.physics.add.collider(player, surobjet);
+            this.physics.add.collider(player, bouteille);
+            this.physics.add.collider(player, bouteildroite);
+            this.physics.add.collider(player, decoration);
+            this.physics.add.collider(player, contoursmurs);
+
+
 
 
 

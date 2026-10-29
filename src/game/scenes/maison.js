@@ -1140,7 +1140,7 @@ auRetourDuTelephone() {
                 this.marguerite.destroy();
                 this.marguerite = null;
               }
-              this.scene.start("couloir");
+              this.scene.start("bar");
             });
           });
         });

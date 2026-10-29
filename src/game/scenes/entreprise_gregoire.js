@@ -168,19 +168,22 @@ export default class entreprise_gregoire extends Phaser.Scene {
     });
 
     // chargement du jeu de tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_travail", "Phaser_tuilesdejeu4");
+    const tileset = carteDuNiveau.addTilesetImage("tileset_bureau", "Phaser_tuilesdejeu4");
 
     /***************************
      *  CREATION DES CALQUES *
      ****************************/
-    const sol_parquet = carteDuNiveau.createLayer("sol_parquet", tileset);
-    const dehors = carteDuNiveau.createLayer("dehors", tileset);
-    const murs_contour = carteDuNiveau.createLayer("murs_contour", tileset);
-    const mur_du_haut = carteDuNiveau.createLayer("mur_du_haut", tileset);
-    const plinth_boiserie = carteDuNiveau.createLayer("plinth_boiserie", tileset);
-    const fenetres = carteDuNiveau.createLayer("fenetres", tileset);
-    const kitchenette = carteDuNiveau.createLayer("kitchenette", tileset);
-    const bureaux_salon_d_attente = carteDuNiveau.createLayer("bureaux_salon_d_attente", tileset);
+    const sol = carteDuNiveau.createLayer("sol", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const mur = carteDuNiveau.createLayer("mur", tileset);
+    const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+    const chaise = carteDuNiveau.createLayer("chaise", tileset);
+    const tableune = carteDuNiveau.createLayer("tableune", tileset);
+    const ordinateur_tuile = carteDuNiveau.createLayer("ordinateur_tuile", tileset);
+    const separateur = carteDuNiveau.createLayer("separateur", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
 
     /***************************
      *  CREATION DES OBJETS *
@@ -341,19 +344,31 @@ export default class entreprise_gregoire extends Phaser.Scene {
     /***************************
      *  CREATION DES COLISIONS *
      ****************************/
-    dehors.setCollisionByProperty({ estSolide: true });
-    murs_contour.setCollisionByProperty({ estSolide: true });
-    mur_du_haut.setCollisionByProperty({ estSolide: true });
-    fenetres.setCollisionByProperty({ estSolide: true });
-    kitchenette.setCollisionByProperty({ estSolide: true });
-    bureaux_salon_d_attente.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, dehors);
-    this.physics.add.collider(player, murs_contour);
-    this.physics.add.collider(player, mur_du_haut);
-    this.physics.add.collider(player, fenetres);
-    this.physics.add.collider(player, kitchenette);
-    this.physics.add.collider(player, bureaux_salon_d_attente);
+
+    sol.setCollisionByProperty({ estsolide: true });
+    surlesol.setCollisionByProperty({ estsolide: true });
+    mur.setCollisionByProperty({ estsolide: true });
+    surlemur.setCollisionByProperty({ estsolide: true });
+    chaise.setCollisionByProperty({ estsolide: true });
+    tableune.setCollisionByProperty({ estsolide: true });
+    ordinateur_tuile.setCollisionByProperty({ estsolide: true });
+    separateur.setCollisionByProperty({ estsolide: true });
+    objet.setCollisionByProperty({ estsolide: true });
+    surobjet.setCollisionByProperty({ estsolide: true });
+    contourmur.setCollisionByProperty({ estsolide: true });
+
+    this.physics.add.collider(player, sol);
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, chaise);
+    this.physics.add.collider(player, tableune);
+    this.physics.add.collider(player, ordinateur_tuile);
+    this.physics.add.collider(player, separateur);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, contourmur);
 
     player.setCollideWorldBounds(true); // le player se cognera contre les bords du monde
     this.physics.world.enable(player);
