@@ -35,22 +35,22 @@ var dialogueGregoire = [
   {
     texte: "Grégoire : Ah, Violette... je ne pensais pas te croiser ici.",
     moi: "moi_heureuse",
-    perso: "perso_triste",
+    perso: "gregoire_hereuse",
   },
   {
     texte: "Violette : Je pourrais te dire la même chose. Qu'est-ce que tu fais là ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "gregoire_hereuse",
   },
   {
     texte: "Grégoire : Rien de spécial... Écoute, je dois vraiment y aller.",
     moi: "moi_triste",
-    perso: "perso_colere",
+    perso: "gregoire_hereuse",
   },
   {
     texte: "Grégoire : Et ne va surtout pas fouiller par ici, c'est hors de question.",
     moi: "moi_triste",
-    perso: "perso_colere",
+    perso: "gregoire_hereuse",
   },
   // NOUVEAU : Grégoire a déjà tourné les talons à ce moment -> "perso: false"
   {
@@ -543,13 +543,15 @@ export default class entreprise_gregoire extends Phaser.Scene {
     clavier = this.input.keyboard.createCursorKeys();
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
+    this.physics.world.setBounds(0, 0, 1024, 1024);
     //  ajout du champs de la caméra de taille identique à celle du monde
-    this.cameras.main.setBounds(0, 0, 800, 608);
+    this.cameras.main.setBounds(0, 0, 1024, 1024);
     // ancrage de la caméra sur le joueur
     this.cameras.main.startFollow(player);
 
     this.input.keyboard.on("keyup-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       // Laisser le texte affiché jusqu'à ce qu'E soit relâchée
     });
 

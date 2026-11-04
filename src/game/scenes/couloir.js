@@ -17,17 +17,17 @@ var introMonologue = [
 ];
 
 var dialogueCunegonde = [
-  { texte: "Cunégonde : Je crois que vous vous trompez sur Grégoire.", moi: "moi_triste", perso: "perso_colere" },
-  { texte: "Violette : Pourquoi ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Cunégonde : Parce qu'il n'était pas avec Adrien ce soir-là.", moi: "moi_colere", perso: "perso_heureuse" },
-  { texte: "Violette : Comment le savez-vous ?", moi: "moi_colere", perso: "perso_heureuse" },
-  { texte: "Cunégonde : Parce qu'il était avec quelqu'un d'autre.", moi: "moi_triste", perso: "perso_heureuse" },
+  { texte: "Cunégonde : Je crois que vous vous trompez sur Grégoire.", moi: "moi_triste", perso: "cunegonde_hereuse" },
+  { texte: "Violette : Pourquoi ?", moi: "moi_colere", perso: "cunegonde_triste" },
+  { texte: "Cunégonde : Parce qu'il n'était pas avec Adrien ce soir-là.", moi: "moi_colere", perso: "cunegonde_hereuse" },
+  { texte: "Violette : Comment le savez-vous ?", moi: "moi_colere", perso: "cunegonde_triste" },
+  { texte: "Cunégonde : Parce qu'il était avec quelqu'un d'autre.", moi: "moi_triste", perso: "cunegonde_hereuse" },
   // dernière réplique : Violette pense à voix haute (portrait de Cunégonde caché)
   { texte: "Violette : Je ne comprends pas... Il faut que j'aille voir Grégoire pour mieux comprendre la situation.", moi: "moi_triste", perso: false },
 ];
 
 var dialogueCunegondeRepete = [
-  { texte: "Cunégonde : Allez donc voir Grégoire, ma petite. Moi, je n'ai rien dit !", moi: "moi_heureuse", perso: "perso_heureuse" },
+  { texte: "Cunégonde : Allez donc voir Grégoire, ma petite. Moi, je n'ai rien dit !", moi: "moi_hereuse", perso: "cunegonde_hereuse" },
 ];
 
 const CLE_INTRO = "intro_gendarmerie4_joue";
@@ -44,8 +44,8 @@ export default class couloir extends Phaser.Scene {
     dialogueIndex = 0;
 
     this.dialogueUI = new DialogueUI(this, {
-      moiParDefaut: "moi_heureuse",
-      persoParDefaut: "perso_triste",
+      moiParDefaut: "moi_hereuse",
+      persoParDefaut: "cunegonde_hereuse",
     });
 
     this.inventaireUI = new InventaireUI(this);
@@ -118,6 +118,8 @@ export default class couloir extends Phaser.Scene {
      *  TOUCHE E
      ****************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       if (this.monologue) {
         this.avancerMonologue();
         return;

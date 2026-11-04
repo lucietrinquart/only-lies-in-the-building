@@ -13,15 +13,15 @@ var dialoguesActuels = [];
  *  TEXTES
  * ============================================================ */
 var dialogueGregoire = [
-  { texte: "Violette : Cette lettre. C'était quoi ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Grégoire : Adrien avait découvert quelque chose.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Violette : Quelque chose sur vous ?", moi: "moi_colere", perso: "perso_colere" },
-  { texte: "Grégoire : Oui.", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Grégoire : Je ne voulais pas que ma femme le sache.", moi: "moi_triste", perso: "perso_triste" },
+  { texte: "Violette : Cette lettre. C'était quoi ?", moi: "moi_colere", perso: "gregoire_hereuse" },
+  { texte: "Grégoire : Adrien avait découvert quelque chose.", moi: "moi_colere", perso: "gregoire_hereuse" },
+  { texte: "Violette : Quelque chose sur vous ?", moi: "moi_colere", perso: "gregoire_hereuse" },
+  { texte: "Grégoire : Oui.", moi: "moi_triste", perso: "gregoire_hereuse" },
+  { texte: "Grégoire : Je ne voulais pas que ma femme le sache.", moi: "moi_triste", perso: "gregoire_hereuse" },
 ];
 
 var dialogueGregoireRepete = [
-  { texte: "Grégoire : Je n'ai plus rien à vous dire.", moi: "moi_triste", perso: "perso_colere" },
+  { texte: "Grégoire : Je n'ai plus rien à vous dire.", moi: "moi_triste", perso: "gregoire_hereuse" },
 ];
 
 var monologueFinGregoire = [
@@ -48,16 +48,20 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
       moiParDefaut: "moi_heureuse",
       persoParDefaut: "perso_triste",
     });
+            const tileset = carteDuNiveau.addTilesetImage("tileset_bureau", "Phaser_tuilesdejeu4");
 
-    const tileset = carteDuNiveau.addTilesetImage("sprite_travail", "Phaser_tuilesdejeu4");
-    const sol_parquet = carteDuNiveau.createLayer("sol_parquet", tileset);
-    const dehors = carteDuNiveau.createLayer("dehors", tileset);
-    const murs_contour = carteDuNiveau.createLayer("murs_contour", tileset);
-    const mur_du_haut = carteDuNiveau.createLayer("mur_du_haut", tileset);
-    const plinth_boiserie = carteDuNiveau.createLayer("plinth_boiserie", tileset);
-    const fenetres = carteDuNiveau.createLayer("fenetres", tileset);
-    const kitchenette = carteDuNiveau.createLayer("kitchenette", tileset);
-    const bureaux_salon_d_attente = carteDuNiveau.createLayer("bureaux_salon_d_attente", tileset);
+
+    const sol = carteDuNiveau.createLayer("sol", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const mur = carteDuNiveau.createLayer("mur", tileset);
+    const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+    const chaise = carteDuNiveau.createLayer("chaise", tileset);
+    const tableune = carteDuNiveau.createLayer("tableune", tileset);
+    const ordinateur_tuile = carteDuNiveau.createLayer("ordinateur_tuile", tileset);
+    const separateur = carteDuNiveau.createLayer("separateur", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
 
 
     /***************************
@@ -99,22 +103,34 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
 
     this.tachesUI = new TachesUI(this);
 
+
+
     /***************************
      *  COLLISIONS *
      ****************************/
-    dehors.setCollisionByProperty({ estSolide: true });
-    murs_contour.setCollisionByProperty({ estSolide: true });
-    mur_du_haut.setCollisionByProperty({ estSolide: true });
-    fenetres.setCollisionByProperty({ estSolide: true });
-    kitchenette.setCollisionByProperty({ estSolide: true });
-    bureaux_salon_d_attente.setCollisionByProperty({ estSolide: true });
+    sol.setCollisionByProperty({ estsolide: true });
+    surlesol.setCollisionByProperty({ estsolide: true });
+    mur.setCollisionByProperty({ estsolide: true });
+    surlemur.setCollisionByProperty({ estsolide: true });
+    chaise.setCollisionByProperty({ estsolide: true });
+    tableune.setCollisionByProperty({ estsolide: true });
+    ordinateur_tuile.setCollisionByProperty({ estsolide: true });
+    separateur.setCollisionByProperty({ estsolide: true });
+    objet.setCollisionByProperty({ estsolide: true });
+    surobjet.setCollisionByProperty({ estsolide: true });
+    contourmur.setCollisionByProperty({ estsolide: true });
 
-    this.physics.add.collider(player, dehors);
-    this.physics.add.collider(player, murs_contour);
-    this.physics.add.collider(player, mur_du_haut);
-    this.physics.add.collider(player, fenetres);
-    this.physics.add.collider(player, kitchenette);
-    this.physics.add.collider(player, bureaux_salon_d_attente);
+    this.physics.add.collider(player, sol);
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, chaise);
+    this.physics.add.collider(player, tableune);
+    this.physics.add.collider(player, ordinateur_tuile);
+    this.physics.add.collider(player, separateur);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, contourmur);
 
     player.setCollideWorldBounds(true);
 
@@ -132,14 +148,16 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
-    this.cameras.main.setBounds(0, 0, 800, 608);
+    this.physics.world.setBounds(0, 0, 1024, 1024);
+    this.cameras.main.setBounds(0, 0, 1024, 1024);
     this.cameras.main.startFollow(player);
 
     /***************************
      *  TOUCHE E
      ****************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       if (this.monologue) {
         this.avancerMonologue();
         return;

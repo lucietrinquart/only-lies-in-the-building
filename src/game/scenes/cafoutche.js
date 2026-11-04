@@ -149,6 +149,8 @@ export default class cafoutche extends Phaser.Scene {
      *  TOUCHE E *
      ************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       // NOUVEAU : si le carnet est ouvert, on ignore E ici (c'est la souris qui gère tout)
       if (this.enigmeCarnet.estOuverte()) return;
 

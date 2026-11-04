@@ -519,6 +519,7 @@ dessus.setDepth(40);
      *  TOUCHE E
      ****************************/
     this.input.keyboard.on("keydown-E", () => {
+      if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
       // téléphone ouvert (scène en pause) -> on ignore
       if (this.scene.isPaused()) return;
       if (this.ordinateurUI.visible) return;

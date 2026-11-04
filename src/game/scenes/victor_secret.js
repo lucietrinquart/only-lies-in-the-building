@@ -9,24 +9,24 @@ var monologueArrivee = [
 ];
 
 var dialogueVictor = [
-  { texte: "Victor : Tu n'aurais pas dû venir ici.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : C'était toi.", moi: "moi_colere", perso: "victor" },
-  { texte: "Victor : Non.", moi: "moi_colere", perso: "victor" },
-  { texte: "Violette : Adrien avait confié cette clé à quelqu'un en qui il avait confiance.", moi: "moi_colere", perso: "victor" },
-  { texte: "Victor : Ça ne prouve rien.", moi: "moi_colere", perso: "victor" },
-  { texte: "Violette : Il écrivait qu'il avait découvert quelque chose sur quelqu'un de proche.", moi: "moi_colere", perso: "victor" },
-  { texte: "Violette : À 23h47, quelqu'un quittait les lieux.", moi: "moi_colere", perso: "victor" },
-  { texte: "Victor : Tu ne sais pas qui c'était.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : Non.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : Mais toi, tu sais.", moi: "moi_colere", perso: "victor" },
-  { texte: "Violette : Adrien avait des problèmes avec ses freins.", moi: "moi_colere", perso: "victor" },
-  { texte: "Violette : Et ça ?", moi: "moi_colere", perso: "victor" },
-  { texte: "Victor : Je ne voulais pas le tuer.", moi: "moi_triste", perso: "victor" },
-  { texte: "Victor : Il allait tout raconter.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : Ta collection ?", moi: "moi_triste", perso: "victor" },
-  { texte: "Victor : Il ne comprenait pas.", moi: "moi_triste", perso: "victor" },
-  { texte: "Victor : Je voulais seulement protéger ce qui comptait pour moi.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : Je ne t'appartiens pas.", moi: "moi_colere", perso: "victor" },
+  { texte: "Victor : Tu n'aurais pas dû venir ici.", moi: "moi_triste", perso: "victor_colere" },
+  { texte: "Violette : C'était toi.", moi: "moi_colere", perso: "victor_triste" },
+  { texte: "Victor : Non.", moi: "moi_colere", perso: "victor_triste" },
+  { texte: "Violette : Adrien avait confié cette clé à quelqu'un en qui il avait confiance.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Victor : Ça ne prouve rien.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Violette : Il écrivait qu'il avait découvert quelque chose sur quelqu'un de proche.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Violette : À 23h47, quelqu'un quittait les lieux.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Victor : Tu ne sais pas qui c'était.", moi: "moi_triste", perso: "victor_colere" },
+  { texte: "Violette : Non.", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Violette : Mais toi, tu sais.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Violette : Adrien avait des problèmes avec ses freins.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Violette : Et ça ?", moi: "moi_colere", perso: "victor_triste" },
+  { texte: "Victor : Je ne voulais pas le tuer.", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Victor : Il allait tout raconter.", moi: "moi_triste", perso: "victor_colere" },
+  { texte: "Violette : Ta collection ?", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Victor : Il ne comprenait pas.", moi: "moi_triste", perso: "victor_colere" },
+  { texte: "Victor : Je voulais seulement protéger ce qui comptait pour moi.", moi: "moi_triste", perso: "victor_amoureux" },
+  { texte: "Violette : Je ne t'appartiens pas.", moi: "moi_colere", perso: "victor_triste" },
 ];
 
 export default class victor_secret extends Phaser.Scene {
@@ -80,6 +80,8 @@ export default class victor_secret extends Phaser.Scene {
     this.cameras.main.startFollow(player);
 
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       if (this.monologue) this.avancerMonologue();
     });
 

@@ -24,13 +24,13 @@ const INDICE_CODE =
 // NOUVEAU : Victor est présent à l'arrivée -> il accueille Violette, puis
 // part chercher de quoi manger (laissant le champ libre pour l'exploration)
 var dialogueVictorArrivee = [
-  { texte: "Victor : Entre. Tu as l'air épuisée.", moi: "moi_triste", perso: "victor" },
-  { texte: "Violette : Merci de m'avoir proposé de venir.", moi: "moi_triste", perso: "victor" },
-  { texte: "Victor : Je descends chercher de quoi manger. Dix minutes. Fais comme chez toi.", moi: "moi_heureuse", perso: "victor" },
+  { texte: "Victor : Entre. Tu as l'air épuisée.", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Violette : Merci de m'avoir proposé de venir.", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Victor : Je descends chercher de quoi manger. Dix minutes. Fais comme chez toi.", moi: "moi_heureuse", perso: "victor_hereuse" },
 ];
 
 var monologueBracelet = [
-  { texte: "Violette : Wow... Ce bracelet, je le cherche depuis si longtemps !", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Wow... Ce bracelet, je le cherche depuis si longtemps !", moi: "moi_hereuse", perso: false },
   { texte: "Violette : Mais pourquoi est-il chez lui ?", moi: "moi_colere", perso: false },
 ];
 
@@ -41,12 +41,12 @@ var monologueBrosse = [
 // NOUVEAU : les 2 fins possibles de la scène, selon que la pièce secrète (la
 // bibliothèque déplacée) a été découverte ou non pendant que Victor était sorti.
 var finPieceTrouvee = [
-  { texte: "Victor : Je t'avais dit de faire comme chez toi.", moi: "moi_colere", perso: "victor" },
+  { texte: "Victor : Je t'avais dit de faire comme chez toi.", moi: "moi_colere", perso: "victor_colere" },
   { texte: "Violette (voix off) : Il n'a rien ajouté.", moi: "moi_triste", perso: false },
 ];
 
 var finPieceNonTrouvee = [
-  { texte: "Victor : Désolé, j'ai été long. Tu as trouvé ce que tu cherchais ?", moi: "moi_triste", perso: "victor" },
+  { texte: "Victor : Désolé, j'ai été long. Tu as trouvé ce que tu cherchais ?", moi: "moi_triste", perso: "victor_hereuse" },
   { texte: "Violette (voix off) : Je ne lui avais pas dit que je cherchais quelque chose.", moi: "moi_triste", perso: false },
 ];
 
@@ -337,6 +337,8 @@ export default class victor_maison extends Phaser.Scene {
      *  TOUCHE E
      ****************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       if (this.codeUI.visible) return; // pavé ouvert
 
       if (this.monologue) {

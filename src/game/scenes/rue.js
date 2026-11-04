@@ -21,29 +21,29 @@ var monologueDecouvreVictor = [
 
 // NOUVEAU : le dialogue avec Victor, à 2 portraits (comme dans maison.js)
 var dialogueVictor = [
-  { texte: "Victor : Christine. Je passais dans le coin.", moi: "moi_triste", perso: "perso_heureuse" },
-  { texte: "Violette : Dans le coin ? Tu habites à l'autre bout de la ville.", moi: "moi_colere", perso: "perso_heureuse" },
+  { texte: "Victor : Christine. Je passais dans le coin.", moi: "moi_triste", perso: "victor_hereuse" },
+  { texte: "Violette : Dans le coin ? Tu habites à l'autre bout de la ville.", moi: "moi_colere", perso: "victor_hereuse" },
   {
     texte: "Victor : (sourire) J'avais besoin de marcher. Tiens, je t'ai pris un café. Tu n'as pas dû dormir beaucoup.",
     moi: "moi_colere",
-    perso: "perso_heureuse",
+    perso: "victor_hereue",
   },
-  { texte: "Violette : Merci.", moi: "moi_triste", perso: "perso_heureuse" },
-  { texte: "Victor : Tu avances ? Dans… ce que tu fais ?", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Violette : Un peu.", moi: "moi_triste", perso: "perso_triste" },
+  { texte: "Violette : Merci.", moi: "moi_triste", perso: "victor_hereuse" },
+  { texte: "Victor : Tu avances ? Dans… ce que tu fais ?", moi: "moi_triste", perso: "victor_triste" },
+  { texte: "Violette : Un peu.", moi: "moi_triste", perso: "victor_triste" },
   {
     texte: "Victor : Si tu veux que je t'accompagne, tu me le dis. Je ne veux pas que tu sois seule avec tout ça.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "victor_triste",
   },
-  { texte: "Violette : Je préfère y aller seule pour l'instant.", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : Je préfère y aller seule pour l'instant.", moi: "moi_colere", perso: "victor_colere" },
   {
     texte: "Victor : D'accord. (un temps) Dis à Marguerite que je ne lui en veux pas, pour l'autre fois.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "victor_colere",
   },
-  { texte: "Violette : Elle s'en remettra.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Victor : Appelle-moi. N'importe quand.", moi: "moi_triste", perso: "perso_heureuse" },
+  { texte: "Violette : Elle s'en remettra.", moi: "moi_colere", perso: "victor_colere" },
+  { texte: "Victor : Appelle-moi. N'importe quand.", moi: "moi_triste", perso: "victor_hereuse" },
 ];
 
 var introMonologue = [
@@ -144,6 +144,8 @@ export default class rue extends Phaser.Scene {
      *  TOUCHE E
      ****************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       // un monologue en cours est prioritaire sur tout -> CORRIGÉ : ce test
       // doit passer AVANT le garde-fou "victorCutscene" (qui reste vrai
       // pendant toute la cinématique, y compris pendant les monologues).

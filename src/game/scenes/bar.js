@@ -248,8 +248,8 @@ export default class bar extends Phaser.Scene {
     const decoration = carteDuNiveau.createLayer("decoration", tileset);
     const contoursmurs = carteDuNiveau.createLayer("contoursmurs", tileset);
 
-    this.shella = this.physics.add.sprite(580, 200, "shella");
-    this.gregoire = this.physics.add.sprite(200, 200, "gregoire");
+    this.shella = this.physics.add.sprite(580, 400, "shella");
+    this.gregoire = this.physics.add.sprite(300, 300, "gregoire");
 
 
     // NOUVEAU : état du monologue en cours (null = aucun) + garde-fou pour ne
@@ -327,9 +327,9 @@ contoursmurs.setCollisionByProperty({ estsolide: true });
             // création d'un écouteur sur le clavier
             cursors = this.input.keyboard.createCursorKeys();
             // redimentionnement du monde avec les dimensions calculées via tiled
-            this.physics.world.setBounds(0, 0, 1280, 640);
+            this.physics.world.setBounds(0, 0, 1024, 1024);
             //  ajout du champs de la caméra de taille identique à celle du monde
-            this.cameras.main.setBounds(0, 0, 1280, 640);
+            this.cameras.main.setBounds(0, 0, 1024, 1024);
             // ancrage de la caméra sur le joueur
             this.cameras.main.startFollow(player);
 
@@ -351,6 +351,8 @@ contoursmurs.setCollisionByProperty({ estsolide: true });
 
                   // PRENDRE LA DISTANCE ENTRE LES EPRSONNAGES POUR ENSUITE LES FAIRE APPARAITRENT AVEC E
                   this.input.keyboard.on("keydown-E", () => {
+                          if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
                     // Si le téléphone est déjà ouvert (scène en pause), on ignore la touche E ici
                     if (this.scene.isPaused()) return;
 

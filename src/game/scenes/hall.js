@@ -18,18 +18,18 @@ var dialoguesActuels = [];
 // perso: false, comme un monologue solo, mais elle enchaîne directement
 // après la dernière phrase de Jessica.
 var dialogueJessica = [
-  { texte: "Jessica : Violette. Je ne pensais pas te revoir ici.", moi: "moi_triste", perso: "perso_heureuse" },
-  { texte: "Violette : Moi non plus.", moi: "moi_triste", perso: "perso_heureuse" },
+  { texte: "Jessica : Violette. Je ne pensais pas te revoir ici.", moi: "moi_triste", perso: "jessica_hereuse" },
+  { texte: "Violette : Moi non plus.", moi: "moi_triste", perso: "jessica_hereuse" },
   {
     texte: "Jessica : Je voulais te dire... Je n'ai jamais cru ce qu'on racontait. Adrien parlait de toi tout le temps.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "jessica_triste",
   },
-  { texte: "Violette : Merci. Je cherche Grégoire.", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : Merci. Je cherche Grégoire.", moi: "moi_colere", perso: "jessica_triste" },
   {
     texte: "Jessica : A l'escalier à droite. Si tu as besoin de quoi que ce soit, je suis là. Vraiment.",
     moi: "moi_colere",
-    perso: "perso_heureuse",
+    perso: "jessica_hereuse",
   },
   // NOUVEAU : pensée de Violette en voix off -> pas de portrait PNJ (perso: false)
   { texte: "Violette (voix off) : Jessica. Toujours impeccable. Toujours là quand Adrien...", moi: "moi_triste", perso: false },
@@ -38,7 +38,7 @@ var dialogueJessica = [
 // NOUVEAU : si on reparle à Jessica après cette première fois (et avant que
 // l'objectif "Parler à Jessica" ne soit actif), une réplique courte suffit
 var dialogueJessicaRepete = [
-  { texte: "Jessica : Grégoire est à l'escalier, sur la droite.", moi: "moi_heureuse", perso: "perso_heureuse" },
+  { texte: "Jessica : Grégoire est à l'escalier, sur la droite.", moi: "moi_hereuse", perso: "jessica_hereuse" },
 ];
 
 // NOUVEAU : la grande conversation de révélation, jouée quand l'objectif
@@ -54,39 +54,39 @@ var dialogueJessicaRevelation = [
     moi: "moi_triste",
     perso: "perso_triste",
   },
-  { texte: "Violette : Et lui ?", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Jessica : Il m'a dit non. Trois jours avant. Poliment. Il t'aimait, toi.", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Violette : Et tu as accepté ?", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : Et lui ?", moi: "moi_triste", perso: "jessica_triste" },
+  { texte: "Jessica : Il m'a dit non. Trois jours avant. Poliment. Il t'aimait, toi.", moi: "moi_triste", perso: "jessica_triste" },
+  { texte: "Violette : Et tu as accepté ?", moi: "moi_colere", perso: "jessica_triste" },
   {
     texte: "Jessica : Non. Je lui ai dit que j'attendrais. (elle rit sans joie) Ça fait de moi une coupable, je suppose.",
     moi: "moi_colere",
     perso: "perso_colere",
   },
-  { texte: "Violette : Où étais-tu cette nuit-là ?", moi: "moi_colere", perso: "perso_colere" },
+  { texte: "Violette : Où étais-tu cette nuit-là ?", moi: "moi_colere", perso: "jessica_colere" },
   {
     texte: "Jessica : Chez moi. Seule. Personne pour le confirmer. Je sais ce que ça donne.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "jessica_triste",
   },
-  { texte: "Violette : Adrien avait un problème de freins. Tu le savais ?", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : Adrien avait un problème de freins. Tu le savais ?", moi: "moi_colere", perso: "jessica_colere" },
   {
     texte: "Jessica : Ses freins ? Il ne m'en a jamais parlé. Je ne savais même pas qu'il y avait un problème avec sa voiture.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "jessica_triste",
   },
   {
     texte: "Violette : Tu en as parlé à quelqu'un ? De ce que tu ressentais ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "jessica_colere",
   },
   {
     texte:
       "Jessica : À Victor. Il a été gentil avec moi. Il m'a dit que si je ressentais quelque chose, je devais le dire à Adrien. Que ce serait mieux pour tout le monde.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "jessica_triste",
   },
-  { texte: "Violette : Victor t'a dit ça ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Jessica : Je l'ai écouté. J'aurais dû me taire.", moi: "moi_triste", perso: "perso_triste" },
+  { texte: "Violette : Victor t'a dit ça ?", moi: "moi_colere", perso: "jessica_colere" },
+  { texte: "Jessica : Je l'ai écouté. J'aurais dû me taire.", moi: "moi_triste", perso: "jessica_triste" },
   // NOUVEAU : pensées de Violette en voix off, pour conclure -> pas de portrait PNJ
   { texte: "Violette (voix off) : Elle avait aimé mon mari.", moi: "moi_triste", perso: false },
   {
@@ -208,6 +208,8 @@ export default class hall extends Phaser.Scene {
      *  TOUCHE E *
      ************************/
     this.input.keyboard.on("keydown-E", () => {
+            if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
+
       // un monologue en cours est prioritaire sur tout
       if (this.monologue) {
         this.avancerMonologue();

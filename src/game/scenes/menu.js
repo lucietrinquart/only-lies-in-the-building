@@ -7,12 +7,12 @@ export default class menu extends Phaser.Scene {
 
   preload() {
 this.load.image("menu_fond", "./assets/menu_fond.png");
-this.load.image("menu", "./assets/menu.png");
+this.load.image("menu", "./assets/fond2.png");
 
 this.load.image("imageBoutonPlay", "./assets/button_play.png");
 this.load.image("imageBoutonPlay2", "./assets/button_play.png");
 
-this.load.image("menu_instruction", "./assets/menu_instruction.png");
+this.load.image("menu_instruction", "./assets/instruction.png");
 
 this.load.image("imageBoutonContinuer", "./assets/button_continuer.png");
 
@@ -65,6 +65,19 @@ this.load.image("marguerite_colere", "./assets/marguerite_colere.png");
 this.load.image("marguerite_hereuse", "./assets/marguerite_hereuse.png");
 this.load.image("marguerite_triste", "./assets/marguerite_triste.png");
 
+this.load.image("victor_colere", "./assets/victor_colere.png");
+this.load.image("victor_hereuse", "./assets/victor_hereuse.png");
+this.load.image("victor_triste", "./assets/victor_triste.png");
+
+this.load.image("cunegonde_hereuse", "./assets/cunegonde_hereuse.png");
+this.load.image("cunegonde_triste", "./assets/cunegonde_triste.png");
+
+this.load.image("jessica_colere", "./assets/jessica_colere.png");
+this.load.image("jessica_hereuse", "./assets/jessica_hereuse.png");
+this.load.image("jessica_triste", "./assets/jessica_triste.png");
+
+this.load.image("gregoire_hereuse", "./assets/gregoire_hereuse.png");
+
 this.load.image("perso_colere", "./assets/perso_colere.webp");
 this.load.image("perso_hereuse", "./assets/perso_hereuse.webp");
 this.load.image("perso_triste", "./assets/perso_triste.webp");
@@ -74,17 +87,23 @@ this.load.video("video_surveillance1", "assets/video_surveillance1.mp4");
 this.load.video("video_surveillance2", "assets/video_surveillance2.mp4");
 this.load.video("video_surveillance3", "assets/video_surveillance3.mp4");
 
-this.load.image("bulle1", "./assets/bulle1.png");
-this.load.image("bulle2", "./assets/bulle2.png");
-this.load.image("bulle3", "./assets/bulle3.png");
-this.load.image("bulle4", "./assets/bulle4.png");
-this.load.image("bulle5", "./assets/bulle5.png");
+this.load.image("bulle1", "./assets/bulle_1.png");
+this.load.image("bulle2", "./assets/bulle_2.png");
+this.load.image("bulle3", "./assets/bulle_3.png");
+this.load.image("bulle4", "./assets/bulle_4.png");
+this.load.image("bulle5", "./assets/bulle_5.png");
+
+this.load.image("bulle6", "./assets/bulle_6.png");
+this.load.image("bulle7", "./assets/bulle_7.png");
+this.load.image("bulle8", "./assets/bulle_8.png");
+this.load.image("bulle9", "./assets/bulle_9.png");
+this.load.image("bulle10", "./assets/bulle_10.png");
 this.load.image("fleche", "./assets/fleche.png");
 
 this.load.image("billet_de_train", "./assets/billet_de_train.png");
 
 
-
+this.load.audio("bip", "assets/bip.mp3");
 
 this.load.audio("gaps", "assets/gaps.mp3");
 this.load.audio("orage", "assets/orage.mp3");
@@ -213,7 +232,7 @@ this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("maison");
         
       });
 
