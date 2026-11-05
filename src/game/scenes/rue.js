@@ -79,6 +79,18 @@ const CLE_INTRO = "intro_gendarmerie3_joue";
 // NOUVEAU : Victor ne vient qu'une seule fois dans cette scène
 const CLE_VICTOR = "victor_rue_rencontre_joue";
 
+// ============================================================
+//  VICTOR : sens de marche + parcours
+// ============================================================
+const VITESSE_VICTOR = 120; // pixels par seconde
+
+const DIRECTIONS_VICTOR = {
+  gauche: { axe: "x", anim: "victor_gauche", idle: "victor_idle_gauche" },
+  droite: { axe: "x", anim: "victor_droite", idle: "victor_idle_droite" },
+  haut:   { axe: "y", anim: "victor_haut",   idle: "victor_idle_dos" },
+  bas:    { axe: "y", anim: "victor_bas",    idle: "victor_idle_face" }, // "tout droit" = vers l'avant
+};
+
 export default class rue extends Phaser.Scene {
   constructor() {
     super({ key: "rue" });
@@ -194,6 +206,16 @@ export default class rue extends Phaser.Scene {
     creerAnim({ key: "haut", frames: this.anims.generateFrameNumbers("img_perso", { start: 12, end: 14 }), frameRate: 10, repeat: -1 });
     creerAnim({ key: "bas", frames: this.anims.generateFrameNumbers("img_perso", { start: 9, end: 11 }), frameRate: 10, repeat: -1 });
 
+        // Animations de Victor
+    creerAnim({ key: "victor_idle_gauche", frames: [{ key: "victor", frame: 0 }], frameRate: 1 });
+    creerAnim({ key: "victor_gauche", frames: this.anims.generateFrameNumbers("victor", { start: 1, end: 3 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_droite", frames: [{ key: "victor", frame: 5 }], frameRate: 1 });
+    creerAnim({ key: "victor_droite", frames: this.anims.generateFrameNumbers("victor", { start: 6, end: 7 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_dos", frames: [{ key: "victor", frame: 9 }], frameRate: 1 });
+    creerAnim({ key: "victor_haut", frames: this.anims.generateFrameNumbers("victor", { start: 10, end: 11 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_face", frames: [{ key: "victor", frame: 12 }], frameRate: 1 });
+    creerAnim({ key: "victor_bas", frames: this.anims.generateFrameNumbers("victor", { start: 13, end: 14 }), frameRate: 8, repeat: -1 });
+
     cursors = this.input.keyboard.createCursorKeys();
 
     this.physics.world.setBounds(0, 0, 800, 608);
@@ -205,8 +227,12 @@ export default class rue extends Phaser.Scene {
     const victorDejaRencontre = this.registry.get(CLE_VICTOR) || false;
 
     if (!victorDejaRencontre) {
-      const textureVictor = this.textures.exists("victor") ? "victor" : "img_perso2";
-      this.victor = this.physics.add.sprite(600, 450, textureVictor);
+      this.victor = this.physics.add.sprite(600, 450, "victor");
+      this.victor.setScale(0.7);
+      this.victor.anims.play("victor_idle_gauche"); // il regarde vers Violette
+
+      this.victorCutscene = true;
+      // (le reste ne change pas)     
 
       this.victorCutscene = true;
 
@@ -249,32 +275,75 @@ export default class rue extends Phaser.Scene {
     });
   }
 
-  // NOUVEAU : à la fin de la conversation, Victor repart vers la droite en fondu
+  // Victor marche jusqu'à Violette : d'abord à gauche, puis tout droit (vers le bas)
+  victorSApproche() {
+    const parcours = [
+      { direction: "gauche", vers: player.x + 70 },
+      { direction: "bas", vers: player.y },
+    ];
+
+    this.victorSuivreParcours(parcours, () => {
+      this.victor.anims.play("victor_idle_gauche"); // face à Violette
+      this.lancerMonologue(dialogueVictor, () => {
+        this.victorSEnVa();
+      });
+    });
+  }
+
+  // Victor repart vers la droite en fondu
   victorSEnVa() {
     this.tweens.add({
       targets: this.victor,
-      x: this.victor.x + 300,
       alpha: 0,
-      duration: 900,
-      ease: "Sine.easeIn",
-      onComplete: () => {
-        if (this.victor) {
-          this.victor.destroy();
-          this.victor = null;
-        }
-        this.registry.set(CLE_VICTOR, true);
+      delay: 500,
+      duration: 1500,
+    });
 
-        // On enchaîne directement sur le monologue d'introduction existant,
-        // puis l'objectif "Parler à Martin"
-        if (!this.registry.get(CLE_INTRO)) {
-          this.lancerMonologue(introMonologue, () => {
-            this.registry.set(CLE_INTRO, true);
-            ajouterTache(this, "parler_martin", "Parler à Martin");
-            this.victorCutscene = false; // NOUVEAU : fin de la cinématique, le joueur retrouve le contrôle
-          });
-        } else {
+    this.victorSuivreParcours([{ direction: "droite", vers: this.victor.x + 300 }], () => {
+      if (this.victor) {
+        this.victor.destroy();
+        this.victor = null;
+      }
+      this.registry.set(CLE_VICTOR, true);
+
+      if (!this.registry.get(CLE_INTRO)) {
+        this.lancerMonologue(introMonologue, () => {
+          this.registry.set(CLE_INTRO, true);
+          ajouterTache(this, "parler_martin", "Parler à Martin");
           this.victorCutscene = false;
-        }
+        });
+      } else {
+        this.victorCutscene = false;
+      }
+    });
+  }
+
+  // Enchaîne les étapes d'un parcours, une par une
+  victorSuivreParcours(etapes, onFin, i = 0) {
+    if (i >= etapes.length) {
+      if (onFin) onFin();
+      return;
+    }
+    const etape = etapes[i];
+    this.victorMarcher(etape.direction, etape.vers, () => {
+      this.victorSuivreParcours(etapes, onFin, i + 1);
+    });
+  }
+
+  // Une étape : marche dans une direction jusqu'à la coordonnée "cible"
+  victorMarcher(direction, cible, onFin) {
+    const d = DIRECTIONS_VICTOR[direction];
+    const distance = Math.abs(cible - this.victor[d.axe]);
+
+    this.victor.anims.play(d.anim, true);
+    this.tweens.add({
+      targets: this.victor,
+      [d.axe]: cible,
+      duration: (distance / VITESSE_VICTOR) * 1000,
+      ease: "Linear",
+      onComplete: () => {
+        this.victor.anims.play(d.idle);
+        if (onFin) onFin();
       },
     });
   }

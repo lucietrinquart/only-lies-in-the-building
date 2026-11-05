@@ -23,7 +23,7 @@ var introMonologue = [
   { texte: "Violette : Même avec un non-lieu, personne ne veut me croire... Je n'ai plus personne.", moi: "moi_triste", perso: false },
   { texte: "Violette : Non Violette il ne faut pas désespérer ! Je suis la meilleure journaliste !", moi: "moi_colere", perso: false },
   { texte: "Violette : Je vais réussir à m'innocenter et à trouver le vrai coupable de ce meurtre.", moi: "moi_colere", perso: false },
-  { texte: "Violette : Pour ça il faut d'abord que je trouve des indices pour mieux comprendre l'histoire.", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Pour ça il faut d'abord que je trouve des indices pour mieux comprendre l'histoire.", moi: "moi_hereuse", perso: false },
   // NOUVEAU : pousse le joueur vers le téléphone
   { texte: "Violette : Tiens, mon téléphone vient de vibrer... Il est là-bas, je devrais regarder.", moi: "moi_triste", perso: false },
 ];
@@ -32,7 +32,7 @@ var introMonologue = [
 var monologueTelephone = [
   { texte: "Violette : Ces messages sont bizarres... À qui devait-il donner quelque chose ?", moi: "moi_triste", perso: false },
   { texte: "Violette : L'adresse indique le bar à côté de chez moi. Il faut que j'y aille.", moi: "moi_colere", perso: false },
-  { texte: "Violette : Mais avant ça, il me faut la carte pour me repérer, et mon sac pour garder certains objets.", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Mais avant ça, il me faut la carte pour me repérer, et mon sac pour garder certains objets.", moi: "moi_hereuse", perso: false },
 ];
 
 var monologueApresOrdinateur = [
@@ -50,8 +50,8 @@ var monologueTelephoneSonne = [
 ];
 
 var monologueApresMessageVictor = [
-  { texte: "Violette : Oui, il a raison... Ça me ferait du bien d'aller le voir.", moi: "moi_heureuse", perso: false },
-  { texte: "Violette : Il a toujours les bons mots pour me faire aller mieux.", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Oui, il a raison... Ça me ferait du bien d'aller le voir.", moi: "moi_hereuse", perso: false },
+  { texte: "Violette : Il a toujours les bons mots pour me faire aller mieux.", moi: "moi_hereuse", perso: false },
 ];
 
 // NOUVEAU : l'appel téléphonique de Victor, juste après que Violette ait fini
@@ -71,8 +71,8 @@ var dialogueAppelVictor = [
   { texte: "Victor : Elle l'aimait, Violette. Tout le monde le voyait, sauf toi. Une femme comme ça n'accepte pas de perdre.", moi: "moi_triste", perso: false },
   { texte: "Violette : Tu penses vraiment que…", moi: "moi_colere", perso: false },
   { texte: "Victor : Je ne pense rien. Je te dis de faire attention. Je suis là, tu sais. Toujours.", moi: "moi_colere", perso: false },
-  { texte: "Violette : Merci, Victor.", moi: "moi_heureuse", perso: false },
-  { texte: "Victor : Dors un peu.", moi: "moi_heureuse", perso: false },
+  { texte: "Violette : Merci, Victor.", moi: "moi_hereuse", perso: false },
+  { texte: "Victor : Dors un peu.", moi: "moi_hereuse", perso: false },
 ];
 
 // NOUVEAU : la conversation avec Marguerite, de retour à l'appartement pour
@@ -109,7 +109,7 @@ var dialogueMarguerite = [
   { texte: "Marguerite : Tu en as parlé à quelqu'un ? À Victor, par exemple ?", moi: "moi_colere", perso: "marguerite_triste" },
   { texte: "Violette : Pas encore. Pourquoi ?", moi: "moi_triste", perso: "marguerite_triste" },
   { texte: "Marguerite : Parce que je ne l'aime pas, Violette. Je ne l'ai jamais aimé.", moi: "moi_triste", perso: "marguerite_colere" },
-  { texte: "Violette : (elle rit) Marguerite...", moi: "moi_heureuse", perso: "marguerite_colere" },
+  { texte: "Violette : (elle rit) Marguerite...", moi: "moi_hereuse", perso: "marguerite_colere" },
   { texte: "Marguerite : Je suis sérieuse. Il y a quelque chose chez lui qui cloche.", moi: "moi_heureuse", perso: "marguerite_colere" },
   { texte: "Violette : Tu dis ça parce qu'il t'a dit non.", moi: "moi_colere", perso: "marguerite_colere" },
   { texte: "Marguerite : Ça n'a rien à voir avec ça.", moi: "moi_colere", perso: "marguerite_colere" },
