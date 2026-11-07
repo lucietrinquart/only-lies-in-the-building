@@ -46,30 +46,38 @@ export default class victor_secret extends Phaser.Scene {
     });
 
     // décor : base reprise de ta copie (carte3)
-    const carteDuNiveau = this.add.tilemap("carte9");
-    const tileset = carteDuNiveau.addTilesetImage("barthe", "Phaser_tuilesdejeu9");
+    const carteDuNiveau = this.add.tilemap("carte15");
+    const tileset = carteDuNiveau.addTilesetImage("tilesetpiecesecrete", "Phaser_tuilesdejeu15");
 
-    carteDuNiveau.createLayer("sol", tileset);
     carteDuNiveau.createLayer("fond", tileset);
-    const fond2 = carteDuNiveau.createLayer("fond2", tileset);
-    carteDuNiveau.createLayer("bois", tileset);
-    const objet4 = carteDuNiveau.createLayer("objet4", tileset);
-    const objet5 = carteDuNiveau.createLayer("objet5", tileset);
-    const arbre = carteDuNiveau.createLayer("arbre", tileset);
-    const interdiction = carteDuNiveau.createLayer("interdiction", tileset);
-    arbre.depth = 100;
+    const fond2 = carteDuNiveau.createLayer("sol", tileset);
+    carteDuNiveau.createLayer("surlesol", tileset);
+    const mur = carteDuNiveau.createLayer("mur", tileset);
+    const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
+    const chaise = carteDuNiveau.createLayer("chaise", tileset);
+
 
     fond2.setCollisionByProperty({ estSolide: true });
-    objet4.setCollisionByProperty({ estSolide: true });
-    objet5.setCollisionByProperty({ estSolide: true });
-    interdiction.setCollisionByProperty({ estSolide: true });
+    mur.setCollisionByProperty({ estSolide: true });
+    surlemur.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    contourmur.setCollisionByProperty({ estSolide: true });
+    chaise.setCollisionByProperty({ estSolide: true });
 
     player = this.physics.add.sprite(350, 500, "img_perso");
     player.setCollideWorldBounds(true);
+    
     this.physics.add.collider(player, fond2);
-    this.physics.add.collider(player, objet4);
-    this.physics.add.collider(player, objet5);
-    this.physics.add.collider(player, interdiction);
+    this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, contourmur);
+    this.physics.add.collider(player, chaise);
 
     if (!this.anims.exists("turn")) {
       this.anims.create({ key: "turn", frames: [{ key: "img_perso", frame: 4 }], frameRate: 20 });

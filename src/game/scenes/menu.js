@@ -51,6 +51,20 @@ this.load.tilemapTiledJSON("carte4", "./assets/bureau.json");
 this.load.image("Phaser_tuilesdejeu8", "./assets/sprite_accueil.png");
 this.load.tilemapTiledJSON("carte8", "./assets/map_accueil.json");
 
+this.load.image("Phaser_tuilesdejeu15", "./assets/tilesetpiecesecrete.png");
+this.load.tilemapTiledJSON("carte15", "./assets/piecesecrete.json");
+
+this.load.image("Phaser_tuilesdejeu16", "./assets/tilesetrue.png");
+this.load.tilemapTiledJSON("carte16", "./assets/rue.json");
+
+this.load.image("Phaser_tuilesdejeu17", "./assets/tilesetmaisonvic.png");
+this.load.tilemapTiledJSON("carte17", "./assets/maisonvictor.json");
+
+
+this.load.image("Phaser_tuilesdejeu18", "./assets/tilesetcafouche.png");
+this.load.tilemapTiledJSON("carte18", "./assets/cafouche.json");
+
+
 this.load.image("Phaser_tuilesdejeu9", "./assets/barthe.png");
 this.load.tilemapTiledJSON("carte9", "./assets/cafethe.json");
 
@@ -236,7 +250,7 @@ this.load.spritesheet("victor", "./assets/victor.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("cafoutche");
         
       });
 

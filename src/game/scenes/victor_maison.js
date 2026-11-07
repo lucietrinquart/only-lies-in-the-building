@@ -204,7 +204,7 @@ export default class victor_maison extends Phaser.Scene {
     // NOUVEAU : empêche de relancer deux fois la fin de scène
     this.finEnCours = false;
 
-    const carteDuNiveau = this.add.tilemap("carte8");
+    const carteDuNiveau = this.add.tilemap("carte17");
     this.carteUI = new CarteUI(this);
     this.inventaireUI = new InventaireUI(this);
 
@@ -213,17 +213,27 @@ export default class victor_maison extends Phaser.Scene {
       persoParDefaut: "perso_triste",
     });
 
-    // décor (même base que accueil)
-    const tileset = carteDuNiveau.addTilesetImage("sprite_accueil", "Phaser_tuilesdejeu8");
-    carteDuNiveau.createLayer("background", tileset);
-    carteDuNiveau.createLayer("sol", tileset);
-    carteDuNiveau.createLayer("tapis", tileset);
-    const mur = carteDuNiveau.createLayer("mur", tileset);
-    carteDuNiveau.createLayer("deco_murale", tileset);
-    const meuble = carteDuNiveau.createLayer("meuble", tileset);
-    const deco_meuble = carteDuNiveau.createLayer("deco_meuble", tileset);
-    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
-    carteDuNiveau.createLayer("escalier", tileset);
+
+
+
+
+const donneesCarte = this.cache.tilemap.get("carte17");
+
+console.log("DONNÉES JSON :", donneesCarte);
+console.log("CALQUES JSON :", donneesCarte.layers);
+    const tileset = carteDuNiveau.addTilesetImage("tilesetmaisonvic", "Phaser_tuilesdejeu17");
+
+
+carteDuNiveau.createLayer("fond", tileset);
+carteDuNiveau.createLayer("sol", tileset);
+
+const mur = carteDuNiveau.createLayer("mur", tileset);
+const chaise = carteDuNiveau.createLayer("chaise", tileset);
+const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+const objet = carteDuNiveau.createLayer("objet", tileset);
+const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
 
     /***************************
      *  OBJETS DE LA PIÈCE *
@@ -301,15 +311,23 @@ export default class victor_maison extends Phaser.Scene {
      ****************************/
     player = this.physics.add.sprite(420, 650, "img_perso");
 
-    deco_meuble.setCollisionByProperty({ estSolide: true });
-    meuble.setCollisionByProperty({ estSolide: true });
-    murs_porteurs.setCollisionByProperty({ estSolide: true });
-    mur.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, deco_meuble);
-    this.physics.add.collider(player, murs_porteurs);
-    this.physics.add.collider(player, meuble);
+
+    mur.setCollisionByProperty({ estSolide: true });
+    chaise.setCollisionByProperty({ estSolide: true });
+    surlesol.setCollisionByProperty({ estSolide: true });
+    surlemur.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    contourmur.setCollisionByProperty({ estSolide: true });
+
     this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, chaise);
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, contourmur);
 
     player.setCollideWorldBounds(true);
 
@@ -329,8 +347,8 @@ export default class victor_maison extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
-    this.cameras.main.setBounds(0, 0, 800, 608);
+    this.physics.world.setBounds(0, 0, 1024, 1024);
+    this.cameras.main.setBounds(0, 0, 1024, 1024);
     this.cameras.main.startFollow(player);
 
     /***************************

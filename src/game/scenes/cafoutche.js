@@ -78,23 +78,24 @@ export default class cafoutche extends Phaser.Scene {
       },
     });
 
-    const carteDuNiveau = this.add.tilemap("carte8");
+    const carteDuNiveau = this.add.tilemap("carte18");
 
     // chargement du jeu de tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_accueil", "Phaser_tuilesdejeu8");
+    const tileset = carteDuNiveau.addTilesetImage("tilesetcafouche", "Phaser_tuilesdejeu18");
 
     /***************************
      *  CREATION DES CALQUES *
      ****************************/
-    carteDuNiveau.createLayer("background", tileset);
-    carteDuNiveau.createLayer("sol", tileset);
-    carteDuNiveau.createLayer("tapis", tileset);
+
     const mur = carteDuNiveau.createLayer("mur", tileset);
-    carteDuNiveau.createLayer("deco_murale", tileset);
-    const meuble = carteDuNiveau.createLayer("meuble", tileset);
-    const deco_meuble = carteDuNiveau.createLayer("deco_meuble", tileset);
-    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
-    carteDuNiveau.createLayer("escalier", tileset);
+    const surlemur = carteDuNiveau.createLayer("surlemur", tileset);
+    const sol = carteDuNiveau.createLayer("sol", tileset);
+    const table = carteDuNiveau.createLayer("table", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const fond = carteDuNiveau.createLayer("fond", tileset);
+    const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
 
     /***************************
      *  CREATION DES OBJETS *
@@ -120,15 +121,27 @@ export default class cafoutche extends Phaser.Scene {
     /***************************
      *  CREATION DES COLISIONS *
      ****************************/
-    deco_meuble.setCollisionByProperty({ estSolide: true });
-    meuble.setCollisionByProperty({ estSolide: true });
-    murs_porteurs.setCollisionByProperty({ estSolide: true });
-    mur.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, deco_meuble);
-    this.physics.add.collider(player, murs_porteurs);
-    this.physics.add.collider(player, meuble);
+
+    mur.setCollisionByProperty({ estSolide: true });
+    surlemur.setCollisionByProperty({ estSolide: true });
+    sol.setCollisionByProperty({ estSolide: true });
+    table.setCollisionByProperty({ estSolide: true });
+    surlesol.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    fond.setCollisionByProperty({ estSolide: true });
+    contourmur.setCollisionByProperty({ estSolide: true });
+
     this.physics.add.collider(player, mur);
+    this.physics.add.collider(player, surlemur);
+    this.physics.add.collider(player, sol);
+    this.physics.add.collider(player, table);
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, fond);
+    this.physics.add.collider(player, contourmur);
 
     player.setCollideWorldBounds(true); // le player se cognera contre les bords du monde
     this.physics.world.enable(player);

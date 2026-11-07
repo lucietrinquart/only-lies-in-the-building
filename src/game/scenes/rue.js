@@ -112,20 +112,22 @@ export default class rue extends Phaser.Scene {
 
     this.inventaireUI = new InventaireUI(this);
 
-    const carteDuNiveau = this.add.tilemap("carte7");
+    const carteDuNiveau = this.add.tilemap("carte16");
     this.carteUI = new CarteUI(this);
     this.tachesUI = new TachesUI(this);
 
     // tuiles
-    const tileset = carteDuNiveau.addTilesetImage("sprite_police", "Phaser_tuilesdejeu7");
-    carteDuNiveau.createLayer("background", tileset);
-    carteDuNiveau.createLayer("sol", tileset);
-    const murs_porteurs = carteDuNiveau.createLayer("murs_porteurs", tileset);
-    const cloison = carteDuNiveau.createLayer("cloison", tileset);
-    carteDuNiveau.createLayer("tapis", tileset);
-    const meuble = carteDuNiveau.createLayer("meuble", tileset);
-    carteDuNiveau.createLayer("deco_meuble", tileset);
-    const deco = carteDuNiveau.createLayer("deco", tileset);
+    const tileset = carteDuNiveau.addTilesetImage("tilesetrue", "Phaser_tuilesdejeu16");
+    carteDuNiveau.createLayer("route", tileset);
+    const banc = carteDuNiveau.createLayer("banc", tileset);
+    const arbre = carteDuNiveau.createLayer("arbre", tileset);
+    const fond = carteDuNiveau.createLayer("fond", tileset);
+    const objet = carteDuNiveau.createLayer("objet", tileset);
+    const surroute = carteDuNiveau.createLayer("surroute", tileset);
+    const voiture = carteDuNiveau.createLayer("voiture", tileset);
+    const contourmap = carteDuNiveau.createLayer("contourmap", tileset);
+    const batiment = carteDuNiveau.createLayer("batiment", tileset);
+    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
 
     /***************************
      *  OBJETS *
@@ -140,15 +142,23 @@ export default class rue extends Phaser.Scene {
     /***************************
      *  COLLISIONS *
      ****************************/
-    deco.setCollisionByProperty({ estSolide: true });
-    meuble.setCollisionByProperty({ estSolide: true });
-    murs_porteurs.setCollisionByProperty({ estSolide: true });
-    cloison.setCollisionByProperty({ estSolide: true });
-
-    this.physics.add.collider(player, deco);
-    this.physics.add.collider(player, meuble);
-    this.physics.add.collider(player, murs_porteurs);
-    this.physics.add.collider(player, cloison);
+    banc.setCollisionByProperty({ estSolide: true });
+    arbre.setCollisionByProperty({ estSolide: true });
+    fond.setCollisionByProperty({ estSolide: true });
+    objet.setCollisionByProperty({ estSolide: true });
+    surroute.setCollisionByProperty({ estSolide: true });
+    contourmap.setCollisionByProperty({ estSolide: true });
+    batiment.setCollisionByProperty({ estSolide: true });
+    surobjet.setCollisionByProperty({ estSolide: true });
+    
+    this.physics.add.collider(player, banc);
+    this.physics.add.collider(player, arbre);
+    this.physics.add.collider(player, fond);
+    this.physics.add.collider(player, objet);
+    this.physics.add.collider(player, surroute);
+    this.physics.add.collider(player, contourmap);
+    this.physics.add.collider(player, batiment);
+    this.physics.add.collider(player, surobjet);
 
     player.setCollideWorldBounds(true);
 
