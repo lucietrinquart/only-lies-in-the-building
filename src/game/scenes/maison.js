@@ -24,13 +24,12 @@ var introMonologue = [
   { texte: "Violette : Non Violette il ne faut pas désespérer ! Je suis la meilleure journaliste !", moi: "moi_colere", perso: false },
   { texte: "Violette : Je vais réussir à m'innocenter et à trouver le vrai coupable de ce meurtre.", moi: "moi_colere", perso: false },
   { texte: "Violette : Pour ça il faut d'abord que je trouve des indices pour mieux comprendre l'histoire.", moi: "moi_hereuse", perso: false },
-  // NOUVEAU : pousse le joueur vers le téléphone
-  { texte: "Violette : Tiens, mon téléphone vient de vibrer... Il est là-bas, je devrais regarder.", moi: "moi_triste", perso: false },
+  { texte: "Violette : Déjà la première étape est d'aller voir le téléphone d'Adrien.", moi: "moi_triste", perso: false },
 ];
 
 // NOUVEAU : monologue joué quand on ferme le téléphone
 var monologueTelephone = [
-  { texte: "Violette : Ces messages sont bizarres... À qui devait-il donner quelque chose ?", moi: "moi_triste", perso: false },
+  { texte: "Violette : Ces messages sont bizarres... À qui devait-il donner quelque chose ?", moi: "moi_colere", perso: false },
   { texte: "Violette : L'adresse indique le bar à côté de chez moi. Il faut que j'y aille.", moi: "moi_colere", perso: false },
   { texte: "Violette : Mais avant ça, il me faut la carte pour me repérer, et mon sac pour garder certains objets.", moi: "moi_hereuse", perso: false },
 ];
@@ -362,6 +361,8 @@ const tileset = carteDuNiveau.addTilesetImage(
     const chat = carteDuNiveau.createLayer("chat", tileset);
         const dessous = carteDuNiveau.createLayer("dessous", tileset);
     const dessus = carteDuNiveau.createLayer("dessus", tileset);
+        const dessus_dessus = carteDuNiveau.createLayer("dessus_dessus", tileset);
+
 
 
 
@@ -501,6 +502,7 @@ this.indiceOrdinateur = this.add
 
      // ordre d'affichage : sol/murs (0) < personnages et objets (0-10) < "dessus" (40) < "E" (50) < interfaces (1000+)
 dessus.setDepth(40);
+dessus_dessus.setDepth(40);
 
     this.physics.add.collider(player, surlesol);
     this.physics.add.collider(player, chaises);

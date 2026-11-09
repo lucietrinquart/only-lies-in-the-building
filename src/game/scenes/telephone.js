@@ -3,16 +3,16 @@ import TelephoneBase from "./telephone_base.js";
 // Conversations d'Adrien
 const contacts = [
   {
-    nom: "Michel",
-    apercu: "Rejoins moi tu sais où avec...",
+    nom: "V",
+    apercu: "Ne le dis à...",
     heure: "Hier",
     horodatage: "Hier 18:32",
     couleur: 0x5e5ce6,
     messages: [
-      { expediteur: "Michel", texte: "Ne m'oblige pas à me répéter" },
-      { expediteur: "Michel", texte: "Tu viens à 19h avec le paquet" },
-      { expediteur: "moi", texte: "Oui oui désolé je serais là" },
-      { expediteur: "Michel", texte: "Rejoins moi tu sais où avec tu sais quoi" },
+      { expediteur: "V", texte: "Bon maintenant que tu sais tout il faut qu'on s'explique" },
+      { expediteur: "V", texte: "Tu devras faire le bon choix." },
+      { expediteur: "moi", texte: "Cette fois-ci tu m'expliqueras tout." },
+      { expediteur: "V", texte: "Ne le dis à personne. Rejoins moi au Bar La gorge Fraîche." },
     ],
   },
   {
@@ -30,28 +30,25 @@ const contacts = [
   },
   {
     nom: "Maman",
-    apercu: "Oublie pas de prendre le...",
+    apercu: "Rentrez bien bi...",
     heure: "Dim.",
     horodatage: "Dimanche 10:20",
     couleur: 0xff375f,
     messages: [
-      { expediteur: "moi", texte: "Coucou comment ça va ?" },
-      { expediteur: "moi", texte: "J'ai pas voulu te reveiller je vais au boulot" },
-      { expediteur: "Elisa", texte: "Pas de soucis par contre il pleut" },
-      { expediteur: "Elisa", texte: "Oublie pas de prendre le parapluie" },
+      { expediteur: "moi", texte: "Coucou, merci pour le gâteau." },
+      { expediteur: "moi", texte: "Violette a adoré!" },
+      { expediteur: "Elisa", texte: "Rentrez bien bisous" },
     ],
   },
   {
     nom: "Papa",
-    apercu: "Oublie pas de prendre le...",
+    apercu: "Oui elle me l'...",
     heure: "Sam.",
     horodatage: "Samedi 17:45",
     couleur: 0x30b0c7,
     messages: [
-      { expediteur: "moi", texte: "Coucou comment ça va ?" },
-      { expediteur: "moi", texte: "J'ai pas voulu te reveiller je vais au boulot" },
-      { expediteur: "Elisa", texte: "Pas de soucis par contre il pleut" },
-      { expediteur: "Elisa", texte: "Oublie pas de prendre le parapluie" },
+      { expediteur: "Elisa", texte: "Maman t'as donné le cadeau" },
+      { expediteur: "moi", texte: "Oui elle me l'a donné avant de partir" },
     ],
   },
 ];

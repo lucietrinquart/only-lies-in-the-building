@@ -250,7 +250,7 @@ this.load.spritesheet("victor", "./assets/victor.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("cafoutche");
+        this.scene.start("maison");
         
       });
 
