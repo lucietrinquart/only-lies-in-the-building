@@ -102,37 +102,37 @@ var dialogueShella = [
   {
     texte: "Violette : Vous connaissiez Adrien ?",
     moi: "moi_hereuse",
-    perso: "perso_hereuse",
+    perso: "shella_hereuse",
   },
     {
     texte: "Shella: Tout le monde connaissait Adrien ici.",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "shella_hereuse",
   },
   {
     texte: "Violette: Je cherche à comprendre ce qui lui est arrivé.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "shella_hereuse",
   },
     {
     texte: "Shella: Vous devriez peut-être demander à Grégoire.",
     moi: "moi_hereuse",
-    perso: "perso_colere",
+    perso: "shella_hereuse",
   },
    {
     texte: "Violette: Grégoire ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "shella_hereuse",
   },
     {
     texte: "Shella: Ils se disputaient beaucoup ces derniers temps.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "shella_hereuse",
   },
       {
     texte: "Shella: Il y avait aussi Victor qui l'accompagné",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "shella_hereuse",
   },
      {
     texte: "Violette: Je devrais aller voir Grégoire il doit en savoir plus",
@@ -145,67 +145,67 @@ var dialogueGregoire = [
   {
     texte: "Violette : Vous connaissiez Adrien ?",
     moi: "moi_hereuse",
-    perso: "perso_hereuse",
+    perso: "barbar_hereuse",
   },
     {
     texte: "Barbar: Adrien ? Oui. Je l'ai vu quelques jours avant sa mort.",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "barbar_hereuse",
   },
   {
     texte: "Violette: Avec quelqu'un ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_colere",
   },
     {
     texte: "Barbar: Grégoire.",
     moi: "moi_hereuse",
-    perso: "perso_colere",
+    perso: "barbar_colere",
   },
    {
     texte: "Violette: Qu'est-ce qu'ils se disaient ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_colere",
   },
     {
     texte: "Barbar: Une histoire d'argent.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_colere",
   },
       {
     texte: "Violette: Et Victor ?",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_hereuse",
   },
      {
     texte: "Barbar: Lui ? Toujours dans les parages.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_heurese",
   },
    {
     texte: "Barbar: C'était son meilleur ami, après tout.",
     moi: "moi_colere",
-    perso: "perso_triste",
+    perso: "barbar_hereuse",
   },
   {
     texte: "Violette: Je dois savoir où est ce Grégoire.",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "barbar_hereuse",
   },
   {
     texte: "Barbar: C'est assez simple il est toujours fouré à son travail.",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "barbar_hereuse",
   },
   {
     texte: "Barbar: Il va peut être enfin l'avoir sa foutu augmente maintenant qu'il est mort l'autre",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "barbar_colere",
   },
    {
     texte: "Barbar: Cela en arrange certains",
     moi: "moi_hereuse",
-    perso: "perso_triste",
+    perso: "barbar_colere",
   },
   {
     texte: "Violette: C'est bizarre tout ça il faut que je trouve Grégoire pour en savoir plus",
@@ -249,7 +249,28 @@ export default class bar extends Phaser.Scene {
     const contoursmurs = carteDuNiveau.createLayer("contoursmurs", tileset);
 
     this.shella = this.physics.add.sprite(580, 400, "shella");
-    this.gregoire = this.physics.add.sprite(300, 300, "gregoire");
+    if (!this.anims.exists("shella_respire")) {
+      this.anims.create({
+        key: "shella_respire",
+        frames: this.anims.generateFrameNumbers("shella", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+        this.shella.anims.play("shella_respire");
+
+    // NOUVEAU : Barbar (sprite "barbar") remplace l'ancien personnage "gregoire".
+    // Animation "il respire" : frames 0 à 3 en boucle.
+    this.barbar = this.physics.add.sprite(300, 300, "barbar");
+    if (!this.anims.exists("barbar_respire")) {
+      this.anims.create({
+        key: "barbar_respire",
+        frames: this.anims.generateFrameNumbers("barbar", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+    this.barbar.anims.play("barbar_respire");
 
 
     // NOUVEAU : état du monologue en cours (null = aucun) + garde-fou pour ne
@@ -380,8 +401,8 @@ contoursmurs.setCollisionByProperty({ estsolide: true });
                      var distanceGregoire = Phaser.Math.Distance.Between(
                       player.x,
                       player.y,
-                      this.gregoire.x,
-                      this.gregoire.y
+                      this.barbar.x,
+                      this.barbar.y
                     );
             
             

@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { ReglagesUI } from "./reglage.js";
 
 export default class menu extends Phaser.Scene {
     constructor() {
@@ -51,20 +52,6 @@ this.load.tilemapTiledJSON("carte4", "./assets/bureau.json");
 this.load.image("Phaser_tuilesdejeu8", "./assets/sprite_accueil.png");
 this.load.tilemapTiledJSON("carte8", "./assets/map_accueil.json");
 
-this.load.image("Phaser_tuilesdejeu15", "./assets/tilesetpiecesecrete.png");
-this.load.tilemapTiledJSON("carte15", "./assets/piecesecrete.json");
-
-this.load.image("Phaser_tuilesdejeu16", "./assets/tilesetrue.png");
-this.load.tilemapTiledJSON("carte16", "./assets/rue.json");
-
-this.load.image("Phaser_tuilesdejeu17", "./assets/tilesetmaisonvic.png");
-this.load.tilemapTiledJSON("carte17", "./assets/maisonvictor.json");
-
-
-this.load.image("Phaser_tuilesdejeu18", "./assets/tilesetcafouche.png");
-this.load.tilemapTiledJSON("carte18", "./assets/cafouche.json");
-
-
 this.load.image("Phaser_tuilesdejeu9", "./assets/barthe.png");
 this.load.tilemapTiledJSON("carte9", "./assets/cafethe.json");
 
@@ -90,7 +77,11 @@ this.load.image("jessica_colere", "./assets/jessica_colere.png");
 this.load.image("jessica_hereuse", "./assets/jessica_hereuse.png");
 this.load.image("jessica_triste", "./assets/jessica_triste.png");
 
+this.load.image("barbar_hereuse", "./assets/barbar_hereux.png");
+this.load.image("barbar_colere", "./assets/barbar_colere.png");
+
 this.load.image("gregoire_hereuse", "./assets/gregoire_hereuse.png");
+this.load.image("shella_hereuse", "./assets/shella_hereuse.png");
 
 this.load.image("perso_colere", "./assets/perso_colere.webp");
 this.load.image("perso_hereuse", "./assets/perso_hereuse.webp");
@@ -117,6 +108,7 @@ this.load.image("fleche", "./assets/fleche.png");
 this.load.image("billet_de_train", "./assets/billet_de_train.png");
 
 
+this.load.image("reglage", "./assets/reglage.png"); // NOUVEAU : roue crantée des réglages
 this.load.audio("bip", "assets/bip.mp3");
 
 this.load.audio("gaps", "assets/gaps.mp3");
@@ -179,10 +171,16 @@ this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
     frameHeight: 288,
 });
 
-this.load.spritesheet("victor", "./assets/victor.png", {
-    frameWidth: 57.6,   // 640 / 4
-    frameHeight: 288,
+this.load.spritesheet("barbar", "./assets/sprite_barbar.png", {
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 250,
 });
+
+this.load.spritesheet("shella", "./assets/sprite_shella.png", {
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 250,
+});
+
 
     // chargement tuiles de jeu
     this.load.image("Phaser_tuilesdejeu12", "./assets/sprite_bar.png");
@@ -192,19 +190,19 @@ this.load.spritesheet("victor", "./assets/victor.png", {
     this.load.tilemapTiledJSON("carte3", "assets/bar.json");
 
     this.load.image("ticket", "./assets/ticket.png");
-    this.load.image("shella", "./assets/perso.png");
-    this.load.image("victor", "./assets/perso.png");
+    this.load.image("shella2", "./assets/perso.png");
+        this.load.image("victor", "./assets/perso.png");
 
-    this.load.image("coloc", "./assets/perso.png");
+        this.load.image("coloc", "./assets/perso.png");
 
-    this.load.image("cunegonde", "./assets/perso.png");
-    this.load.image("gregoire", "./assets/perso.png");
+      this.load.image("cunegonde", "./assets/perso.png");
+  this.load.image("gregoire", "./assets/perso.png");
     this.load.image("poubelle", "./assets/poubelle.webp");
     this.load.image("cle", "./assets/cle.png");
     this.load.image("lettre", "./assets/lettre.jpg");
     this.load.image("letrio", "./assets/lettre.jpg");
     this.load.image("note_adrien", "./assets/lettre.jpg");
-    this.load.image("carnet_enigme_gregoire", "./assets/lettre.jpg");
+        this.load.image("carnet_enigme_gregoire", "./assets/lettre.jpg");
 
     this.load.image("suspicion_victor", "./assets/lettre.jpg");
     this.load.image("suspicion_marguerite", "./assets/lettre.jpg");
@@ -239,6 +237,9 @@ this.load.spritesheet("victor", "./assets/victor.png", {
     // on place les éléments de fond
     var img = this.add.image(0, 0, "menu").setOrigin(0).setDepth(0);
 
+    // NOUVEAU : la roue crantée des réglages (volume musique / bruitages)
+    this.reglagesUI = new ReglagesUI(this);
+
     //on ajoute un bouton de clic, nommé bouton_play
     var bouton_play = this.add.image(400, 450, "imageBoutonPlay").setDepth(1);
     var bouton_play2 = this.add.image(200, 450, "imageBoutonPlay").setDepth(1);
@@ -250,7 +251,7 @@ this.load.spritesheet("victor", "./assets/victor.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("maison");
+        this.scene.start("bar");
         
       });
 

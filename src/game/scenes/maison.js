@@ -4,7 +4,7 @@ import { CarteUI } from "./carte.js";
 import { TachesUI, ajouterTache, ajouterTaches, terminerTache, tachesToutesTerminees, estTacheTerminee } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
 import { OrdinateurUI } from "./ordinateur.js";
-
+import { ReglagesUI } from "./reglage.js";
 
 var player;
 var groupe_plateformes;
@@ -258,6 +258,7 @@ export default class maison extends Phaser.Scene {
   preload() {}
 
   create(data) {
+      this.reglagesUI = new ReglagesUI(this);
 
         if (!this.sound.get("musique_gendarmerie")) {
       this.sound.play("musique_gendarmerie", { loop: true, volume: 0.2 });
