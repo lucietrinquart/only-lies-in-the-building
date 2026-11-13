@@ -1,5 +1,4 @@
 import PlancheBD from "./planche-bd.js";
-import { ReglagesUI } from "./reglage.js";
 
 
 /* ============================================================
@@ -45,7 +44,6 @@ export default class bd2 extends PlancheBD {
           y: 150,
           largeur: 350,
           hauteur: 232,
-          // pas de "son" ici -> aucun bruitage pour cette vignette
         },
         {
           cle: "bulle8",

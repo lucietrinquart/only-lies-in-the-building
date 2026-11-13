@@ -30,43 +30,41 @@ export default class bd_victor extends PlancheBD {
       //  son       : (optionnel) clé du bruitage à jouer à l'apparition -> enlève la ligne si pas de son
       vignettes: [
         {
-          cle: "bulle1",
-          x: 150,
+          cle: "bulle1_victor",
+          x: 230,
           y: 100,
-          largeur: 300,
+          largeur: 330,
           hauteur: 150,
-          son: "marteau_justice", // NOUVEAU : bruitage joué à l'apparition de cette vignette
         },
         {
-          cle: "bulle2",
-          x: 390,
+          cle: "bulle2_victor",
+          x: 580,
           y: 100,
-          largeur: 300,
+          largeur: 330,
           hauteur: 150,
           // pas de "son" ici -> aucun bruitage pour cette vignette
         },
         {
-          cle: "bulle3",
-          x: 640,
-          y: 100,
-          largeur: 300,
-          hauteur: 150,
-          son: "brouha",
-        },
-        {
-          cle: "bulle4",
+          cle: "bulle3_victor",
           x: 230,
-          y: 300,
-          largeur: 420,
-          hauteur: 200,
+          y: 270,
+          largeur: 330,
+          hauteur: 150,
         },
         {
-          cle: "bulle5",
-          x: 590,
-          y: 300,
-          largeur: 420,
-          hauteur: 200,
+          cle: "bulle4_victor",
+          x: 580,
+          y: 270,
+          largeur: 330,
+          hauteur: 150,
         },
+        {
+          cle: "bulle5_victor",
+          x: 400,
+          y: 470,
+          largeur: 300,
+          hauteur: 200,
+        }
       ],
     };
   }

@@ -18,6 +18,7 @@ this.load.image("menu_instruction", "./assets/instruction.png");
 this.load.image("imageBoutonContinuer", "./assets/button_continuer.png");
 
 
+this.load.image("fleche", "./assets/fleche.png");
 
 this.load.spritesheet("img_perso", "./assets/dude.png", {
     frameWidth: 40,
@@ -112,7 +113,18 @@ this.load.image("bulle7", "./assets/bulle_7.png");
 this.load.image("bulle8", "./assets/bulle_8.png");
 this.load.image("bulle9", "./assets/bulle_9.png");
 this.load.image("bulle10", "./assets/bulle_10.png");
-this.load.image("fleche", "./assets/fleche.png");
+
+this.load.image("bulle1_victor", "./assets/bulle1_victor.png");
+this.load.image("bulle2_victor", "./assets/bulle2_victor.png");
+this.load.image("bulle3_victor", "./assets/bulle3_victor.png");
+this.load.image("bulle4_victor", "./assets/bulle4_victor.png");
+this.load.image("bulle5_victor", "./assets/bulle5_victor.png");
+
+this.load.image("bulle1_autre", "./assets/bulle1_autre.png");
+this.load.image("bulle2_autre", "./assets/bulle2_autre.png");
+this.load.image("bulle3_autre", "./assets/bulle3_autre.png");
+this.load.image("bulle4_autre", "./assets/bulle4_autre.png");
+this.load.image("bulle5_autre", "./assets/bulle5_autre.png");
 
 this.load.image("billet_de_train", "./assets/billet_de_train.png");
 
@@ -129,7 +141,6 @@ this.load.audio("brouha", "assets/brouha.mp3");
 
 
 
-this.load.image("exclamation", "./assets/exclamation.png");
 
 
 
