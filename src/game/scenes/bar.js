@@ -254,7 +254,7 @@ export default class bar extends Phaser.Scene {
     const dessous = carteDuNiveau.createLayer("dessous", tileset);
     const dessus = carteDuNiveau.createLayer("dessus", tileset);
 
-    this.shella = this.physics.add.sprite(580, 400, "shella");
+    this.shella = this.physics.add.sprite(450, 500, "shella");
     if (!this.anims.exists("shella_respire")) {
       this.anims.create({
         key: "shella_respire",
@@ -267,7 +267,7 @@ export default class bar extends Phaser.Scene {
 
     // NOUVEAU : Barbar (sprite "barbar") remplace l'ancien personnage "gregoire".
     // Animation "il respire" : frames 0 à 3 en boucle.
-    this.barbar = this.physics.add.sprite(300, 300, "barbar");
+    this.barbar = this.physics.add.sprite(550, 250, "barbar");
     if (!this.anims.exists("barbar_respire")) {
       this.anims.create({
         key: "barbar_respire",
@@ -317,7 +317,7 @@ dessus.setDepth(30);
             });
 
 
-            player = this.physics.add.sprite(430, 550, "img_perso");
+            player = this.physics.add.sprite(870, 170, "img_perso");
 
 
             // ajout du modèle de collision entre le personnage et les plates-formes

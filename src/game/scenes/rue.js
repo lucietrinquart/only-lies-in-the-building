@@ -85,6 +85,9 @@ const CLE_VICTOR = "victor_rue_rencontre_joue";
 //  VICTOR : sens de marche + parcours
 // ============================================================
 const VITESSE_VICTOR = 120; // pixels par seconde
+// NOUVEAU : la frame de victor.png fait ~58 x 288 px (bien plus grande que le joueur,
+// qui fait 40 x 60) -> on la réduit. Ajuste cette valeur pour sa taille à l'écran.
+const ECHELLE_VICTOR = 0.8;
 
 const DIRECTIONS_VICTOR = {
   gauche: { axe: "x", anim: "victor_gauche", idle: "victor_idle_gauche" },
@@ -122,21 +125,20 @@ export default class rue extends Phaser.Scene {
 
     // tuiles
     const tileset = carteDuNiveau.addTilesetImage("tilesetrue", "Phaser_tuilesdejeu16");
-    carteDuNiveau.createLayer("route", tileset);
-    const banc = carteDuNiveau.createLayer("banc", tileset);
-    const arbre = carteDuNiveau.createLayer("arbre", tileset);
-    const fond = carteDuNiveau.createLayer("fond", tileset);
-    const objet = carteDuNiveau.createLayer("objet", tileset);
-    const surroute = carteDuNiveau.createLayer("surroute", tileset);
-    const voiture = carteDuNiveau.createLayer("voiture", tileset);
-    const contourmap = carteDuNiveau.createLayer("contourmap", tileset);
+    carteDuNiveau.createLayer("sol", tileset);
+    const route = carteDuNiveau.createLayer("route", tileset);
+    const verdure = carteDuNiveau.createLayer("verdure", tileset);
+    const surlesol = carteDuNiveau.createLayer("surlesol", tileset);
+    const eau = carteDuNiveau.createLayer("eau", tileset);
+    const pont = carteDuNiveau.createLayer("pont", tileset);
+    const bordure = carteDuNiveau.createLayer("bordure", tileset);
     const batiment = carteDuNiveau.createLayer("batiment", tileset);
-    const surobjet = carteDuNiveau.createLayer("surobjet", tileset);
+    const surbordure = carteDuNiveau.createLayer("surbordure", tileset);
 
     /***************************
      *  OBJETS *
      ****************************/
-    player = this.physics.add.sprite(350, 500, "img_perso");
+    player = this.physics.add.sprite(350, 600, "img_perso");
 
     // NOUVEAU : Martin (remplace Shella). Si l'image "martin" n'est pas chargée,
     // on utilise provisoirement img_perso2 pour que la scène ne plante pas.
@@ -146,23 +148,23 @@ export default class rue extends Phaser.Scene {
     /***************************
      *  COLLISIONS *
      ****************************/
-    banc.setCollisionByProperty({ estSolide: true });
-    arbre.setCollisionByProperty({ estSolide: true });
-    fond.setCollisionByProperty({ estSolide: true });
-    objet.setCollisionByProperty({ estSolide: true });
-    surroute.setCollisionByProperty({ estSolide: true });
-    contourmap.setCollisionByProperty({ estSolide: true });
+    route.setCollisionByProperty({ estSolide: true });
+    verdure.setCollisionByProperty({ estSolide: true });
+    surlesol.setCollisionByProperty({ estSolide: true });
+    eau.setCollisionByProperty({ estSolide: true });
+    pont.setCollisionByProperty({ estSolide: true });
+    bordure.setCollisionByProperty({ estSolide: true });
     batiment.setCollisionByProperty({ estSolide: true });
-    surobjet.setCollisionByProperty({ estSolide: true });
+    surbordure.setCollisionByProperty({ estSolide: true });
 
-    this.physics.add.collider(player, banc);
-    this.physics.add.collider(player, arbre);
-    this.physics.add.collider(player, fond);
-    this.physics.add.collider(player, objet);
-    this.physics.add.collider(player, surroute);
-    this.physics.add.collider(player, contourmap);
+    this.physics.add.collider(player, route);
+    this.physics.add.collider(player, verdure);
+    this.physics.add.collider(player, surlesol);
+    this.physics.add.collider(player, eau);
+    this.physics.add.collider(player, pont);
+    this.physics.add.collider(player, bordure);
     this.physics.add.collider(player, batiment);
-    this.physics.add.collider(player, surobjet);
+    this.physics.add.collider(player, surbordure);
 
     player.setCollideWorldBounds(true);
 
@@ -232,8 +234,8 @@ export default class rue extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
-    this.cameras.main.setBounds(0, 0, 800, 608);
+    this.physics.world.setBounds(0, 0, 1024, 1024);
+    this.cameras.main.setBounds(0, 0, 1024, 1024);
     this.cameras.main.startFollow(player);
 
     // NOUVEAU : Victor n'apparaît qu'une seule fois, dès l'arrivée dans la
@@ -241,8 +243,9 @@ export default class rue extends Phaser.Scene {
     const victorDejaRencontre = this.registry.get(CLE_VICTOR) || false;
 
     if (!victorDejaRencontre) {
-      this.victor = this.physics.add.sprite(600, 450, "victor");
-      this.victor.setScale(0.7);
+      this.victor = this.physics.add.sprite(10, 700, "victor");
+
+      this.victor.setScale(ECHELLE_VICTOR);
       this.victor.anims.play("victor_idle_gauche"); // il regarde vers Violette
 
       this.victorCutscene = true;
@@ -270,30 +273,12 @@ export default class rue extends Phaser.Scene {
     }
   }
 
-  // NOUVEAU : Victor marche jusqu'à Violette, puis la conversation démarre
-  victorSApproche() {
-    const xCible = player.x + 70;
-    const yCible = player.y;
-
-    this.tweens.add({
-      targets: this.victor,
-      x: xCible,
-      y: yCible,
-      duration: 900,
-      ease: "Sine.easeInOut",
-      onComplete: () => {
-        this.lancerMonologue(dialogueVictor, () => {
-          this.victorSEnVa();
-        });
-      },
-    });
-  }
-
-  // Victor marche jusqu'à Violette : d'abord à gauche, puis tout droit (vers le bas)
+  // Victor marche jusqu'à Violette : d'abord vers la droite, puis tout droit (vers le bas)
+  // (l'ancienne version en double de cette méthode a été supprimée)
   victorSApproche() {
     const parcours = [
-      { direction: "gauche", vers: player.x + 70 },
-      { direction: "bas", vers: player.y },
+      { direction: "droite", vers: player.x + 70 },
+      { direction: "haut", vers: player.y },
     ];
 
     this.victorSuivreParcours(parcours, () => {

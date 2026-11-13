@@ -39,8 +39,17 @@ this.load.tilemapTiledJSON("carte1", "./assets/Chambre_V2.json");
 this.load.image("Phaser_tuilesdejeu13", "./assets/sprite_couloir.png");
 this.load.tilemapTiledJSON("carte13", "./assets/couloir2.json");
 
+this.load.image("Phaser_tuilesdejeu16", "./assets/tilesetrue.png");
+this.load.tilemapTiledJSON("carte16", "./assets/rue.json");
+
 this.load.image("Phaser_tuilesdejeu6", "./assets/tileset_couloir.png");
 this.load.tilemapTiledJSON("carte6", "./assets/couloir.json");
+
+this.load.image("Phaser_tuilesdejeu18", "./assets/tilesetcafouche.png");
+this.load.tilemapTiledJSON("carte18", "./assets/cafouche.json");
+
+this.load.image("Phaser_tuilesdejeu18", "./assets/tilesetrue.png");
+this.load.tilemapTiledJSON("carte18", "./assets/rue.json");
 
 
 this.load.image("Phaser_tuilesdejeu14", "./assets/sprite_travail.png");
@@ -151,6 +160,11 @@ this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
     frameHeight: 70,
 });
 
+this.load.spritesheet("victor", "./assets/victor.png", {
+    frameWidth: 57,   // 640 / 4
+    frameHeight: 288,
+});
+
 this.load.spritesheet("shella2", "./assets/shella.png", {
     frameWidth: 58,   // 640 / 4
     frameHeight: 288,
@@ -182,6 +196,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
 });
 
 
+
     // chargement tuiles de jeu
 
 
@@ -190,7 +205,6 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
 
     this.load.image("ticket", "./assets/ticket.png");
     this.load.image("shella2", "./assets/perso.png");
-        this.load.image("victor", "./assets/perso.png");
 
         this.load.image("coloc", "./assets/perso.png");
 
@@ -250,7 +264,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("maison");
+        this.scene.start("instruction");
         
       });
 

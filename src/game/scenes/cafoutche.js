@@ -104,11 +104,10 @@ export default class cafoutche extends Phaser.Scene {
     /***************************
      *  CREATION DES OBJETS *
      ****************************/
-    player = this.physics.add.sprite(420, 650, "img_perso");
+    player = this.physics.add.sprite(510, 510, "img_perso");
 
-    // NOUVEAU : le carnet-énigme. ⚠️ Position provisoire -> ajuste-la selon
-    // ton plan de la scène.
-    this.carnet = this.physics.add.sprite(250, 250, "carnet_enigme_gregoire");
+
+    this.carnet = this.physics.add.sprite(600, 510, "carnet_enigme_gregoire");
     this.carnet.setScale(0.02);
 
     this.indiceCarnet = this.add
@@ -188,9 +187,9 @@ export default class cafoutche extends Phaser.Scene {
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    this.physics.world.setBounds(0, 0, 800, 608);
+    this.physics.world.setBounds(0, 0, 1024, 1024);
     //  ajout du champs de la caméra de taille identique à celle du monde
-    this.cameras.main.setBounds(0, 0, 800, 608);
+    this.cameras.main.setBounds(0, 0, 1024, 1024);
     // ancrage de la caméra sur le joueur
     this.cameras.main.startFollow(player);
   }

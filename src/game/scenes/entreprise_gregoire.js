@@ -194,7 +194,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
      ****************************/
     clavier = this.input.keyboard.createCursorKeys();
     cursors = this.input.keyboard.createCursorKeys();
-    player = this.physics.add.sprite(420, 650, "img_perso");
+    player = this.physics.add.sprite(800, 290, "img_perso");
 
     // NOUVEAU : la porte secrète derrière le bureau de Grégoire -> invisible.
     // Créée AVANT le bureau pour qu'elle soit "en dessous" de lui tant qu'il
@@ -202,8 +202,8 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.porteSecrete = this.physics.add.staticSprite(100, 250, "img_porte1");
 
     bureau = this.physics.add.sprite(
-      this.tiroirOuvert ? 100 + 120 : 100, // CORRIGÉ : si déjà ouvert, on le recrée directement décalé
-      250,
+      this.tiroirOuvert ? 530 + 120 : 530, // CORRIGÉ : si déjà ouvert, on le recrée directement décalé
+      900,
       "bureau"
     );
     bureau.setScale(0.03);
@@ -223,17 +223,18 @@ export default class entreprise_gregoire extends Phaser.Scene {
     poubelle = this.physics.add.sprite(110, 400, "poubelle");
     poubelle.setScale(0.03);
 
-    ordinateur = this.physics.add.sprite(280, 550, "ordinateur");
+    ordinateur = this.physics.add.sprite(460, 700, "ordinateur");
     ordinateur.setScale(0.1);
 
-    bibliotheque = this.physics.add.sprite(500, 200, "bibliotheque");
+    bibliotheque = this.physics.add.sprite(490, 50, "bibliotheque");
     bibliotheque.setScale(0.2);
 
     // NOUVEAU : le bureau d'Adrien, de l'autre côté de l'open space.
     // ⚠️ Coordonnées provisoires -> ajuste-les pour qu'elles correspondent
     // au vrai plan de la pièce sur ton tileset.
-    this.bureauAdrien = this.physics.add.sprite(300, 400, "bureau");
+    this.bureauAdrien = this.physics.add.sprite(490, 150, "bureau");
     this.bureauAdrien.setScale(0.03);
+    this.bureauAdrien.setVisible(false); 
 
     this.labelBureauAdrien = this.add
       .text(this.bureauAdrien.x, this.bureauAdrien.y - 46, "Bureau d'Adrien", {
@@ -285,7 +286,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
     this.noteAdrien = new ObjetRamassable(
       this,
       this.bureauAdrien.x,
-      this.bureauAdrien.y - 18,
+      this.bureauAdrien.y ,
       "note_adrien",
       "Note d'Adrien",
       "Une note griffonnée, posée sur le bureau d'Adrien.",

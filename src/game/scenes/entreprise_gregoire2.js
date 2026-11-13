@@ -76,16 +76,17 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
       return this.add.image(x, y, cle).setScale(echelle);
     };
     const tiroirOuvert = this.registry.get("accueil_tiroir_ouvert") || false;
-    decor(tiroirOuvert ? 220 : 100, 250, "bureau", 0.03);
+    decor(tiroirOuvert ? 530 : 530, 900, "bureau", 0.03);
     decor(110, 400, "poubelle", 0.03);
-    decor(280, 550, "ordinateur", 0.1);
-    decor(500, 200, "bibliotheque", 0.2);
-    decor(410, 450, "secretaire", 1);
+    decor(460, 700, "ordinateur", 0.1);
+    decor(490, 50, "bibliotheque", 0.2);
+
+
 
     /***************************
      *  JOUEUR + GRÉGOIRE
      ****************************/
-    player = this.physics.add.sprite(420, 650, "img_perso");
+    player = this.physics.add.sprite(800, 290, "img_perso");
 
     // Grégoire est revenu à son poste, légèrement décalé par rapport à la 1re visite
     const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "gregoire";
