@@ -183,8 +183,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
 
 
     // chargement tuiles de jeu
-    this.load.image("Phaser_tuilesdejeu12", "./assets/sprite_bar.png");
-    this.load.tilemapTiledJSON("carte12", "assets/bar.json");
+
 
     this.load.image("Phaser_tuilesdejeu3", "./assets/tileset_bar.png");
     this.load.tilemapTiledJSON("carte3", "assets/bar.json");
@@ -204,10 +203,10 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     this.load.image("note_adrien", "./assets/lettre.jpg");
         this.load.image("carnet_enigme_gregoire", "./assets/lettre.jpg");
 
-    this.load.image("suspicion_victor", "./assets/lettre.jpg");
-    this.load.image("suspicion_marguerite", "./assets/lettre.jpg");
-    this.load.image("suspicion_gregoire", "./assets/lettre.jpg");
-    this.load.image("suspicion_jessica", "./assets/lettre.jpg");
+    this.load.image("suspicion_victor", "./assets/suspicion_victor.jpg");
+    this.load.image("suspicion_marguerite", "./assets/suspicion_marguerite.jpg");
+    this.load.image("suspicion_gregoire", "./assets/suspicion_gregoire.jpg");
+    this.load.image("suspicion_jessica", "./assets/suspicion_jessica.jpg");
 
 
     this.load.image("martin", "./assets/perso.png");
@@ -251,7 +250,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("bar");
+        this.scene.start("maison");
         
       });
 

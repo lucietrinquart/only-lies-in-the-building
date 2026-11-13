@@ -1,5 +1,7 @@
 import * as Phaser from "phaser";
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 
@@ -37,6 +39,8 @@ export default class victor_secret extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
     this.sceneTerminee = false;
 

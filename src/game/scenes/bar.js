@@ -7,6 +7,8 @@ import { CarteUI } from "./carte.js";
 import { TachesUI, ajouterTaches, estTacheTerminee, terminerTache, tachesToutesTerminees } from "./taches.js";
 
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 
 var player; // désigne le sprite du joueur
@@ -222,6 +224,8 @@ export default class bar extends Phaser.Scene {
   preload() {}
 
   create(data) {
+              this.reglagesUI = new ReglagesUI(this);
+
     // CORRECTION : ce compteur n'était jamais initialisé (il valait undefined)
     this.developperCount1 = 0;
     // CORRIGÉ : on lit l'état depuis le registry (survit au changement de scène)
@@ -247,6 +251,8 @@ export default class bar extends Phaser.Scene {
     const bouteildroite = carteDuNiveau.createLayer("bouteildroite", tileset);
     const decoration = carteDuNiveau.createLayer("decoration", tileset);
     const contoursmurs = carteDuNiveau.createLayer("contoursmurs", tileset);
+    const dessous = carteDuNiveau.createLayer("dessous", tileset);
+    const dessus = carteDuNiveau.createLayer("dessus", tileset);
 
     this.shella = this.physics.add.sprite(580, 400, "shella");
     if (!this.anims.exists("shella_respire")) {
@@ -296,7 +302,8 @@ bouteildroite.setCollisionByProperty({ estsolide: true });
 decoration.setCollisionByProperty({ estsolide: true });
 contoursmurs.setCollisionByProperty({ estsolide: true });
 
-
+dessous.setDepth(30);
+dessus.setDepth(30);
 
 
     // création du personnage de jeu et positionnement

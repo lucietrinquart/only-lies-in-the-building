@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { ReglagesUI } from "./reglage.js";
 
 /* ============================================================
  *  CLASSE DE BASE : PLANCHE DE BD
@@ -37,6 +38,8 @@ export default class PlancheBD extends Phaser.Scene {
   }
 
   create() {
+              this.reglagesUI = new ReglagesUI(this);
+
     const config = this.obtenirConfig();
     this.vignettes = config.vignettes || [];
     this.sceneSuivante = config.sceneSuivante || null;

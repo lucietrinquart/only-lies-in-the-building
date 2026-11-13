@@ -3,6 +3,8 @@ import { InventaireUI } from "./inventaire.js";
 import { CarteUI } from "./carte.js";
 import { TachesUI, ajouterTache, terminerTache, estTacheTerminee } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -118,6 +120,8 @@ export default class hall extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null; // NOUVEAU : état du monologue solo en cours (inutilisé pour l'instant, prêt si besoin)
     dialogueIndex = 0; // NOUVEAU : repart de zéro si on quitte la scène en plein dialogue
 

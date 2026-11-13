@@ -1,4 +1,6 @@
 import PlancheBD from "./planche-bd.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 /* ============================================================
  *  PLANCHE DE BD N°1

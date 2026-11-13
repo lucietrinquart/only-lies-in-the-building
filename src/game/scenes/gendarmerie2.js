@@ -2,6 +2,8 @@ import * as Phaser from "phaser";
 import { DialogueUI } from "./dialogue.js";
 // NOUVEAU : l'UI de choix du coupable (4 portraits cliquables)
 import { UiCoupableUI } from "./UiCoupableUI.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -25,6 +27,8 @@ export default class gendarmerie2 extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
 
     this.dialogueUI = new DialogueUI(this, {
@@ -81,16 +85,19 @@ export default class gendarmerie2 extends Phaser.Scene {
     this.cameras.main.startFollow(player);
 
     // NOUVEAU : l'UI de choix du coupable -> 4 portraits côte à côte
-    this.uiCoupable = new UiCoupableUI(this, {
-      titre: "Qui est le coupable ?",
-      suspects: [
-        { id: "victor", image: "suspicion_victor" },
-        { id: "jessica", image: "suspicion_jessica" },
-        { id: "gregoire", image: "suspicion_gregoire" },
-        { id: "marguerite", image: "suspicion_marguerite" },
-      ],
-      onChoix: (id) => this.choisirCoupable(id),
-    });
+this.uiCoupable = new UiCoupableUI(this, {
+  titre: "Qui est le coupable ?",
+  suspects: [
+    { id: "victor", image: "suspicion_victor" },
+    { id: "jessica", image: "suspicion_jessica" },
+    { id: "gregoire", image: "suspicion_gregoire" },
+    { id: "marguerite", image: "suspicion_marguerite" },
+  ],
+  taillePortrait: 280,
+  tailleMin: 150,
+  tailleMax: 400,
+  onChoix: (id) => this.choisirCoupable(id),
+});
 
     this.input.keyboard.on("keydown-E", () => {
       if (this.uiCoupable.estOuverte()) return;

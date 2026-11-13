@@ -3,6 +3,8 @@ import { InventaireUI } from "./inventaire.js";
 import { CarteUI } from "./carte.js";
 import { TachesUI, ajouterTache, terminerTache, estTacheTerminee } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -40,6 +42,8 @@ export default class couloir extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
     dialogueIndex = 0;
 

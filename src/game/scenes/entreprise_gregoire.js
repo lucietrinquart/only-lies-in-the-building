@@ -11,6 +11,8 @@ import { DialogueUI } from "./dialogue.js";
 // NOUVEAU : on importe le module énigme (pour la bibliothèque) et mail (pour l'ordinateur)
 import { EnigmeUI } from "./enigme.js";
 import { MailUI } from "./mail.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var cursors;
 var player; // désigne le sprite du joueur
@@ -110,6 +112,8 @@ export default class entreprise_gregoire extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     const carteDuNiveau = this.add.tilemap("carte4");
     this.carteUI = new CarteUI(this);
     this.inventaireUI = new InventaireUI(this);

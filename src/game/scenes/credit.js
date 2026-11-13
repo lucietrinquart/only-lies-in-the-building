@@ -1,4 +1,6 @@
 import * as Phaser from "phaser";
+import { ReglagesUI } from "./reglage.js";
+
 
 export default class credit extends Phaser.Scene {
     constructor() {

@@ -5,6 +5,8 @@ import { TachesUI, terminerTache } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
 // NOUVEAU : le carnet-énigme de Grégoire (phrases à remettre dans l'ordre)
 import { EnigmeCarnetUI } from "./enigme_carnet.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -50,6 +52,8 @@ export default class cafoutche extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
 
     this.dialogueUI = new DialogueUI(this, {

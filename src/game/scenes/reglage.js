@@ -117,8 +117,16 @@ export function multiplicateurVolume(cle) {
 // volume final = volume de base du son x multiplicateur
 function appliquerASon(son) {
   if (!son || typeof son.setVolume !== "function") return;
-  if (son.__baseVolume === undefined) son.__baseVolume = son.volume;
-  son.setVolume(son.__baseVolume * multiplicateurVolume(son.key));
+  // Un son détruit (ex: le bip du dialogue quand on quitte une scène) reste
+  // quelques instants dans la liste du gestionnaire, mais ses "nœuds audio"
+  // sont à null -> on l'ignore, sinon "Cannot set properties of null".
+  if (son.pendingRemove || !son.manager) return;
+  try {
+    if (son.__baseVolume === undefined) son.__baseVolume = son.volume;
+    son.setVolume(son.__baseVolume * multiplicateurVolume(son.key));
+  } catch (e) {
+    // son en cours de destruction : on l'ignore
+  }
 }
 
 function appliquerATous(game) {

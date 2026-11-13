@@ -3,6 +3,8 @@ import { InventaireUI } from "./inventaire.js";
 import { CarteUI } from "./carte.js";
 import { TachesUI, ajouterTache, terminerTache, estTacheTerminee } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -99,6 +101,8 @@ export default class rue extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
     // NOUVEAU : fige le joueur pendant toute la cinématique Victor (y compris
     // pendant les tweens de déplacement, entre deux monologues)
@@ -150,7 +154,7 @@ export default class rue extends Phaser.Scene {
     contourmap.setCollisionByProperty({ estSolide: true });
     batiment.setCollisionByProperty({ estSolide: true });
     surobjet.setCollisionByProperty({ estSolide: true });
-    
+
     this.physics.add.collider(player, banc);
     this.physics.add.collider(player, arbre);
     this.physics.add.collider(player, fond);

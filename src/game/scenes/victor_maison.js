@@ -3,6 +3,8 @@ import { InventaireUI, ObjetRamassable, ajouterObjet, afficherMessage } from "./
 import { CarteUI } from "./carte.js";
 import { TachesUI } from "./taches.js";
 import { DialogueUI } from "./dialogue.js";
+import { ReglagesUI } from "./reglage.js";
+
 
 var player;
 var cursors;
@@ -199,6 +201,8 @@ export default class victor_maison extends Phaser.Scene {
   preload() {}
 
   create() {
+          this.reglagesUI = new ReglagesUI(this);
+
     this.monologue = null;
     this.porteOuverte = this.registry.get("victor_porte_ouverte") || false;
     // NOUVEAU : empêche de relancer deux fois la fin de scène
