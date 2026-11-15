@@ -226,7 +226,6 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
         this.load.image("coloc", "./assets/perso.png");
         this.load.image("bouton_credit", "./assets/bouton_credit.png");
 
-      this.load.image("cunegonde", "./assets/perso.png");
     this.load.image("poubelle", "./assets/poubelle.webp");
     this.load.image("cle", "./assets/cle.png");
     this.load.image("lettre", "./assets/lettre.jpg");
@@ -284,7 +283,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("entreprise_gregoire");
+        this.scene.start("couloir");
         
       });
 
