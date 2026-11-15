@@ -224,6 +224,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     this.load.image("shella2", "./assets/perso.png");
 
         this.load.image("coloc", "./assets/perso.png");
+        this.load.image("bouton_credit", "./assets/bouton_credit.png");
 
       this.load.image("cunegonde", "./assets/perso.png");
   this.load.image("gregoire", "./assets/perso.png");
@@ -274,7 +275,8 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
 
     //on ajoute un bouton de clic, nommé bouton_play
     var bouton_play = this.add.image(400, 450, "imageBoutonPlay").setDepth(1);
-    var bouton_play2 = this.add.image(200, 450, "imageBoutonPlay").setDepth(1);
+    var bouton_play2 = this.add.image(200, 450, "bouton_credit").setDepth(1);
+    bouton_play2.setScale(0.1);
 
 
     //=========================================================
@@ -283,7 +285,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("entreprise_gregoire");
+        this.scene.start("instruction");
         
       });
 
