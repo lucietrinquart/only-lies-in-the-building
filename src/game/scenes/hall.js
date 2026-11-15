@@ -48,13 +48,13 @@ var dialogueJessicaRepete = [
 // maison.js -> voir CLE_JESSICA_OBJECTIF, qui doit rester identique dans les
 // deux fichiers). Violette lui montre le mot trouvé sur le bureau d'Adrien.
 var dialogueJessicaRevelation = [
-  { texte: "Violette : J'ai trouvé ça dans le bureau d'Adrien. (elle montre le mot)", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Jessica : (elle le lit, silence) Tu l'as gardé.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Violette : « Tu n'as pas à choisir ce soir. » Choisir quoi, Jessica ?", moi: "moi_colere", perso: "perso_triste" },
+  { texte: "Violette : J'ai trouvé ça dans le bureau d'Adrien. (elle montre le mot)", moi: "moi_colere", perso: "jessica_triste" },
+  { texte: "Jessica : (elle le lit, silence) Tu l'as gardé.", moi: "moi_colere", perso: "jessica_triste" },
+  { texte: "Violette : « Tu n'as pas à choisir ce soir. » Choisir quoi, Jessica ?", moi: "moi_colere", perso: "jessica_triste" },
   {
     texte: "Jessica : Entre toi et moi. (un temps) Je l'aimais, Violette. Assez pour que ça fasse mal.",
     moi: "moi_triste",
-    perso: "perso_triste",
+    perso: "jessica_triste",
   },
   { texte: "Violette : Et lui ?", moi: "moi_triste", perso: "jessica_triste" },
   { texte: "Jessica : Il m'a dit non. Trois jours avant. Poliment. Il t'aimait, toi.", moi: "moi_triste", perso: "jessica_triste" },
