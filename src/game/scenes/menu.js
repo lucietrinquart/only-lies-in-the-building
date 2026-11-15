@@ -283,7 +283,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("entreprise_gregoire");
         
       });
 
