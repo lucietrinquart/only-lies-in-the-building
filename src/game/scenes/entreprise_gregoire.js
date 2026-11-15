@@ -199,7 +199,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
     // NOUVEAU : la porte secrète derrière le bureau de Grégoire -> invisible.
     // Créée AVANT le bureau pour qu'elle soit "en dessous" de lui tant qu'il
     // ne s'est pas déplacé.
-    this.porteSecrete = this.physics.add.staticSprite(100, 250, "img_porte1");
+    this.porteSecrete = this.physics.add.staticSprite(530, 900, "img_porte1");
 
     bureau = this.physics.add.sprite(
       this.tiroirOuvert ? 530 + 120 : 530, // CORRIGÉ : si déjà ouvert, on le recrée directement décalé
@@ -220,7 +220,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(40);
 
-    poubelle = this.physics.add.sprite(110, 400, "poubelle");
+    poubelle = this.physics.add.sprite(300, 400, "poubelle");
     poubelle.setScale(0.03);
 
     ordinateur = this.physics.add.sprite(460, 700, "ordinateur");

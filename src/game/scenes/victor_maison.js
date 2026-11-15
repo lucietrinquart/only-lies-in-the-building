@@ -243,10 +243,10 @@ const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
      *  OBJETS DE LA PIÈCE *
      ****************************/
     // la porte secrète est créée AVANT la bibliothèque : elle est cachée dessous
-    this.porteSecrete = this.physics.add.staticSprite(500, 200, "img_porte1");
+    this.porteSecrete = this.physics.add.staticSprite(300, 500, "img_porte1");
 
-    this.bibliotheque = this.add.image(this.porteOuverte ? 620 : 500, 200, "bibliotheque").setScale(0.2);
-    this.bureau = this.add.image(100, 250, "bureau").setScale(0.03);
+    this.bibliotheque = this.add.image(this.porteOuverte ? 310 : 300, 500, "bibliotheque").setScale(0.2);
+    this.bureau = this.add.image(200, 400, "bureau").setScale(0.03);
 
     // alias de texture pour la photo (évite le conflit de clé avec la lettre d'accueil)
     if (!this.textures.exists("photo_victor") && this.textures.exists("lettre")) {
@@ -260,7 +260,7 @@ const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
     this.photo = this.registry.get("victor_photo_prise")
       ? null
       : new ObjetRamassable(
-          this, 640, 430, "photo_victor", "Photo",
+          this, 200, 500, "photo_victor", "Photo",
           `Une photo d'Adrien et Victor, souriants. Au dos, un chiffre est écrit au stylo : ${NUM_PHOTO}.`,
           {
             taille: 40,
@@ -273,7 +273,7 @@ const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
     this.bracelet = this.registry.get("victor_bracelet_pris")
       ? null
       : new ObjetRamassable(
-          this, 240, 470, "bracelet", "Bracelet",
+          this, 240, 700, "bracelet", "Bracelet",
           `Un bracelet que Violette cherchait depuis longtemps. Pour une raison inconnue, un chiffre est gravé à l'intérieur : ${NUM_BRACELET}.`,
           {
             taille: 40,
@@ -313,7 +313,7 @@ const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
     /***************************
      *  JOUEUR + COLLISIONS *
      ****************************/
-    player = this.physics.add.sprite(420, 650, "img_perso");
+    player = this.physics.add.sprite(300, 650, "img_perso");
 
 
 
@@ -488,7 +488,8 @@ const contourmur = carteDuNiveau.createLayer("contourmur", tileset);
   fairearriverVictor() {
     const textureVictor = this.textures.exists("victor") ? "victor" : "img_perso2";
     // NOUVEAU : position d'accueil -> ajuste selon l'entrée de l'appartement de Victor
-    this.victor = this.physics.add.sprite(450, 600, textureVictor);
+    this.victor = this.physics.add.sprite(250, 620, textureVictor, 5);
+    this.victor.setScale(0.8);
 
     this.lancerMonologue(dialogueVictorArrivee, () => {
       this.victorPart();

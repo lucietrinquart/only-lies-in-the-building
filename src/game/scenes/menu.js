@@ -43,6 +43,9 @@ this.load.tilemapTiledJSON("carte13", "./assets/couloir2.json");
 this.load.image("Phaser_tuilesdejeu16", "./assets/tilesetrue.png");
 this.load.tilemapTiledJSON("carte16", "./assets/rue.json");
 
+this.load.image("Phaser_tuilesdejeu17", "./assets/tilesetmaisonvic.png");
+this.load.tilemapTiledJSON("carte17", "./assets/maisonvictor.json");
+
 this.load.image("Phaser_tuilesdejeu6", "./assets/tileset_couloir.png");
 this.load.tilemapTiledJSON("carte6", "./assets/couloir.json");
 
@@ -55,6 +58,9 @@ this.load.tilemapTiledJSON("carte18", "./assets/rue.json");
 
 this.load.image("Phaser_tuilesdejeu14", "./assets/sprite_travail.png");
 this.load.tilemapTiledJSON("carte14", "./assets/travail.json");
+
+this.load.image("Phaser_tuilesdejeu15", "./assets/tilesetpiecesecrete.png");
+this.load.tilemapTiledJSON("carte15", "./assets/piecesecrete.json");
 
 this.load.image("Phaser_tuilesdejeu4", "./assets/tileset_bureau.png");
 this.load.tilemapTiledJSON("carte4", "./assets/bureau.json");
@@ -232,6 +238,8 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     this.load.image("suspicion_marguerite", "./assets/suspicion_marguerite.jpg");
     this.load.image("suspicion_gregoire", "./assets/suspicion_gregoire.jpg");
     this.load.image("suspicion_jessica", "./assets/suspicion_jessica.jpg");
+
+    this.load.image("bracelet", "./assets/bracelet.avif");
 
 
     this.load.image("martin", "./assets/perso.png");
