@@ -1144,7 +1144,7 @@ auRetourDuTelephone() {
                 this.marguerite.destroy();
                 this.marguerite = null;
               }
-              this.scene.start("maison");
+              this.scene.start("bar");
             });
           });
         });
