@@ -212,6 +212,11 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     frameHeight: 250,
 });
 
+this.load.spritesheet("martin", "./assets/sprite_martin.png", {
+    frameWidth: 209,   // 640 / 4
+    frameHeight: 298,
+});
+
 
 
     // chargement tuiles de jeu
@@ -239,9 +244,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     this.load.image("suspicion_jessica", "./assets/suspicion_jessica.jpg");
 
     this.load.image("bracelet", "./assets/bracelet.avif");
-
-
-    this.load.image("martin", "./assets/perso.png");
+    this.load.image("martin_heureuse", "./assets/martin_heureuse.png");
 
     this.load.image("bureau", "./assets/bureau.png");
 
@@ -283,7 +286,7 @@ this.load.spritesheet("shella", "./assets/sprite_shella.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("rue");
         
       });
 

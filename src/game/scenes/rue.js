@@ -23,7 +23,7 @@ var monologueDecouvreVictor = [
 
 // NOUVEAU : le dialogue avec Victor, à 2 portraits (comme dans maison.js)
 var dialogueVictor = [
-  { texte: "Victor : Christine. Je passais dans le coin.", moi: "moi_triste", perso: "victor_hereuse" },
+  { texte: "Victor : Violette. Je passais dans le coin.", moi: "moi_triste", perso: "victor_hereuse" },
   { texte: "Violette : Dans le coin ? Tu habites à l'autre bout de la ville.", moi: "moi_colere", perso: "victor_hereuse" },
   {
     texte: "Victor : (sourire) J'avais besoin de marcher. Tiens, je t'ai pris un café. Tu n'as pas dû dormir beaucoup.",
@@ -54,20 +54,20 @@ var introMonologue = [
 ];
 
 var dialogueMartin = [
-  { texte: "Violette : Vous connaissiez Adrien ?", moi: "moi_heureuse", perso: "perso_heureuse" },
-  { texte: "Martin : Tout le monde connaissait Adrien ici.", moi: "moi_heureuse", perso: "perso_triste" },
-  { texte: "Violette : Je cherche à comprendre ce qui lui est arrivé.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Martin : Vous devriez peut-être demander à Grégoire.", moi: "moi_heureuse", perso: "perso_colere" },
-  { texte: "Violette : Grégoire ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Martin : Ils se disputaient beaucoup ces derniers temps.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Martin : Il y avait aussi Victor qui l'accompagnait.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Martin : Et puis Adrien se plaignait des freins de sa voiture, ces derniers temps.", moi: "moi_triste", perso: "perso_triste" },  
-  { texte: "Martin : Il n'en avait parlé qu'à moi. Il avait honte de ne pas pouvoir les faire réparer.", moi: "moi_triste", perso: "perso_triste" },
-  { texte: "Martin : Si la police a récupéré les vidéos de surveillance de l'immeuble, elles pourraient vous aider.", moi: "moi_heureuse", perso: "perso_heureuse" },
+  { texte: "Violette : Vous connaissiez Adrien ?", moi: "moi_heureuse", perso: "martin_heureuse" },
+  { texte: "Martin : Tout le monde connaissait Adrien ici.", moi: "moi_heureuse", perso: "martin_heureuse" },
+  { texte: "Violette : Je cherche à comprendre ce qui lui est arrivé.", moi: "moi_colere", perso: "martin_heureuse" },
+  { texte: "Martin : Vous devriez peut-être demander à Grégoire.", moi: "moi_heureuse", perso: "martin_heureuse" },
+  { texte: "Violette : Grégoire ?", moi: "moi_colere", perso: "martin_heureuse" },
+  { texte: "Martin : Ils se disputaient beaucoup ces derniers temps.", moi: "moi_colere", perso: "martin_heureuse" },
+  { texte: "Martin : Il y avait aussi Victor qui l'accompagnait.", moi: "moi_colere", perso: "martin_heureuse" },
+  { texte: "Martin : Et puis Adrien se plaignait des freins de sa voiture, ces derniers temps.", moi: "moi_triste", perso: "martin_heureuse" },  
+  { texte: "Martin : Il n'en avait parlé qu'à moi. Il avait honte de ne pas pouvoir les faire réparer.", moi: "moi_triste", perso: "martin_heureuse" },
+  { texte: "Martin : Si la police a récupéré les vidéos de surveillance de l'immeuble, elles pourraient vous aider.", moi: "moi_heureuse", perso: "martin_heureuse" },
 ];
 
 var dialogueMartinRepete = [
-  { texte: "Martin : Je vous ai dit tout ce que je savais.", moi: "moi_heureuse", perso: "perso_triste" },
+  { texte: "Martin : Je vous ai dit tout ce que je savais.", moi: "moi_heureuse", perso: "martin_heureuse" },
 ];
 
 var monologueApresMartin = [
@@ -144,6 +144,17 @@ export default class rue extends Phaser.Scene {
     // on utilise provisoirement img_perso2 pour que la scène ne plante pas.
     const textureMartin = this.textures.exists("martin") ? "martin" : "img_perso2";
     this.martin = this.physics.add.staticSprite(700, 500, textureMartin);
+     if (!this.anims.exists("martin_respire")) {
+      this.anims.create({
+        key: "martin_respire",
+        frames: this.anims.generateFrameNumbers("martin", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+        this.martin.anims.play("martin_respire");
+        this.martin.setScale(0.3); 
+
 
     /***************************
      *  COLLISIONS *
