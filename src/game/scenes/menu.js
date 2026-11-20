@@ -177,9 +177,9 @@ this.load.spritesheet("pnj_fille", "./assets/pnj_fille.png", {
     frameHeight: 70,
 });
 
-this.load.spritesheet("victor", "./assets/victor.png", {
-    frameWidth: 57,   // 640 / 4
-    frameHeight: 288,
+this.load.spritesheet("victor", "./assets/sprite_victor.png", {
+    frameWidth: 92,   // 640 / 4
+    frameHeight: 170,
 });
 
 this.load.spritesheet("shella2", "./assets/shella.png", {
@@ -248,6 +248,11 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
 
     this.load.image("bureau", "./assets/bureau.png");
 
+        this.load.image("image_letrio", "./assets/image_letrio.jpg");
+
+
+    
+
 
 
     this.load.image("sac", "./assets/inventaire.png");
@@ -286,7 +291,7 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("rue");
+        this.scene.start("instruction");
         
       });
 

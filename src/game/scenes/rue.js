@@ -153,7 +153,7 @@ export default class rue extends Phaser.Scene {
       });
     }
         this.martin.anims.play("martin_respire");
-        this.martin.setScale(0.3); 
+        this.martin.setScale(0.2); 
 
 
     /***************************
@@ -234,14 +234,14 @@ export default class rue extends Phaser.Scene {
     creerAnim({ key: "bas", frames: this.anims.generateFrameNumbers("img_perso", { start: 9, end: 11 }), frameRate: 10, repeat: -1 });
 
         // Animations de Victor
-    creerAnim({ key: "victor_idle_gauche", frames: [{ key: "victor", frame: 0 }], frameRate: 1 });
-    creerAnim({ key: "victor_gauche", frames: this.anims.generateFrameNumbers("victor", { start: 1, end: 3 }), frameRate: 8, repeat: -1 });
-    creerAnim({ key: "victor_idle_droite", frames: [{ key: "victor", frame: 5 }], frameRate: 1 });
-    creerAnim({ key: "victor_droite", frames: this.anims.generateFrameNumbers("victor", { start: 6, end: 7 }), frameRate: 8, repeat: -1 });
-    creerAnim({ key: "victor_idle_dos", frames: [{ key: "victor", frame: 9 }], frameRate: 1 });
-    creerAnim({ key: "victor_haut", frames: this.anims.generateFrameNumbers("victor", { start: 10, end: 11 }), frameRate: 8, repeat: -1 });
-    creerAnim({ key: "victor_idle_face", frames: [{ key: "victor", frame: 12 }], frameRate: 1 });
-    creerAnim({ key: "victor_bas", frames: this.anims.generateFrameNumbers("victor", { start: 13, end: 14 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_gauche", frames: [{ key: "victor", frame: 5 }], frameRate: 1 });
+    creerAnim({ key: "victor_gauche", frames: this.anims.generateFrameNumbers("victor", { start: 4, end: 7 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_droite", frames: [{ key: "victor", frame: 11 }], frameRate: 1 });
+    creerAnim({ key: "victor_droite", frames: this.anims.generateFrameNumbers("victor", { start: 8, end: 11 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_dos", frames: [{ key: "victor", frame: 15 }], frameRate: 1 });
+    creerAnim({ key: "victor_haut", frames: this.anims.generateFrameNumbers("victor", { start: 12, end: 15 }), frameRate: 8, repeat: -1 });
+    creerAnim({ key: "victor_idle_face", frames: [{ key: "victor", frame: 12 }], frameRate: 0 });
+    creerAnim({ key: "victor_bas", frames: this.anims.generateFrameNumbers("victor", { start: 0, end: 3 }), frameRate: 8, repeat: -1 });
 
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -256,7 +256,7 @@ export default class rue extends Phaser.Scene {
     if (!victorDejaRencontre) {
       this.victor = this.physics.add.sprite(10, 700, "victor");
 
-      this.victor.setScale(ECHELLE_VICTOR);
+      this.victor.setScale(0.5);
       this.victor.anims.play("victor_idle_gauche"); // il regarde vers Violette
 
       this.victorCutscene = true;
