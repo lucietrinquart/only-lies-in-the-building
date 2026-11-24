@@ -10,7 +10,7 @@ export default class menu extends Phaser.Scene {
 this.load.image("menu_fond", "./assets/menu_fond.png");
 this.load.image("menu", "./assets/fond2.png");
 
-this.load.image("imageBoutonPlay", "./assets/button_play.png");
+this.load.image("imageBoutonPlay", "./assets/jouer.png");
 this.load.image("imageBoutonPlay2", "./assets/button_play.png");
 
 this.load.image("menu_instruction", "./assets/instruction.png");
@@ -92,6 +92,8 @@ this.load.image("cunegonde_triste", "./assets/cunegonde_triste.png");
 this.load.image("jessica_colere", "./assets/jessica_colere.png");
 this.load.image("jessica_hereuse", "./assets/jessica_hereuse.png");
 this.load.image("jessica_triste", "./assets/jessica_triste.png");
+
+this.load.image("gendarme_heureuse", "./assets/gendarme_heureuse.png");
 
 this.load.image("barbar_hereuse", "./assets/barbar_hereux.png");
 this.load.image("barbar_colere", "./assets/barbar_colere.png");
@@ -188,18 +190,18 @@ this.load.spritesheet("shella2", "./assets/shella.png", {
 });
 
 this.load.spritesheet("gregoire", "./assets/gregoire.png", {
-    frameWidth: 61.7,   // 640 / 4
-    frameHeight: 288,
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 70,
 });
 
 this.load.spritesheet("jessica", "./assets/jessica.png", {
-    frameWidth: 58.3,   // 640 / 4
-    frameHeight: 150,
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 40,
 });
 
 this.load.spritesheet("cunegonde", "./assets/cunegonde.png", {
-    frameWidth: 57.2,   // 640 / 4
-    frameHeight: 288,
+    frameWidth: 40,   // 640 / 4
+    frameHeight: 70,
 });
 
 this.load.spritesheet("barbar", "./assets/sprite_barbar.png", {
@@ -229,7 +231,7 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
     this.load.image("shella2", "./assets/perso.png");
 
         this.load.image("coloc", "./assets/perso.png");
-        this.load.image("bouton_credit", "./assets/bouton_credit.png");
+        this.load.image("bouton_credit", "./assets/credit.png");
 
     this.load.image("poubelle", "./assets/poubelle.webp");
     this.load.image("cle", "./assets/cle.png");
@@ -263,6 +265,7 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
 
     this.load.image("livre", "./assets/livre.png");   
     this.load.image("bibliotheque", "./assets/bibliotheque.png"); 
+    this.load.image("bibliotheque_entreprise", "./assets/biblio_aura_orange.png"); 
 
 
 
@@ -280,9 +283,10 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
     this.reglagesUI = new ReglagesUI(this);
 
     //on ajoute un bouton de clic, nommé bouton_play
-    var bouton_play = this.add.image(400, 450, "imageBoutonPlay").setDepth(1);
+    var bouton_play = this.add.image(500, 450, "imageBoutonPlay").setDepth(1);
     var bouton_play2 = this.add.image(200, 450, "bouton_credit").setDepth(1);
-    bouton_play2.setScale(0.1);
+    bouton_play2.setScale(0.25);
+    bouton_play.setScale(0.22);
 
 
     //=========================================================

@@ -59,7 +59,7 @@ var monologueDepartCommissariat = [
 ];
 
 // NOUVEAU : durée (en ms) avant que Victor ne revienne -> ajuste si besoin
-const DUREE_ABSENCE_VICTOR = 40000;
+const DUREE_ABSENCE_VICTOR = 400000;
 
 /* ============================================================
  *  PAVÉ DE CODE (petite interface cliquable)

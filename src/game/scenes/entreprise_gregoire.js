@@ -226,8 +226,8 @@ export default class entreprise_gregoire extends Phaser.Scene {
     ordinateur = this.physics.add.sprite(460, 700, "ordinateur");
     ordinateur.setScale(0.1);
 
-    bibliotheque = this.physics.add.sprite(490, 50, "bibliotheque");
-    bibliotheque.setScale(0.2);
+    bibliotheque = this.physics.add.sprite(490, 50, "bibliotheque_entreprise");
+    bibliotheque.setScale(0.3);
 
     // NOUVEAU : le bureau d'Adrien, de l'autre côté de l'open space.
     // ⚠️ Coordonnées provisoires -> ajuste-les pour qu'elles correspondent
@@ -251,8 +251,16 @@ export default class entreprise_gregoire extends Phaser.Scene {
     const gregoireDejaParti = this.registry.get("gregoire_entreprise_parti") || false;
     if (!gregoireDejaParti) {
       const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "img_perso2";
-      this.gregoire = this.physics.add.sprite(600, 387, "gregoire", 12);
-          this.gregoire.setScale(0.7); 
+          this.gregoire = this.physics.add.sprite(600, 387, "gregoire");
+    if (!this.anims.exists("gregoire_respire")) {
+      this.anims.create({
+        key: "gregoire_respire",
+        frames: this.anims.generateFrameNumbers("gregoire", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+    this.gregoire.anims.play("gregoire_respire");
 
     } else {
       this.gregoire = null;
@@ -324,7 +332,7 @@ export default class entreprise_gregoire extends Phaser.Scene {
       .setVisible(false);
 
     this.indiceBibliotheque = this.add
-      .text(bibliotheque.x, bibliotheque.y - 36, "E", {
+      .text(bibliotheque.x, bibliotheque.y - 10, "E", {
         font: "bold 16px Arial",
         color: "#ffffff",
         backgroundColor: "#000000",
@@ -333,6 +341,18 @@ export default class entreprise_gregoire extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(50)
       .setVisible(false);
+
+       this.indiceGregoire = this.add
+  .text(600, 387 - 40, "E", {
+        font: "bold 16px Arial",
+        color: "#ffffff",
+        backgroundColor: "#000000",
+        padding: { x: 7, y: 3 },
+      })
+      .setOrigin(0.5)
+      .setDepth(50)
+
+      
 
     // NOUVEAU : indice de la porte secrète -> ne s'affichera QUE si le tiroir est ouvert
     this.indicePorteSecrete = this.add
@@ -751,10 +771,11 @@ export default class entreprise_gregoire extends Phaser.Scene {
       player.anims.play("turn");
       return;
     }
-
+    this.indiceGregoire.setVisible(!!this.gregoire && Phaser.Math.Distance.Between(player.x, player.y, this.gregoire.x, this.gregoire.y) < 80);
     // NOUVEAU : indice "E" de la lettre et de la note (gèrent eux-mêmes leur verrouillage)
     if (this.lettre) this.lettre.update(player);
     if (this.noteAdrien) this.noteAdrien.update(player);
+
 
     // NOUVEAU : indices "E" des autres objets, uniquement une fois débloqués
     if (this.objetsDebloques()) {

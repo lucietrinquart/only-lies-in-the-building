@@ -61,7 +61,7 @@ export function afficherMessage(scene, texte, duree = 5000) {
     })
     .setOrigin(0.5)
     .setScrollFactor(0) // reste fixe à l'écran même si la caméra bouge
-    .setDepth(2000);
+    .setDepth(900);
 
   // Disparition en fondu à la fin de la durée
   scene.tweens.add({
@@ -152,12 +152,16 @@ export class InventaireUI {
     const scene = this.scene;
     const largeur = scene.cameras.main.width;
     const hauteur = scene.cameras.main.height;
+    
 
     // Dimensions du panneau
     const panneauLargeur = 320;
     const panneauHauteur = 220;
     const panneauX = largeur - panneauLargeur / 2 - 30;
     const panneauY = hauteur - panneauHauteur / 2 - 100;
+    const voileFerme = scene.add.rectangle(largeur / 2, hauteur / 2, largeur, hauteur, 0x000000, 0).setScrollFactor(0).setInteractive();
+voileFerme.on("pointerdown", () => this.fermerInventaire());
+this.panneau.add(voileFerme);
 
     const fond = scene.add
       .rectangle(panneauX, panneauY, panneauLargeur, panneauHauteur, 0x1c1c1e, 0.95)

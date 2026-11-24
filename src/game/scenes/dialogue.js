@@ -46,7 +46,7 @@ export class DialogueUI {
 
     this.conteneur = scene.add.container(0, 0);
     this.conteneur.setScrollFactor(0);
-    this.conteneur.setDepth(1000); // sous l'inventaire/carte/tâches (2000+), au-dessus du jeu
+    this.conteneur.setDepth(3000); // sous l'inventaire/carte/tâches (2000+), au-dessus du jeu
     this.conteneur.setVisible(false);
 
     // ---- Voile sombre derrière, pour l'effet "zoom" cinématique ----
@@ -218,7 +218,7 @@ export class DialogueUI {
     const { nom, corps } = this.separerNom(ligne.texte || "");
     this.afficherPlaque(nom);
     this.preparerTexte(corps);
-
+this.scene.children.list.forEach((o) => { if (o.texture && (o.texture.key === "sac" || o.texture.key === "carte")) o.disableInteractive(); });
     this.conteneur.setVisible(true);
     this.demarrerEcriture(nom);
   }
@@ -226,6 +226,7 @@ export class DialogueUI {
   // Cache toute la scène de dialogue (portraits + texte)
   masquer() {
     this.arreterEcriture();
+    this.scene.children.list.forEach((o) => { if (o.texture && (o.texture.key === "sac" || o.texture.key === "carte")) o.setInteractive({ useHandCursor: true }); });
     this.conteneur.setVisible(false);
   }
 

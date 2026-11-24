@@ -377,6 +377,27 @@ dessus.setDepth(30);
      * ============================================================ */
     this.tachesUI = new TachesUI(this);
 
+    this.indiceShella = this.add.text(this.shella.x, this.shella.y - 40, "E", {
+    font: "bold 16px Arial",
+    color: "#ffffff",
+    backgroundColor: "#000000",
+    padding: { x: 7, y: 3 },
+  })
+  .setOrigin(0.5)
+  .setDepth(50)
+  .setVisible(false);
+
+   this.indiceBarbar = this.add
+  .text(this.barbar.x, this.barbar.y - 40, "E", {
+    font: "bold 16px Arial",
+    color: "#ffffff",
+    backgroundColor: "#000000",
+    padding: { x: 7, y: 3 },
+  })
+  .setOrigin(0.5)
+  .setDepth(50)
+  .setVisible(false);
+
                   // PRENDRE LA DISTANCE ENTRE LES EPRSONNAGES POUR ENSUITE LES FAIRE APPARAITRENT AVEC E
                   this.input.keyboard.on("keydown-E", () => {
                           if (this.dialogueUI.visible && this.dialogueUI.completerSiEnCours()) return;
@@ -517,6 +538,8 @@ dessus.setDepth(30);
                 ) {
                 player.anims.play("turn");
                 }
+                this.indiceShella.setVisible(!!this.shella && Phaser.Math.Distance.Between(player.x, player.y, this.shella.x, this.shella.y) < 80);
+                this.indiceBarbar.setVisible(!!this.barbar && Phaser.Math.Distance.Between(player.x, player.y, this.barbar.x, this.barbar.y) < 80);
                 
     }
 

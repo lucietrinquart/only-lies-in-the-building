@@ -269,12 +269,13 @@ export default class maison extends Phaser.Scene {
     this.departProgramme = false;
     // NOUVEAU : état de la vue "photo en grand"
     this.photoOuverte = false;
+        this.inventaireUI = new InventaireUI(this);
+
         this.dialogueUI = new DialogueUI(this, {
       moiParDefaut: "moi_heureuse",
       persoParDefaut: "perso_triste",
     });
 
-    this.inventaireUI = new InventaireUI(this);
 
 const carteDuNiveau = this.add.tilemap("carte1");
 

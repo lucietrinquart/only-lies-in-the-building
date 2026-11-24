@@ -221,6 +221,17 @@ export default class rue extends Phaser.Scene {
       }
     });
 
+    
+        this.indiceMartin= this.add.text(this.martin.x, this.martin.y - 40, "E", {
+    font: "bold 16px Arial",
+    color: "#ffffff",
+    backgroundColor: "#000000",
+    padding: { x: 7, y: 3 },
+  })
+  .setOrigin(0.5)
+  .setDepth(50)
+  .setVisible(false);
+
     /***************************
      *  ANIMATIONS *
      ****************************/
@@ -391,6 +402,9 @@ export default class rue extends Phaser.Scene {
     if (!cursors.up.isDown && !cursors.down.isDown && !cursors.left.isDown && !cursors.right.isDown) {
       player.anims.play("turn");
     }
+
+        this.indiceMartin.setVisible(!!this.martin && Phaser.Math.Distance.Between(player.x, player.y, this.martin.x, this.martin.y) < 80);
+    
   }
 
   /* ============================================================

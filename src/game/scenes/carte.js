@@ -86,7 +86,7 @@ export class CarteUI {
     this.icone = scene.add
       .image(posX, posY, "carte")
       .setScrollFactor(0) // reste collée à l'écran
-      .setDepth(2000)
+      .setDepth(900)
       .setInteractive({ useHandCursor: true });
 
     this.icone.setDisplaySize(70, 55); // ajuste la taille de l'icône ici

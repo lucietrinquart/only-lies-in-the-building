@@ -90,8 +90,18 @@ export default class entreprise_gregoire2 extends Phaser.Scene {
 
     // Grégoire est revenu à son poste, légèrement décalé par rapport à la 1re visite
     const textureGregoire = this.textures.exists("gregoire") ? "gregoire" : "gregoire";
-    this.gregoire = this.physics.add.staticSprite(575, 400, textureGregoire, 12);
-    this.gregoire.setScale(0.7); 
+    this.gregoire = this.physics.add.staticSprite(575, 400, "gregoire");
+
+        if (!this.anims.exists("gregoire_respire")) {
+      this.anims.create({
+        key: "gregoire_respire",
+        frames: this.anims.generateFrameNumbers("gregoire", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+    this.gregoire.anims.play("gregoire_respire");
+
 
 
 

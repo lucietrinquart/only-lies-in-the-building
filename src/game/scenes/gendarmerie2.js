@@ -14,9 +14,9 @@ var cursors;
 // NOUVEAU : scène finale -> plus aucun objet, plus de téléphone, plus
 // d'énigme. Juste Violette et le gendarme, et une seule discussion.
 var dialogueFinal = [
-  { texte: "Violette : Je sais qui c'est, maintenant.", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Gendarme : Vous en êtes sûre ?", moi: "moi_colere", perso: "perso_triste" },
-  { texte: "Violette : Certaine. Il est temps d'en finir.", moi: "moi_colere", perso: "perso_colere" },
+  { texte: "Violette : Je sais qui c'est, maintenant.", moi: "moi_colere", perso: "gendarme_heureuse" },
+  { texte: "Gendarme : Vous en êtes sûre ?", moi: "moi_colere", perso: "gendarme_heureuse" },
+  { texte: "Violette : Certaine. Il est temps d'en finir.", moi: "moi_colere", perso: "gendarme_heureuse" },
 ];
 
 export default class gendarmerie2 extends Phaser.Scene {

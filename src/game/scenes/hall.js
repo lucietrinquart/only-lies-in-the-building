@@ -156,11 +156,21 @@ export default class hall extends Phaser.Scene {
      *  CREATION DES OBJETS *
      ****************************/
     player = this.physics.add.sprite(420, 650, "img_perso");
+       
+
     // NOUVEAU : Jessica = spritesheet "jessica", frame 12 (image fixe).
     // Le nom this.secretaire est gardé pour que toute l'interaction (E, distance,
     // dialogues) continue de fonctionner sans rien changer d'autre.
-    this.secretaire = this.physics.add.sprite(410, 440, "jessica", 12);
-    this.secretaire.setScale(0.7); // NOUVEAU : ajuste la taille de Jessica ici si besoin
+    this.secretaire = this.physics.add.sprite(400, 472, "jessica");
+     if (!this.anims.exists("jessica_respire")) {
+      this.anims.create({
+        key: "jessica_respire",
+        frames: this.anims.generateFrameNumbers("jessica", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+    this.secretaire.anims.play("jessica_respire");
 
     // NOUVEAU : la "porte" vers l'escalier qui mène à entreprise_gregoire.
     // Invisible, comme les autres portes du jeu -> seul un indice "E"
@@ -251,6 +261,16 @@ export default class hall extends Phaser.Scene {
       }
     });
 
+        this.indiceSecretaire= this.add.text(this.secretaire.x, this.secretaire.y - 40, "E", {
+    font: "bold 16px Arial",
+    color: "#ffffff",
+    backgroundColor: "#000000",
+    padding: { x: 7, y: 3 },
+  })
+  .setOrigin(0.5)
+  .setDepth(50)
+  .setVisible(false);
+
     this.input.keyboard.on("keyup-E", () => {
       // Laisser le texte affiché jusqu'à ce qu'E soit relâchée
     });
@@ -320,6 +340,8 @@ export default class hall extends Phaser.Scene {
     // NOUVEAU : indice "E" de l'escalier, visible seulement à proximité
     const distEscalierMaj = Phaser.Math.Distance.Between(player.x, player.y, this.porteEscalier.x, this.porteEscalier.y);
     this.indiceEscalier.setVisible(distEscalierMaj < 70);
+
+    this.indiceSecretaire.setVisible(!!this.secretaire && Phaser.Math.Distance.Between(player.x, player.y, this.secretaire.x, this.secretaire.y) < 150);
 
     /***************************
      *  DEPLACEMENT DU JOUEUR *

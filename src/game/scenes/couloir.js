@@ -82,9 +82,16 @@ export default class couloir extends Phaser.Scene {
 
     // Cunégonde (image "cunegonde" si elle est chargée, sinon img_perso2 en attendant)
     const textureCunegonde = this.textures.exists("cunegonde") ? "cunegonde" : "cunegonde";
-    this.cunegonde = this.physics.add.staticSprite(300, 300, textureCunegonde, 12);
-    this.cunegonde.setScale(0.6); 
-
+    this.cunegonde = this.physics.add.sprite(300, 300, "cunegonde");
+    if (!this.anims.exists("cunegonde_respire")) {
+      this.anims.create({
+        key: "cunegonde_respire",
+        frames: this.anims.generateFrameNumbers("cunegonde", { start: 0, end: 3 }),
+        frameRate: 4, // vitesse de la respiration (plus petit = plus lent)
+        repeat: -1,
+      });
+    }
+    this.cunegonde.anims.play("cunegonde_respire");
 
     // le "E" au-dessus de Cunégonde
     this.indiceCunegonde = this.add
