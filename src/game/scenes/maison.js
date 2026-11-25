@@ -296,7 +296,7 @@ const carteDuNiveau = this.add.tilemap("carte1");
       this, 700, 420, "sac_a_main", "Sac à main",
       "Un sac à main abandonné. Il pourrait servir à ranger des objets utiles à l'enquête.",
       {
-        taille: 40,
+        taille: 20,
         message: "Sac à main récupéré",
         perimetre: 60,
         ajouterAInventaire: false,
@@ -315,7 +315,7 @@ const carteDuNiveau = this.add.tilemap("carte1");
       this, 200, 150, "carte2", "Carte",
       "Une carte de la ville et de ses environs.",
       {
-        taille: 40,
+        taille: 20,
         message: "Carte récupérée",
         perimetre: 100,
         ajouterAInventaire: false,
@@ -373,8 +373,8 @@ const tileset = carteDuNiveau.addTilesetImage(
      ****************************/
     groupe_plateformes = this.physics.add.staticGroup();
     player = this.physics.add.sprite(800, 530, "img_perso");
-    telephone = this.physics.add.sprite(250, 800, "telephone");
-    telephone.setScale(0.03);
+    telephone = this.physics.add.sprite(250, 800, "telephone_violette");
+    telephone.setScale(0.05);
     this.telephone = telephone;
 
 // NOUVEAU : animations de Marguerite (sprite "pnj_fille"), réglages en haut du fichier
@@ -396,7 +396,7 @@ this.cinematiqueEnCours = false;
 
 
           telephone2 = this.physics.add.sprite(300, 530, "telephone");
-    telephone2.setScale(0.03);
+    telephone2.setScale(0.05);
     this.telephone2 = telephone2;
 
     // NOUVEAU : la lettre "E" au-dessus du téléphone
@@ -547,7 +547,7 @@ dessus_dessus.setDepth(40);
 
       // NOUVEAU : le cadre photo -> complètement optionnel, juste une vue en grand
       const distPhoto = Phaser.Math.Distance.Between(player.x, player.y, this.cadrePhoto.x, this.cadrePhoto.y);
-      if (distPhoto < 60) {
+      if (distPhoto < 90) {
         this.afficherCadrePhoto();
         return;
       }
@@ -702,7 +702,7 @@ this.indiceOrdinateur.setVisible(this.ordinateurDebloque() && !ordinateurOuvert 
 
     // NOUVEAU : "E" du cadre photo
     const distPhotoMaj = Phaser.Math.Distance.Between(player.x, player.y, this.cadrePhoto.x, this.cadrePhoto.y);
-    this.indiceCadrePhoto.setVisible(distPhotoMaj < 60);
+    this.indiceCadrePhoto.setVisible(distPhotoMaj < 90);
 
     // NOUVEAU : "E" de Marguerite
     if (this.margueriteDisponible && this.margueriteMaison && this.indiceMarguerite) {

@@ -3,16 +3,16 @@ import TelephoneBase from "./telephone_base.js";
 // Conversations d'Adrien
 const contacts = [
   {
-    nom: "V",
+    nom: "Tu sais qui",
     apercu: "Ne le dis à...",
     heure: "Hier",
     horodatage: "Hier 18:32",
     couleur: 0x5e5ce6,
     messages: [
-      { expediteur: "V", texte: "Bon maintenant que tu sais tout il faut qu'on s'explique" },
-      { expediteur: "V", texte: "Tu devras faire le bon choix." },
+      { expediteur: "Tu sais qui", texte: "Bon maintenant que tu sais tout il faut qu'on s'explique" },
+      { expediteur: "Tu sais qui", texte: "Tu devras faire le bon choix." },
       { expediteur: "moi", texte: "Cette fois-ci tu m'expliqueras tout." },
-      { expediteur: "V", texte: "Ne le dis à personne. Rejoins moi au Bar La gorge Fraîche." },
+      { expediteur: "Tu sais qui", texte: "Ne le dis à personne. Rejoins moi au Bar La gorge Fraîche." },
     ],
   },
   {

@@ -72,6 +72,7 @@ this.load.image("Phaser_tuilesdejeu9", "./assets/barthe.png");
 this.load.tilemapTiledJSON("carte9", "./assets/cafethe.json");
 
 this.load.image("telephone", "./assets/telephone.png");
+this.load.image("telephone_violette", "./assets/telephone_violette.png");
 this.load.image("telephone_fond", "./assets/telephone_fond.png");
 
 this.load.image("moi_colere", "./assets/moi_colere.png");
@@ -163,8 +164,8 @@ this.load.image("papier", "./assets/papier.webp");
 // dans preload()
 this.load.audio("musique_gendarmerie", "assets/musique.mp3");
 
-this.load.image("sac_a_main", "./assets/sac_a_main.webp");
-this.load.image("carte2", "./assets/carte2.png");
+this.load.image("sac_a_main", "./assets/sac.png");
+this.load.image("carte2", "./assets/carte.png");
 
 //scene cafe
  this.load.image("porte_balthazar", "./assets/porte_balthazar.png");
@@ -295,7 +296,7 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("instruction");
+        this.scene.start("maison");
         
       });
 
