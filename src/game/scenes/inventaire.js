@@ -34,6 +34,7 @@ export function ajouterObjet(scene, cle, nom, description) {
   const inv = getInventaire(scene);
   if (possedeObjet(scene, cle)) return false;
   inv.push({ cle, nom, description });
+scene.registry.set("inv_nouveaux", [...(scene.registry.get("inv_nouveaux") || []), cle]);
   scene.registry.set("inventaire", inv);
   return true;
 }
@@ -91,7 +92,7 @@ export class InventaireUI {
     this.icone = scene.add
       .image(largeur - 50, hauteur - 50, "sac")
       .setScrollFactor(0) // <- c'est ça qui la "colle" à l'écran
-      .setDepth(2000)
+      .setDepth(900)
       .setInteractive({ useHandCursor: true });
 
     this.icone.setDisplaySize(70, 55); // ajuste ici la taille de l'icône
@@ -104,9 +105,15 @@ export class InventaireUI {
     const debloque = scene.registry.get("inventaire_debloque") || false;
     this.icone.setVisible(debloque);
 
+    this.pastille = scene.add.circle(largeur - 20, hauteur - 72, 8, 0xff0000).setStrokeStyle(2, 0xffffff).setScrollFactor(0).setDepth(901);
+const maj = () => this.majPastille();
+["setdata", "changedata"].forEach((e) => scene.registry.events.on(e, maj));
+scene.events.once("shutdown", () => ["setdata", "changedata"].forEach((e) => scene.registry.events.off(e, maj)));
+maj();
+
     // ---- PANNEAU DE L'INVENTAIRE (caché au départ) ----
     this.panneau = scene.add.container(0, 0);
-    this.panneau.setDepth(2001);
+    this.panneau.setDepth(900);
     this.panneau.setVisible(false);
   }
 
@@ -114,8 +121,14 @@ export class InventaireUI {
   debloquer() {
     this.scene.registry.set("inventaire_debloque", true);
     this.icone.setVisible(true);
+    this.majPastille();
   }
 
+
+  majPastille() {
+  const n = (this.scene.registry.get("inv_nouveaux") || []).length;
+  this.pastille.setVisible(n > 0 && (this.scene.registry.get("inventaire_debloque") || false));
+}
   // Ouvre / ferme le panneau
   basculer() {
     this.ouvert = !this.ouvert;
@@ -226,7 +239,27 @@ this.panneau.add(voileFerme);
       // Clic sur l'objet -> vue en grand
       case_.on("pointerdown", () => this.afficherObjetEnGrand(objet));
 
+      const nouveaux = scene.registry.get("inv_nouveaux") || [];
+if (nouveaux.includes(objet.cle)) {
+  const p = scene.add.circle(x + 26, y - 26, 7, 0xff0000).setStrokeStyle(2, 0xffffff).setScrollFactor(0);
+  this.panneau.add(p);
+  case_.on("pointerdown", () => {
+    scene.registry.set("inv_nouveaux", nouveaux.filter((c) => c !== objet.cle));
+    p.destroy();
+    this.majPastille();
+  });
+}
+
       this.panneau.add([case_, vignette, nom]);
+
+if ((scene.registry.get("inv_nouveaux") || []).includes(objet.cle)) {
+  const p = scene.add.circle(x + 26, y - 26, 7, 0xff0000).setStrokeStyle(2, 0xffffff).setScrollFactor(0);
+  this.panneau.add(p);
+  case_.on("pointerdown", () => {
+    scene.registry.set("inv_nouveaux", (scene.registry.get("inv_nouveaux") || []).filter((c) => c !== objet.cle));
+    p.destroy();
+  });
+}
     });
   }
 
@@ -236,7 +269,7 @@ this.panneau.add(voileFerme);
     const largeur = scene.cameras.main.width;
     const hauteur = scene.cameras.main.height;
 
-    const vue = scene.add.container(0, 0).setDepth(3000);
+    const vue = scene.add.container(0, 0).setDepth(900);
     this.vueActuelle = vue; // NOUVEAU : on garde la référence pour fermerTout()
 
     // Fond sombre cliquable pour fermer

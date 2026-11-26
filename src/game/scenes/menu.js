@@ -296,7 +296,7 @@ this.load.spritesheet("martin", "./assets/sprite_martin.png", {
     //Cas ou la sourris clique sur le bouton play :
     // on lance le niveau 1
     bouton_play.on("pointerup", () => {
-        this.scene.start("maison");
+        this.scene.start("instruction");
         
       });
 
